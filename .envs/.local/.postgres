@@ -1,0 +1,7 @@
+# PostgreSQL
+# ------------------------------------------------------------------------------
+POSTGRES_HOST=postgres
+POSTGRES_PORT=5432
+POSTGRES_DB=paprika_sync
+POSTGRES_USER=gKzgEyHJkqcXFestYkKXbPDcNyKjzXrC
+POSTGRES_PASSWORD=olNJlARqlMMp01iaiSJQuCRmmY8JyLV4HA4XbQIgh2ABGmDEyDe6pL3kHTg0fAuO

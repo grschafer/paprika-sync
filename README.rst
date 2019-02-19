@@ -11,6 +11,11 @@ Webapp for comparing and syncing multiple Paprika Recipe Manager accounts
 :License: MIT
 
 
+This webapp is unofficial and unaffiliated with Paprika Recipe Manager.
+
+Thanks to <https://gist.github.com/mattdsteele/7386ec363badfdeaad05a418b9a1f30a> for documentation of the Paprika API.
+
+
 Settings
 --------
 

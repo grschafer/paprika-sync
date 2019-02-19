@@ -1,3 +1,13 @@
 from django.contrib import admin
 
-# Register your models here.
+from .models import PaprikaAccount, Recipe
+
+
+@admin.register(PaprikaAccount)
+class PaprikaAccountAdmin(admin.ModelAdmin):
+    list_display = ('id', 'user', 'username', 'alias')
+
+
+@admin.register(Recipe)
+class RecipeAdmin(admin.ModelAdmin):
+    list_display = ('id', 'paprika_account', 'name')

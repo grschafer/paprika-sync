@@ -1,0 +1,7 @@
+to start local server: docker-compose -f local.yml up
+
+to run tests: docker-compose -f local.yml run django pytest paprika_sync/core
+
+see bashin.sh for docker commands (e.g. running a shell)
+
+see tasks here: https://github.com/grschafer/paprika-sync/projects/1

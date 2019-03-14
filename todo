@@ -5,3 +5,7 @@ to run tests: docker-compose -f local.yml run django pytest paprika_sync/core
 see bashin.sh for docker commands (e.g. running a shell)
 
 see tasks here: https://github.com/grschafer/paprika-sync/projects/1
+
+to force rebuild the container...
+    force rebuild: docker-compose build django
+    or delete the image: docker rmi -f paprika_sync_local_django

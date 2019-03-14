@@ -21,6 +21,7 @@ urlpatterns = [
     ),
     path("accounts/", include("allauth.urls")),
     # Your stuff: custom urls includes go here
+    path("", include("paprika_sync.core.urls", namespace="core")),
 ] + static(
     settings.MEDIA_URL, document_root=settings.MEDIA_ROOT
 )

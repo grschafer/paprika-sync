@@ -1,3 +1,20 @@
+/* ex: set tabstop=2 shiftwidth=2: */
+
+left off
+========
+
+- making /add-paprika-account view and form
+  - form shows up, but formatting is bad
+  - handle form submission and call actions.import_account
+  - TODO: test error cases (bad credentials, can't reach paprika API, etc.)
+  - TODO: test large number of recipes (does import need to be async somehow?)
+- fix not being able to debug w/ ipdb
+  - runserver wasn't pid 1 in the container, so added 'exec' to start script
+
+
+general
+=======
+
 to start local server: docker-compose -f local.yml up
 
 to run tests: docker-compose -f local.yml run django pytest paprika_sync/core

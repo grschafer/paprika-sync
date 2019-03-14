@@ -29,6 +29,7 @@ def import_account(user, username, password, alias):
             else:
                 # TODO: log and collect errors
                 pass
+    return pa
     # TODO: create NewsItem for new account sync-ing
 
 

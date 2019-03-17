@@ -11,6 +11,7 @@ class PaprikaAccountFactory(DjangoModelFactory):
     username = Faker("user_name")
     alias = Faker("name")
     password = Faker("password", length=42)
+    import_status = PaprikaAccount.IMPORT_SUCCESS
 
     class Meta:
         model = PaprikaAccount

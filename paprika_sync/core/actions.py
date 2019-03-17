@@ -1,5 +1,6 @@
 import logging
 
+from django.conf import settings
 from django.db import transaction
 
 from .api import get_recipes, get_recipe
@@ -20,17 +21,39 @@ def import_account(user, username, password, alias):
     with transaction.atomic():
         pa = PaprikaAccount.objects.create(user=user, username=username, password=password, alias=alias)
         recipes = get_recipes(pa)
-        for recipe in recipes:
-            recipe_detail = get_recipe(recipe['uid'], pa)
-            recipe_detail['paprika_account'] = pa.id
-            rs = RecipeSerializer(data=recipe_detail)
-            if rs.is_valid():
-                rs.save()
-            else:
-                # TODO: log and collect errors
-                pass
+        if len(recipes) > settings.RECIPE_THRESHOLD_TO_DEFER_IMPORT:
+            logger.info('deferring import of %s recipes', len(recipes))
+            pa.import_status = PaprikaAccount.IMPORT_DEFERRED
+        else:
+            logger.info('importing %s recipes', len(recipes))
+            import_recipes(pa, recipes)
+            pa.import_status = PaprikaAccount.IMPORT_SUCCESS
+        pa.save()
     return pa
+
+
+def import_recipes(paprika_account, recipes):
+    starting_recipe_count = paprika_account.recipes.count()
+    for recipe in recipes:
+        print('.', end='')
+        recipe_detail = get_recipe(recipe['uid'], paprika_account)
+        recipe_name = recipe_detail['name']
+        if paprika_account.recipes.filter(name=recipe_name).exists():
+            logger.info('Recipe already exists in %s: %s', paprika_account, recipe_name)
+            continue
+
+        recipe_detail['paprika_account'] = paprika_account.id
+        rs = RecipeSerializer(data=recipe_detail)
+        if rs.is_valid():
+            rs.save()
+        else:
+            logger.error('Invalid recipe %s: %s', recipe_name, rs.errors)
+            # TODO: collect errors and show to user?
+
+    ending_recipe_count = paprika_account.recipes.count()
+    print('Imported', ending_recipe_count - starting_recipe_count, 'recipes')
     # TODO: create NewsItem for new account sync-ing
+    # 'blah blah just imported N recipes'
 
 
 def sync_account_recipes_from_api(paprika_account):

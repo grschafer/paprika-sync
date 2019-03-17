@@ -26,6 +26,11 @@ class AddPaprikaAccountView(LoginRequiredMixin, CreateView):
         kwargs['user'] = self.request.user
         return kwargs
 
+    def get_success_url(self):
+        if self.object.import_status == PaprikaAccount.IMPORT_DEFERRED:
+            messages.info(self.request, 'Your account contains many recipes! Importing will occur in the background over the next few minutes.')
+        return super().get_success_url()
+
     def post(self, request, *args, **kwargs):
         try:
             return super().post(request, *args, **kwargs)

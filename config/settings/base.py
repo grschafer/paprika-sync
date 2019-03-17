@@ -253,3 +253,4 @@ INSTALLED_APPS += ['compressor']
 STATICFILES_FINDERS += ['compressor.finders.CompressorFinder']
 # Your stuff...
 # ------------------------------------------------------------------------------
+RECIPE_THRESHOLD_TO_DEFER_IMPORT = 30

@@ -46,6 +46,8 @@ class UserRedirectView(LoginRequiredMixin, RedirectView):
     permanent = False
 
     def get_redirect_url(self):
+        if not self.request.user.paprika_accounts.exists():
+            return reverse("core:add_paprika_account")
         return reverse("users:detail", kwargs={"username": self.request.user.username})
 
 

@@ -3,19 +3,29 @@
 left off
 ========
 
+- fix not being able to debug w/ ipdb
+  - runserver wasn't pid 1 in the container, so added 'exec' to start script
+- TODO: install sass and watch
+  - could take package.json and gulpfile.js from cookiecutter-django to mimic if I had answered YES to using a js_task_runner...
+  - but just going to brew install sass and run it in --watch mode outside docker, for now
+  - `sass --watch sass/project.scss css/project.css`
+  - TODO: figure out sass with compressor for production deployment
 - making /add-paprika-account view and form
   - form shows up, but formatting is bad
   - handle form submission and call actions.import_account
-  - TODO: test error cases (bad credentials, can't reach paprika API, etc.)
+  - test error cases (bad credentials, can't reach paprika API, etc.)
+  - redirect first-login to add-paprika-account
   - TODO: test large number of recipes (does import need to be async somehow?)
-- fix not being able to debug w/ ipdb
-  - runserver wasn't pid 1 in the container, so added 'exec' to start script
+  - TODO: create newsitem on new account import
+  - TODO: add basic newsfeed to homepage
 
 
 general
 =======
 
 to start local server: docker-compose -f local.yml up
+
+to continuously re-compile sass: sass --watch paprika_sync/sass/project.scss paprika_sync/css/project.css
 
 to run tests: docker-compose -f local.yml run django pytest paprika_sync/core
 

@@ -8,10 +8,12 @@ RECIPE_URL = 'https://www.paprikaapp.com/api/v1/sync/recipe/{uid}/'
 
 def get_recipes(paprika_account):
     resp = requests.get(RECIPES_URL, auth=(paprika_account.username, paprika_account.password))
+    resp.raise_for_status()
     return resp.json()['result']
 
 
 def get_recipe(uid, paprika_account):
     url = RECIPE_URL.format(uid=uid)
     resp = requests.get(url, auth=(paprika_account.username, paprika_account.password))
+    resp.raise_for_status()
     return resp.json()['result']

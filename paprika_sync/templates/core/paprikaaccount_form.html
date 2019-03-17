@@ -3,9 +3,18 @@
 {% block title %}Add Paprika Account{% endblock %}
 
 {% block content %}
-<form method="post">
+
+{% if not user.paprika_accounts.exists %}
+    <p>Looks like you don't have a PaprikaAccount associated yet! Add one below to sync your recipes.</p>
+{% endif %}
+
+<p class="alert alert-danger">WARNING: The Paprika app's servers only accept username and password in <strong>plaintext</strong>, meaning that if my server gets hacked the hacker will have your Paprika app username and password. <strong>Do not enter your Paprika app username and password below if you use it for any other service (e.g. banks, email, work, etc.)</strong>. You should change your Paprika app login to be a unique password before continuing.</p>
+
+<form id="add-paprika-account-form" method="post">
     {% csrf_token %}
-    {{ form }}
+    <table>
+        {{ form.as_table }}
+    </table>
     <input type="submit">
 </form>
 {% endblock content %}

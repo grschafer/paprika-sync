@@ -276,3 +276,6 @@ paprika_sync/media/
 .env
 .envs/*
 !.envs/.local/
+
+
+*.css.map

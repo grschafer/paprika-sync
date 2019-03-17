@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from django.contrib.postgres.fields import JSONField
 from django.db import models
 
 
@@ -37,11 +38,28 @@ class Recipe(BaseModel):
     name = models.CharField(max_length=200)
     # TODO: do these need to be nullable?
     image_url = models.URLField(max_length=200)
+    # TODO: add other fields (ingreds, directions, rating, source, categories, etc... anything that can change and should be flagged in a NewsItem)
+    # TODO: add a 'deleted' flag?
 
     def __str__(self):
         return self.name
 
 
 class NewsItem(BaseModel):
+    TYPE_NEW_ACCOUNT, TYPE_RECIPE_ADDED, TYPE_RECIPE_EDITED, TYPE_RECIPE_DELETED = 'new_account', 'recipe_added', 'recipe_edited', 'recipe_deleted'
+    TYPE_CHOICES = (
+        (TYPE_NEW_ACCOUNT, TYPE_NEW_ACCOUNT),
+        (TYPE_RECIPE_ADDED, TYPE_RECIPE_ADDED),
+        (TYPE_RECIPE_EDITED, TYPE_RECIPE_EDITED),
+        (TYPE_RECIPE_DELETED, TYPE_RECIPE_DELETED),
+    )
+    TYPE_CHOICES_LIST = (TYPE_NEW_ACCOUNT, TYPE_RECIPE_ADDED, TYPE_RECIPE_EDITED, TYPE_RECIPE_DELETED)
+    paprika_account = models.ForeignKey('core.PaprikaAccount', related_name='+', on_delete=models.CASCADE)
+    type = models.CharField(max_length=100, choices=TYPE_CHOICES)
+    payload = JSONField(default=dict, help_text='Specifies details (e.g. what fields of a recipe were updated)')
+
+    class Meta:
+        ordering = ('-id',)
+
     def __str__(self):
-        pass
+        return '{} by {}'.format(self.type, self.paprika_account)

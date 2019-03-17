@@ -15,14 +15,12 @@ left off
   - handle form submission and call actions.import_account
   - test error cases (bad credentials, can't reach paprika API, etc.)
   - redirect first-login to add-paprika-account
-  - TODO: test large number of recipes (does import need to be async somehow?)
+  - test large number of recipes (does import need to be async somehow?)
     - too slow
-      - TODO: can do multiprocessing pool?
-      - TODO: add celery?
-      - every-minute cronjob?
-        - do this
-  - TODO: create newsitem on new account import
-  - TODO: add basic newsfeed to homepage
+      - ideas: multiprocessing pool, celery, every-minute cronjob
+      - do every-minute cronjob... simplest while still performant
+  - create newsitem on new account import
+  - add basic newsfeed to homepage
   - TODO: fix logging config (no log statements or prints show in docker)
 
 

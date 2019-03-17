@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% load humanize %}
+
+{% block content %}
+
+<h1>News</h1>
+
+{% for newsitem in object_list %}
+
+<div class="newsitem card">
+    <div class="card-body">
+        <h6 class="card-subtitle text-muted">{{ newsitem.created_date|naturaltime }}</h6>
+        <p class="card-text">{{ newsitem.paprika_account.alias }} {{ newsitem.type }}</p>
+        {% if not newsitem.paprika_account in request.user.paprika_accounts.all %}
+            {% if newsitem.type == newsitem.TYPE_RECIPE_ADDED %}
+                <a href="#not-implemented-yet">Add recipe to your account (not implemented yet)</a>
+            {% elif newsitem.type == newsitem.TYPE_RECIPE_EDITED %}
+                <a href="#not-implemented-yet">Add recipe to your account (not implemented yet)</a>
+                <a href="#not-implemented-yet">View edits (not implemented yet)</a>
+                <a href="#not-implemented-yet">Update your recipe with these edits (not implemented yet)</a>
+            {% elif newsitem.type == newsitem.TYPE_RECIPE_DELETED %}
+                <a href="#not-implemented-yet">Delete recipe from your account (not implemented yet)</a>
+            {% endif %}
+        {% endif %}
+    </div>
+</div>
+
+{% endfor %}
+
+<div class="pagination">
+    <span class="step-links">
+        {% if page_obj.has_previous %}
+            <a href="?page=1">&laquo; first</a>
+            <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ page_obj.number }} of {{ paginator.num_pages }}.
+        </span>
+
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}">next</a>
+            <a href="?page={{ paginator.num_pages }}">last &raquo;</a>
+        {% endif %}
+    </span>
+</div>
+
+{% endblock %}

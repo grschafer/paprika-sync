@@ -52,8 +52,12 @@ def import_recipes(paprika_account, recipes):
 
     ending_recipe_count = paprika_account.recipes.count()
     print('Imported', ending_recipe_count - starting_recipe_count, 'recipes')
-    # TODO: create NewsItem for new account sync-ing
-    # 'blah blah just imported N recipes'
+
+    NewsItem.objects.create(
+        paprika_account=paprika_account,
+        type=NewsItem.TYPE_NEW_ACCOUNT,
+        payload={'num_recipes': len(recipes)},
+    )
 
 
 def sync_account_recipes_from_api(paprika_account):

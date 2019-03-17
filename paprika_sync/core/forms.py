@@ -13,12 +13,6 @@ class PaprikaAccountForm(forms.ModelForm):
             'password': forms.PasswordInput(),
         }
 
-        # TODO: test these errors
-        error_messages = {
-            "import_failed": _("Unable to import"),
-            "credentials_failed": _("Login to Paprika failed with these credentials"),
-        }
-
     def __init__(self, *args, user=None, **kwargs):
         super().__init__(*args, **kwargs)
         self.user = user

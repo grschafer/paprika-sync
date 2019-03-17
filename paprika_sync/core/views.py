@@ -5,20 +5,25 @@ import requests.exceptions
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
-from django.views.generic import CreateView
+from django.views.generic import CreateView, ListView
 
 from .forms import PaprikaAccountForm
-from .models import PaprikaAccount
+from .models import PaprikaAccount, NewsItem
 
 
 logger = logging.getLogger(__name__)
+
+
+class HomeView(LoginRequiredMixin, ListView):
+    queryset = NewsItem.objects.all()
+    paginate_by = 25
 
 
 class AddPaprikaAccountView(LoginRequiredMixin, CreateView):
 
     form_class = PaprikaAccountForm
     model = PaprikaAccount
-    success_url = reverse_lazy('home')
+    success_url = reverse_lazy('core:home')
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
@@ -40,4 +45,5 @@ class AddPaprikaAccountView(LoginRequiredMixin, CreateView):
             return self.get(request, *args, **kwargs)
 
 
+home = HomeView.as_view()
 add_paprika_account = AddPaprikaAccountView.as_view()

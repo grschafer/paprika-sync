@@ -21,7 +21,14 @@ left off
       - do every-minute cronjob... simplest while still performant
   - create newsitem on new account import
   - add basic newsfeed to homepage
-  - TODO: fix logging config (no log statements or prints show in docker)
+  - fix logging config (no log statements or prints show in docker)
+- TODO: make sync-ing functionality work
+  - TODO: mgmt command to regularly sync all accounts
+  - TODO: create new Recipe if new uid and if hash differs for existing uid
+  - TODO: produce NewsItem for any diffs, additions, deletions
+  - TODO: add "force-sync" button to UI (in navbar?)
+    - TODO: make this just change a field on PaprikaAccount (sync_status? requested, inprogress, done) that an every minute cronjob checks?
+    - TODO: add last_synced field to PaprikaAccount
 
 
 general

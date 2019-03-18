@@ -154,13 +154,10 @@ LOGGING = {
     'disable_existing_loggers': True,
     'root': {
         'level': 'WARNING',
-        'handlers': ['sentry'],
+        'handlers': ['console', 'sentry'],
     },
     'formatters': {
-        'verbose': {
-            'format': '%(levelname)s %(asctime)s %(module)s '
-                      '%(process)d %(thread)d %(message)s'
-        },
+        'verbose': {'format': '[%(asctime)s %(levelname)s %(processName)s %(process)d %(thread)d %(name)s] %(message)s'},
     },
     'handlers': {
         'sentry': {

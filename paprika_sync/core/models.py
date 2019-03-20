@@ -32,7 +32,8 @@ class PaprikaAccount(BaseModel):
 
 class Recipe(BaseModel):
     paprika_account = models.ForeignKey('core.PaprikaAccount', related_name='recipes', on_delete=models.CASCADE)
-    uid = models.CharField(max_length=200)
+    uid = models.CharField(max_length=200, db_index=True)
+    date_ended = models.DateTimeField(null=True, db_index=True, help_text='Date when this version of the Recipe was superseded (unset if this is the active Recipe for this uid)')
     hash = models.CharField(max_length=200)
     photo_hash = models.CharField(max_length=200)
     name = models.CharField(max_length=200)
@@ -40,6 +41,17 @@ class Recipe(BaseModel):
     image_url = models.URLField(max_length=200)
     # TODO: add other fields (ingreds, directions, rating, source, categories, etc... anything that can change and should be flagged in a NewsItem)
     # TODO: add a 'deleted' flag?
+    IGNORE_FIELDS_IN_DIFF = {'id', 'created_date', 'modified_date', 'paprika_account', 'date_ended'}
+
+    def diff(self, other):
+        'Diffs 2 Recipes, returning {field_name: True, ...} containing all fields changed'
+        fields_changed = {}
+        for field in Recipe._meta.get_fields():
+            if field.name not in Recipe.IGNORE_FIELDS_IN_DIFF:
+                if getattr(self, field.name) != getattr(other, field.name):
+                    fields_changed[field.name] = True
+
+        return fields_changed
 
     def __str__(self):
         return self.name

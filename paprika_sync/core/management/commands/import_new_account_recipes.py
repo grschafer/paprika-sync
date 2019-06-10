@@ -2,7 +2,6 @@ import logging
 
 from django.core.management.base import BaseCommand
 
-from paprika_sync.core.actions import import_recipes
 from paprika_sync.core.api import get_recipes
 from paprika_sync.core.models import PaprikaAccount
 
@@ -11,15 +10,25 @@ logger = logging.getLogger(__name__)
 
 
 class Command(BaseCommand):
-    help = 'For any PaprikaAccounts with import_status=deferred, import all their recipes. Intended to run on cron every minute.'
+    help = 'For any PaprikaAccounts deferred or failed account imports, import all their recipes. Intended to run on cron every minute.'
 
     def handle(self, *args, **options):
-        for pa in PaprikaAccount.objects.filter(import_status=PaprikaAccount.IMPORT_DEFERRED):
-            logger.info('Starting background import of recipes for %s', pa)
-            pa.import_status = PaprikaAccount.IMPORT_INPROGRESS
-            pa.save()
+        accounts_to_import = PaprikaAccount.objects.filter(
+            import_sync_status__in=(PaprikaAccount.IMPORT_DEFERRED, PaprikaAccount.IMPORT_FAILURE),
+            sync_failure_count__lt=5,
+        )
+        for pa in accounts_to_import:
+            try:
+                self.import_account(pa)
+            except Exception as e:
+                pa.sync_failure_count += 1
+                pa.save()
 
-            recipes = get_recipes(pa)
-            import_recipes(pa, recipes)
-            pa.import_status = PaprikaAccount.IMPORT_SUCCESS
-            pa.save()
+    def import_account(self, paprika_account):
+        logger.info('Starting background import of recipes for %s', paprika_account)
+        paprika_account.start_import_recipes()
+        paprika_account.save()
+
+        recipes = get_recipes(paprika_account)
+        paprika_account.import_recipes(recipes)
+        paprika_account.save()

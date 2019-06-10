@@ -22,3 +22,6 @@ coreapi==2.3.3  # https://github.com/core-api/python-client
 
 # Mine
 requests>=2.21.0, < 3
+django-fsm==2.6.1
+django-fsm-admin==1.2.4
+django-fsm-log==1.6.2

@@ -255,6 +255,7 @@ STATICFILES_FINDERS += ['compressor.finders.CompressorFinder']
 # Your stuff...
 # ------------------------------------------------------------------------------
 RECIPE_THRESHOLD_TO_DEFER_IMPORT = 30
+SYNC_FAILURES_NEEDED_TO_STOP_RETRYING = 5
 
 import logging.config  # NOQA
 LOGGING_CONFIG = None

@@ -22,13 +22,21 @@ left off
   - create newsitem on new account import
   - add basic newsfeed to homepage
   - fix logging config (no log statements or prints show in docker)
+- no failure count, b/c should give user immediate feedback if they requested the import and it fails
 - TODO: make sync-ing functionality work
-  - TODO: mgmt command to regularly sync all accounts
-  - TODO: create new Recipe if new uid and if hash differs for existing uid
-  - TODO: produce NewsItem for any diffs, additions, deletions
+  - mgmt command to regularly sync all accounts
+  - create new Recipe if new uid and if hash differs for existing uid
+  - produce NewsItem for any diffs, additions, deletions
+  - TODO: cronjob script to sync every minute, but lockfile first
   - TODO: add "force-sync" button to UI (in navbar?)
     - TODO: make this just change a field on PaprikaAccount (sync_status? requested, inprogress, done) that an every minute cronjob checks?
+    - TODO: diagram state changes
+    - TODO: test state changes
+      - TODO: test unique constraint on PaprikaAccount.username and alias
+    - TODO: disallow any model changes til import/sync completes...
+      - looked at using django-fsm ConcurrentTransitionMixin, but it doesn't seem like a great answer because I can't sensibly expose an in-progress state outside of the given transaction so that cronjobs can read it (ConcurrentTransitionMixin requires that you save changes in an atomic block, which means that I'd be wrapping all my save calls in an atomic block... guess that could work)
     - TODO: add last_synced field to PaprikaAccount
+- TODO: move actions to methods on PaprikaAccount or Recipe?
 
 
 general
@@ -36,7 +44,7 @@ general
 
 to start local server: docker-compose -f local.yml up
 
-to continuously re-compile sass: sass --watch paprika_sync/sass/project.scss paprika_sync/css/project.css
+to continuously re-compile sass: sass --watch paprika_sync/static/sass/project.scss paprika_sync/static/css/project.css
 
 to run tests: docker-compose -f local.yml run django pytest paprika_sync/core
 

@@ -59,17 +59,17 @@ class PaprikaAccount(BaseModel):
 
     @fsm_log_by
     @transition(field=import_sync_status, source=[NEW_ACCOUNT], target=IMPORT_DEFERRED)
-    def defer_import_recipes(self, by=None):
+    def defer_import_recipes(self, by=None, **kwargs):
         pass
 
     @fsm_log_by
     @transition(field=import_sync_status, source=[NEW_ACCOUNT, IMPORT_DEFERRED], target=IMPORT_INPROGRESS)
-    def start_import_recipes(self, by=None):
+    def start_import_recipes(self, by=None, **kwargs):
         pass
 
     @fsm_log_by
     @transition(field=import_sync_status, source=[IMPORT_INPROGRESS], target=SYNC_SUCCESS, on_error=IMPORT_FAILURE)
-    def import_recipes(self, recipes, by=None):
+    def import_recipes(self, recipes, by=None, **kwargs):
         from .serializers import RecipeSerializer
         try:
             starting_recipe_count = self.recipes.count()
@@ -110,17 +110,17 @@ class PaprikaAccount(BaseModel):
 
     @fsm_log_by
     @transition(field=import_sync_status, source=[SYNC_SUCCESS], target=SYNC_REQUESTED)
-    def request_sync_recipes(self, by=None):
+    def request_sync_recipes(self, by=None, **kwargs):
         pass
 
     @fsm_log_by
     @transition(field=import_sync_status, source=[SYNC_SUCCESS, SYNC_REQUESTED], target=SYNC_INPROGRESS)
-    def start_sync_recipes(self, by=None):
+    def start_sync_recipes(self, by=None, **kwargs):
         pass
 
     @fsm_log_by
     @transition(field=import_sync_status, source=[SYNC_INPROGRESS], target=SYNC_SUCCESS, on_error=SYNC_FAILURE)
-    def sync_recipes(self, by=None):
+    def sync_recipes(self, by=None, **kwargs):
         from .serializers import RecipeSerializer
         # Update Recipes from api, save revisions, create new NewsItems
         logger.info('start sync_account_recipes_from_api for %s', self)

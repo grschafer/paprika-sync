@@ -58,7 +58,7 @@ DJANGO_APPS = [
     'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django.contrib.humanize', # Handy template tags
+    'django.contrib.humanize',  # Handy template tags
     'django.contrib.admin',
 ]
 THIRD_PARTY_APPS = [
@@ -67,6 +67,8 @@ THIRD_PARTY_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'rest_framework',
+    'fsm_admin',
+    'django_fsm_log',
 ]
 LOCAL_APPS = [
     'paprika_sync.users.apps.UsersAppConfig',

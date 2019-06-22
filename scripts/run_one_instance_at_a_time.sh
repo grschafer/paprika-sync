@@ -11,7 +11,7 @@ if ( set -o noclobber; echo "$$" > "$lockfile") 2> /dev/null; then
         trap 'rm -f "$lockfile"; exit $?' INT TERM EXIT
 
         # do stuff here
-        exec $cmd
+        eval $cmd
 
         # clean up after yourself, and release your trap
         rm -f "$lockfile"

@@ -27,7 +27,8 @@ left off
   - mgmt command to regularly sync all accounts
   - create new Recipe if new uid and if hash differs for existing uid
   - produce NewsItem for any diffs, additions, deletions
-  - TODO: cronjob script to sync every minute, but lockfile first
+  - cronjob script to sync every minute, but lockfile first
+    - test lockfile in linux bash
   - TODO: add "force-sync" button to UI (in navbar?)
     - TODO: make this just change a field on PaprikaAccount (sync_status? requested, inprogress, done) that an every minute cronjob checks?
     - TODO: diagram state changes

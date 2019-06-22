@@ -1,3 +1,5 @@
+from django.utils import timezone
+
 from factory import DjangoModelFactory, SubFactory, Faker
 
 from paprika_sync.core.models import PaprikaAccount, Recipe
@@ -9,7 +11,9 @@ class PaprikaAccountFactory(DjangoModelFactory):
     username = Faker("user_name")
     alias = Faker("name")
     password = Faker("password", length=42)
-    import_status = PaprikaAccount.IMPORT_SUCCESS
+    import_sync_status = PaprikaAccount.SYNC_SUCCESS
+    last_synced = timezone.now()
+    sync_failure_count = 0
 
     class Meta:
         model = PaprikaAccount

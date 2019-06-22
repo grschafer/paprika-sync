@@ -2,7 +2,6 @@ import logging
 
 from django.core.management.base import BaseCommand
 
-from paprika_sync.core.api import get_recipes
 from paprika_sync.core.models import PaprikaAccount
 
 
@@ -29,6 +28,6 @@ class Command(BaseCommand):
         paprika_account.start_import_recipes()
         paprika_account.save()
 
-        recipes = get_recipes(paprika_account)
+        recipes = paprika_account.get_recipes()
         paprika_account.import_recipes(recipes)
         paprika_account.save()

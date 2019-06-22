@@ -1,19 +1,19 @@
 from unittest import mock
 from uuid import uuid4
 
+import django_fsm
 import pytest
 
-from paprika_sync.core.actions import import_account, import_recipes, sync_account_recipes_from_api
 from paprika_sync.core.models import PaprikaAccount, Recipe, NewsItem
 from paprika_sync.core.tests.factories import get_test_recipe_dict, get_test_recipes_dict, recipe_to_api_dict, recipes_to_api_dict, PaprikaAccountFactory, RecipeFactory
 
 pytestmark = pytest.mark.django_db
 
 
-@mock.patch('paprika_sync.core.actions.get_recipes', return_value=get_test_recipes_dict())
-@mock.patch('paprika_sync.core.actions.get_recipe', return_value=get_test_recipe_dict())
+@mock.patch('paprika_sync.core.models.PaprikaAccount.get_recipes', return_value=get_test_recipes_dict())
+@mock.patch('paprika_sync.core.models.PaprikaAccount.get_recipe', return_value=get_test_recipe_dict())
 def test_import_account(mock_recipe, mock_recipes, user):
-    import_account(user, 'user', 'pass', 'alias')
+    PaprikaAccount.import_account(user, 'user', 'pass', 'alias')
     pa = PaprikaAccount.objects.get()
     assert pa.user == user
     assert pa.username == 'user'
@@ -25,14 +25,16 @@ def test_import_account(mock_recipe, mock_recipes, user):
     mock_recipe.assert_called_once()
 
 
-@mock.patch('paprika_sync.core.actions.get_recipes', return_value=get_test_recipes_dict())
-@mock.patch('paprika_sync.core.actions.get_recipe', return_value=get_test_recipe_dict())
-def test_repeated_import_doesnt_duplicate_recipes(mock_recipe, mock_recipes, user):
-    import_account(user, 'user', 'pass', 'alias')
+@mock.patch('paprika_sync.core.models.PaprikaAccount.get_recipes', return_value=get_test_recipes_dict())
+@mock.patch('paprika_sync.core.models.PaprikaAccount.get_recipe', return_value=get_test_recipe_dict())
+def test_repeated_import_not_allowed(mock_recipe, mock_recipes, user):
+    PaprikaAccount.import_account(user, 'user', 'pass', 'alias')
     assert Recipe.objects.all().count() == 1
     pa = PaprikaAccount.objects.get()
     recipes = get_test_recipes_dict()
-    import_recipes(pa, recipes)
+    with pytest.raises(django_fsm.TransitionNotAllowed):
+        pa.start_import_recipes()
+        pa.import_recipes(recipes)
     assert Recipe.objects.all().count() == 1
 
 
@@ -42,8 +44,9 @@ def test_sync_account_recipes_from_api_no_change(user):
 
     recipes_api_dict = recipes_to_api_dict(pa.recipes.all())
     recipe_api_dict = recipe_to_api_dict(r1)
-    with mock.patch('paprika_sync.core.actions.get_recipes', return_value=recipes_api_dict), mock.patch('paprika_sync.core.actions.get_recipe', return_value=recipe_api_dict):
-        sync_account_recipes_from_api(pa)
+    pa.start_sync_recipes()
+    with mock.patch('paprika_sync.core.models.PaprikaAccount.get_recipes', return_value=recipes_api_dict), mock.patch('paprika_sync.core.models.PaprikaAccount.get_recipe', return_value=recipe_api_dict):
+        pa.sync_recipes()
 
     assert Recipe.objects.all().count() == 1
     assert NewsItem.objects.all().count() == 0
@@ -56,8 +59,9 @@ def test_sync_account_recipes_from_api_recipe_added(user):
 
     recipes_api_dict = recipes_to_api_dict([r1, r2])
     recipe_api_dict = recipe_to_api_dict(r2)
-    with mock.patch('paprika_sync.core.actions.get_recipes', return_value=recipes_api_dict), mock.patch('paprika_sync.core.actions.get_recipe', return_value=recipe_api_dict):
-        sync_account_recipes_from_api(pa)
+    pa.start_sync_recipes()
+    with mock.patch('paprika_sync.core.models.PaprikaAccount.get_recipes', return_value=recipes_api_dict), mock.patch('paprika_sync.core.models.PaprikaAccount.get_recipe', return_value=recipe_api_dict):
+        pa.sync_recipes()
 
     assert Recipe.objects.all().count() == 2
     assert Recipe.objects.filter(date_ended__isnull=True).count() == 2
@@ -74,8 +78,9 @@ def test_sync_account_recipes_from_api_recipe_edited(user):
 
     recipes_api_dict = recipes_to_api_dict([r1])
     recipe_api_dict = recipe_to_api_dict(r1)
-    with mock.patch('paprika_sync.core.actions.get_recipes', return_value=recipes_api_dict), mock.patch('paprika_sync.core.actions.get_recipe', return_value=recipe_api_dict):
-        sync_account_recipes_from_api(pa)
+    pa.start_sync_recipes()
+    with mock.patch('paprika_sync.core.models.PaprikaAccount.get_recipes', return_value=recipes_api_dict), mock.patch('paprika_sync.core.models.PaprikaAccount.get_recipe', return_value=recipe_api_dict):
+        pa.sync_recipes()
 
     assert Recipe.objects.all().count() == 2
     r1, r2 = Recipe.objects.all().order_by('id')
@@ -97,8 +102,9 @@ def test_sync_account_recipes_from_api_recipe_deleted(user):
     RecipeFactory(paprika_account=pa)
 
     recipes_api_dict = recipes_to_api_dict([])
-    with mock.patch('paprika_sync.core.actions.get_recipes', return_value=recipes_api_dict):
-        sync_account_recipes_from_api(pa)
+    pa.start_sync_recipes()
+    with mock.patch('paprika_sync.core.models.PaprikaAccount.get_recipes', return_value=recipes_api_dict):
+        pa.sync_recipes()
 
     assert Recipe.objects.all().count() == 1
     assert Recipe.objects.get().date_ended is not None

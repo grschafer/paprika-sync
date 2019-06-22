@@ -20,8 +20,8 @@ def test_login_redirect_to_add_paprika_account_if_no_paprika_accounts_associated
     assert response.redirect_chain[0][0] == reverse('users:redirect')
 
 
-@mock.patch('paprika_sync.core.actions.get_recipes', return_value=get_test_recipes_dict())
-@mock.patch('paprika_sync.core.actions.get_recipe', return_value=get_test_recipe_dict())
+@mock.patch('paprika_sync.core.models.PaprikaAccount.get_recipes', return_value=get_test_recipes_dict())
+@mock.patch('paprika_sync.core.models.PaprikaAccount.get_recipe', return_value=get_test_recipe_dict())
 @override_settings(RECIPE_THRESHOLD_TO_DEFER_IMPORT=0)
 def test_paprika_account_import_deferred_message(mock_recipe, mock_recipes, user_client):
     response = user_client.post(reverse('core:add_paprika_account'), {'username': 'un', 'password': 'pw', 'alias': 'myname'}, follow=True)

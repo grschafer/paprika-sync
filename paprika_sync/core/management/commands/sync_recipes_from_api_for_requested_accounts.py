@@ -1,9 +1,7 @@
 import logging
 
 from django.core.management.base import BaseCommand
-from django.utils import timezone
 
-from paprika_sync.core.actions import sync_account_recipes_from_api
 from paprika_sync.core.models import PaprikaAccount
 
 
@@ -24,6 +22,7 @@ class Command(BaseCommand):
 
     def sync_account(self, paprika_account):
         logger.info('Starting requested sync of recipes for %s', paprika_account)
+        # Change status to 'in progress'
         paprika_account.start_sync_recipes()
         paprika_account.save()
 

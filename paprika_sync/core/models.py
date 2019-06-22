@@ -219,7 +219,7 @@ class PaprikaAccount(BaseModel):
 
         if len(recipes) > settings.RECIPE_THRESHOLD_TO_DEFER_IMPORT:
             logger.info('Deferring import of %s recipes', len(recipes))
-            pa.defer_import(by=user)
+            pa.defer_import_recipes(by=user)
             pa.save()
         else:
             logger.info('Importing %s recipes', len(recipes))

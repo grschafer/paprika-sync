@@ -3,7 +3,6 @@ import logging
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 
-from paprika_sync.core.actions import sync_account_recipes_from_api
 from paprika_sync.core.models import PaprikaAccount
 
 
@@ -16,9 +15,9 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         days_ago = 1
         accounts_to_sync = PaprikaAccount.objects.filter(
-            import_sync_status__in=(PaprikaAccount.SYNC_SUCCESS),
+            import_sync_status=PaprikaAccount.SYNC_SUCCESS,
             sync_failure_count__lt=5,
-            last_synced__lt=timezone.now - timezone.timedelta(days=days_ago),
+            last_synced__lte=timezone.now() - timezone.timedelta(days=days_ago),
         )
 
         for pa in accounts_to_sync:
@@ -26,6 +25,7 @@ class Command(BaseCommand):
 
     def sync_account(self, paprika_account):
         logger.info('Starting regular background sync of recipes for %s', paprika_account)
+        # Change status to 'in progress'
         paprika_account.start_sync_recipes()
         paprika_account.save()
 

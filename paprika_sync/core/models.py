@@ -277,10 +277,26 @@ class Recipe(BaseModel):
     uid = models.CharField(max_length=200, db_index=True)
     date_ended = models.DateTimeField(null=True, db_index=True, help_text='Date when this version of the Recipe was superseded (unset if this is the active Recipe for this uid)')
     hash = models.CharField(max_length=200)
-    photo_hash = models.CharField(max_length=200)
-    name = models.CharField(max_length=200)
-    # TODO: do these need to be nullable?
-    image_url = models.URLField(max_length=200)
+    photo_hash = models.CharField(max_length=200, blank=True)  # Can be null if no image set
+    name = models.CharField(max_length=1000)
+    photo_url = models.URLField(max_length=1000, blank=True, help_text="Thumbnail for recipe")
+    ingredients = models.TextField(blank=True)
+    source = models.CharField(max_length=1000, blank=True)
+    total_time = models.CharField(max_length=200, blank=True)
+    cook_time = models.CharField(max_length=200, blank=True)
+    prep_time = models.CharField(max_length=200, blank=True)
+    created = models.DateTimeField()
+    description = models.TextField(blank=True)
+    source_url = models.CharField(max_length=1000, blank=True)  # Some urls are ill-formatted, so not using URLField
+    difficulty = models.CharField(max_length=200, blank=True)
+    directions = models.TextField(blank=True)
+    notes = models.TextField(blank=True)
+    nutritional_info = models.TextField(blank=True)
+    servings = models.CharField(max_length=200, blank=True)
+    rating = models.PositiveSmallIntegerField(default=0)
+    on_favorites = models.BooleanField(default=False)
+    # categories = ManyToMany
+
     # TODO: add other fields (ingreds, directions, rating, source, categories, etc... anything that can change and should be flagged in a NewsItem)
     # TODO: add a 'deleted' flag?
     IGNORE_FIELDS_IN_DIFF = {'id', 'created_date', 'modified_date', 'paprika_account', 'date_ended'}
@@ -297,6 +313,14 @@ class Recipe(BaseModel):
 
     def __str__(self):
         return self.name
+
+
+class Category(BaseModel):
+    uid = models.CharField(max_length=200, db_index=True)
+    name = models.CharField(max_length=1000)
+    # Make this a relation?
+    parent_uid = models.CharField(max_length=200, db_index=True)
+    # order_flag = models.IntegerField()  # Not sure what this field is for
 
 
 class NewsItem(BaseModel):

@@ -29,15 +29,30 @@ left off
   - produce NewsItem for any diffs, additions, deletions
   - cronjob script to sync every minute, but lockfile first
     - test lockfile in linux bash
-  - TODO: add "force-sync" button to UI (in navbar?)
-    - TODO: make this just change a field on PaprikaAccount (sync_status? requested, inprogress, done) that an every minute cronjob checks?
-    - TODO: diagram state changes
+  - add "force-sync" button to UI (in navbar?)
+    - make this just change a field on PaprikaAccount (sync_status? requested, inprogress, done) that an every minute cronjob checks?
+    - diagram state changes
     - TODO: test state changes
       - TODO: test unique constraint on PaprikaAccount.username and alias
-    - TODO: disallow any model changes til import/sync completes...
+    - disallow any model changes til import/sync completes...
       - looked at using django-fsm ConcurrentTransitionMixin, but it doesn't seem like a great answer because I can't sensibly expose an in-progress state outside of the given transaction so that cronjobs can read it (ConcurrentTransitionMixin requires that you save changes in an atomic block, which means that I'd be wrapping all my save calls in an atomic block... guess that could work)
-    - TODO: add last_synced field to PaprikaAccount
-- TODO: move actions to methods on PaprikaAccount or Recipe?
+    - add last_synced field to PaprikaAccount
+- move actions to methods on PaprikaAccount
+- TODO: fix RecipeSerializer... complaining about image_url being invalid url and photo_hash being null
+  - sometimes image_url points to a local, on-device url? is this the default image?
+  - how to handle that paprika images are only accessible for a few minutes? cache them all on my own server?
+    - JUST REMOVE all queryparams (Signature, Expires, AWSAccessKeyId) and it still works
+- add all other fields to recipe model
+- TODO: fetch categories when fetching recipes (do this in RecipeSerializer if it can't find a matching category in the database?)
+- TODO: make recipe list view
+- TODO: make recipe detail view
+- TODO: make recipe diff view
+- TODO: make diff accounts view
+- TODO: deploy and share
+- TODO: figure out how to update recipes (do they get a new uid? or just an updated hash?)
+- TODO: add clone recipe (i.e. copy a recipe you don't have at all)
+  - TODO: how to handle missing categories in destination account?
+- TODO: add update recipe (i.e. update your recipe with changes they've made)
 
 
 general

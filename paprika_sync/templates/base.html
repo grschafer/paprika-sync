@@ -26,6 +26,7 @@
     <!-- This file stores project-specific CSS -->
 
     <link href="{% static 'css/project.css' %}" rel="stylesheet">
+    <link href="{% static 'open-iconic/font/css/open-iconic-bootstrap.min.css' %}" rel="stylesheet">
 
     {% endcompress %}
     {% endblock %}
@@ -60,6 +61,12 @@
               <li class="nav-item">
                 {# URL provided by django-allauth/account/urls.py #}
                 <a class="nav-link" href="{% url 'account_logout' %}">{% trans "Sign Out" %}</a>
+              </li>
+              <li class="nav-item">
+                  <form method="post" action="{% url 'core:request_account_sync' %}">
+                      {% csrf_token %}
+                      <button type="submit" class="btn nav-link oi oi-reload" title="request sync of recipes">
+                  </form>
               </li>
             {% else %}
               <li class="nav-item">

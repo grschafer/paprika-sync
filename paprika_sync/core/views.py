@@ -5,7 +5,7 @@ import requests.exceptions
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
-from django.views.generic import CreateView, ListView
+from django.views.generic import CreateView, ListView, RedirectView
 
 from .forms import PaprikaAccountForm
 from .models import PaprikaAccount, NewsItem
@@ -14,16 +14,20 @@ from .models import PaprikaAccount, NewsItem
 logger = logging.getLogger(__name__)
 
 
+# Helpful reference for django class-based views: http://ccbv.co.uk/
+
+
 class HomeView(LoginRequiredMixin, ListView):
     queryset = NewsItem.objects.all()
     paginate_by = 25
+    # Uses template paprika_account/templates/core/newsitem_list.html
 
 
 class AddPaprikaAccountView(LoginRequiredMixin, CreateView):
-
     form_class = PaprikaAccountForm
     model = PaprikaAccount
     success_url = reverse_lazy('core:home')
+    # Uses template paprika_account/templates/core/paprikaaccount_form.html
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
@@ -45,5 +49,16 @@ class AddPaprikaAccountView(LoginRequiredMixin, CreateView):
             return self.get(request, *args, **kwargs)
 
 
-home = HomeView.as_view()
-add_paprika_account = AddPaprikaAccountView.as_view()
+class RequestAccountSyncView(LoginRequiredMixin, RedirectView):
+    http_method_names = ['post']
+    pattern_name = 'core:home'
+
+    def post(self, request, *args, **kwargs):
+        for pa in request.user.paprika_accounts.all():
+            if pa.import_sync_status == PaprikaAccount.SYNC_SUCCESS:
+                pa.request_sync_recipes(by=request.user)
+                pa.save()
+                messages.success(request, 'Sync requested for account {}, it should begin within 1 minute.'.format(pa))
+            else:
+                messages.warning(request, 'Sync not requested for account {}, it is in state={}, expected state={}.'.format(pa, pa.import_sync_status, PaprikaAccount.SYNC_SUCCESS))
+        return super().post(request, *args, **kwargs)

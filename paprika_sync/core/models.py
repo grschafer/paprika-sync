@@ -18,6 +18,7 @@ logger = logging.getLogger(__name__)
 # Paprika API docs: https://gist.github.com/mattdsteele/7386ec363badfdeaad05a418b9a1f30a
 RECIPES_URL = 'https://www.paprikaapp.com/api/v1/sync/recipes/'
 RECIPE_URL = 'https://www.paprikaapp.com/api/v1/sync/recipe/{uid}/'
+CATEGORIES_URL = 'https://www.paprikaapp.com/api/v1/sync/categories/'
 
 
 class BaseModel(models.Model):
@@ -229,6 +230,26 @@ class PaprikaAccount(BaseModel):
             pa.save()
         return pa
 
+    def sync_categories(self):
+        from .serializers import CategorySerializer
+        logger.info('start sync_categories for %s', self)
+        categories = self.get_categories()
+
+        for category in categories:
+            db_category = Category.objects.filter(paprika_account=self, uid=category['uid']).first()
+            if db_category:
+                # Update the instance in case it's been edited
+                rs = CategorySerializer(instance=db_category, data=category)
+            else:
+                category['paprika_account'] = self.id
+                rs = CategorySerializer(data=category)
+
+            if rs.is_valid():
+                rs.save()
+            else:
+                logger.error('Invalid category %s: %s', category, rs.errors)
+                # TODO: collect errors and show to user?
+
     def compare_accounts(self, other_account):
         logger.info('start compare_accounts between %s and %s', self, other_account)
         # Collect all recipes from both accounts, determine which are common between them
@@ -262,6 +283,11 @@ class PaprikaAccount(BaseModel):
     def get_recipe(self, uid):
         url = RECIPE_URL.format(uid=uid)
         resp = requests.get(url, auth=(self.username, self.password))
+        resp.raise_for_status()
+        return resp.json()['result']
+
+    def get_categories(self):
+        resp = requests.get(CATEGORIES_URL, auth=(self.username, self.password))
         resp.raise_for_status()
         return resp.json()['result']
     ##########################################################################
@@ -316,10 +342,11 @@ class Recipe(BaseModel):
 
 
 class Category(BaseModel):
+    paprika_account = models.ForeignKey('core.PaprikaAccount', related_name='categories', on_delete=models.CASCADE)
     uid = models.CharField(max_length=200, db_index=True)
     name = models.CharField(max_length=1000)
     # Make this a relation?
-    parent_uid = models.CharField(max_length=200, db_index=True)
+    parent_uid = models.CharField(max_length=200, db_index=True, blank=True)
     # order_flag = models.IntegerField()  # Not sure what this field is for
 
 

@@ -23,26 +23,62 @@ class PaprikaAccountFactory(DjangoModelFactory):
 class RecipeFactory(DjangoModelFactory):
     paprika_account = SubFactory(PaprikaAccountFactory)
     uid = Faker('uuid4')
+    date_ended = None
     hash = Faker('uuid4')
     photo_hash = Faker('uuid4')
     name = Faker('name')
-    image_url = Faker('url')
+    photo_url = Faker('uri')
+    ingredients = Faker('paragraph')
+    source = Faker('company')
+    total_time = Faker('sentence')
+    cook_time = Faker('sentence')
+    prep_time = Faker('sentence')
+    created = Faker('date_time')
+    description = Faker('paragraph')
+    source_url = Faker('uri')
+    difficulty = Faker('word')
+    directions = Faker('paragraph')
+    notes = Faker('paragraph')
+    nutritional_info = Faker('paragraph')
+    servings = Faker('word')
+    rating = Faker('pyint', min=0, max=5)
+    on_favorites = Faker('pybool')
 
     class Meta:
         model = Recipe
 
 
-def get_test_recipe_dict(uid=None, overrides=None, del_keys=None):
-    recipes = [
-        {"rating": 0, "photo_hash": "1b1463bf23e12e0c3b3baa4a6a1ca740db84cd355f500dc42947798119b918a3", "on_favorites": False, "photo": "860D403B-2D9F-40B9-A8FC-518C24CD8B76-2904-000003304F24FF05.jpg", "uid": "84B62AEC-DB66-48C5-91ED-F9BF8FA76275-2904-000003304F23DC00", "scale": None, "ingredients": "45 g Butter, plus extra for coating ramekins\n98 g Sugar, granulated, divided, plus extra for coating ramekins\n34 g Bread flour", "is_pinned": None, "source": "Chefsteps.com", "total_time": None, "hash": "8785094ec64a06421d5e229d331bedc84f6c4304b5f8b7cc1663752cd0c40449", "description": None, "source_url": "https://www.chefsteps.com/activities/black-pepper-souffle", "difficulty": "", "on_grocery_list": None, "in_trash": None, "directions": "A few things to keep in mind before you start.\n\nDo X, then Y, then Z.", "categories": [], "photo_url": "http://uploads.paprikaapp.com.s3.amazonaws.com/326504/860D403B-2D9F-40B9-A8FC-518C24CD8B76-2904-000003304F24FF05.jpg?Signature=JaDRirnJ%2F6CAUDovP596bfzW7q0%3D&Expires=1550511786&AWSAccessKeyId=AKIAJA4A42FBJBMX5ARA", "cook_time": "45 min", "name": "Test Recipe 0", "created": "2018-10-13 17: 31: 31", "notes": "NOTE:  If you’ve got ’em, use ramekins that have smooth, straight interiors.", "photo_large": None, "image_url": "https://d3awvtnmmsvyot.cloudfront.net/api/file/Ip0MOte2TdWlXELNtiKD/convert?fit=max&w=2000&quality=60&cache=true&rotate=exif&compress=true", "prep_time": "", "servings": "3 souffles (140 g each)", "nutritional_info": ""},
-        {"rating": 0, "photo_hash": "1b1463bf23e12e0c3b3baa4a6a1ca740db84cd355f500dc42947798119b918a3", "on_favorites": False, "photo": "860D403B-2D9F-40B9-A8FC-518C24CD8B76-2904-000003304F24FF05.jpg", "uid": "84B62AEC-DB66-48C5-91ED-F9BF8FA76275-2904-000003304F23DC01", "scale": None, "ingredients": "45 g Butter", "is_pinned": None, "source": "Chefsteps.com", "total_time": None, "hash": "8785094ec64a06421d5e229d331bedc84f6c4304b5f8b7cc1663752cd0c40449", "description": None, "source_url": "", "difficulty": "", "on_grocery_list": None, "in_trash": None, "directions": "Blahblah", "categories": [], "photo_url": "http://uploads.paprikaapp.com.s3.amazonaws.com/326504/860D403B-2D9F-40B9-A8FC-518C24CD8B76-2904-000003304F24FF05.jpg?Signature=JaDRirnJ%2F6CAUDovP596bfzW7q0%3D&Expires=1550511786&AWSAccessKeyId=AKIAJA4A42FBJBMX5ARA", "cook_time": "45 min", "name": "Test Recipe 1", "created": "2018-10-13 17: 31: 31", "notes": "", "photo_large": None, "image_url": "https://d3awvtnmmsvyot.cloudfront.net/api/file/Ip0MOte2TdWlXELNtiKD/convert?fit=max&w=2000&quality=60&cache=true&rotate=exif&compress=true", "prep_time": "", "servings": "3 souffles (140 g each)", "nutritional_info": ""},
-        {"rating": 0, "photo_hash": "1b1463bf23e12e0c3b3baa4a6a1ca740db84cd355f500dc42947798119b918a3", "on_favorites": False, "photo": "860D403B-2D9F-40B9-A8FC-518C24CD8B76-2904-000003304F24FF05.jpg", "uid": "84B62AEC-DB66-48C5-91ED-F9BF8FA76275-2904-000003304F23DC02", "scale": None, "ingredients": "45 g Butter", "is_pinned": None, "source": "Chefsteps.com", "total_time": None, "hash": "8785094ec64a06421d5e229d331bedc84f6c4304b5f8b7cc1663752cd0c40449", "description": None, "source_url": "", "difficulty": "", "on_grocery_list": None, "in_trash": None, "directions": "Blahblah", "categories": [], "photo_url": "http://uploads.paprikaapp.com.s3.amazonaws.com/326504/860D403B-2D9F-40B9-A8FC-518C24CD8B76-2904-000003304F24FF05.jpg?Signature=JaDRirnJ%2F6CAUDovP596bfzW7q0%3D&Expires=1550511786&AWSAccessKeyId=AKIAJA4A42FBJBMX5ARA", "cook_time": "45 min", "name": "Test Recipe 2", "created": "2018-10-13 17: 31: 31", "notes": "", "photo_large": None, "image_url": "https://d3awvtnmmsvyot.cloudfront.net/api/file/Ip0MOte2TdWlXELNtiKD/convert?fit=max&w=2000&quality=60&cache=true&rotate=exif&compress=true", "prep_time": "", "servings": "3 souffles (140 g each)", "nutritional_info": ""},
-    ]
-    if uid:
-        recipe = [r for r in recipes if r['uid'] == uid][0]
-    else:
-        recipe = recipes[0]
-
+def get_test_recipe_dict(overrides=None, del_keys=None):
+    recipe = {
+        "rating": 3,
+        "photo_hash": None,
+        "on_favorites": False,
+        "photo": None,
+        "uid": "11AA6F09-85D3-4FD8-B36E-03B97E6FD2A4",
+        "scale": None,
+        "ingredients": "Mixed Drink Recipe from Cocktail Builder\n1 1/2 oz of rye\n1/2 oz of Herbal Liqueur\n1/2 oz of St Germain\n1/2 oz of Lemon Juice",
+        "is_pinned": False,
+        "source": "Cocktailbuilder.com",
+        "total_time": "",
+        "hash": "7774BBFE21FF4162016C7E5223F1EEE175F8825416270780402471357FE6A264",
+        "description": "",
+        "source_url": "https://www.cocktailbuilder.com/recipe/prosecutor",
+        "difficulty": "",
+        "on_grocery_list": None,
+        "in_trash": False,
+        "directions": "Shake, chilled single rocks glass, no garnish.",
+        "categories": ["90A5A11B-204A-40BC-AEB0-E7849CB5C043"],
+        "photo_url": None,
+        "cook_time": "2 min",
+        "name": "Prosecutor",
+        "created": "2019-06-16 22:32:01",
+        "notes": "Halve the fernet and reduce lemon juice a bit",
+        "photo_large": None,
+        "image_url": None,
+        "prep_time": "5 min",
+        "servings": "",
+        "nutritional_info": "",
+    }
     if del_keys:
         for k in del_keys:
             del recipe[k]
@@ -53,25 +89,71 @@ def get_test_recipe_dict(uid=None, overrides=None, del_keys=None):
 
 def get_test_recipes_dict(qty=1):
     recipes = [
-        {"uid": "84B62AEC-DB66-48C5-91ED-F9BF8FA76275-2904-000003304F23DC00", "hash": "8785094ec64a06421d5e229d331bedc84f6c4304b5f8b7cc1663752cd0c40440"},
-        {"uid": "84B62AEC-DB66-48C5-91ED-F9BF8FA76275-2904-000003304F23DC01", "hash": "8785094ec64a06421d5e229d331bedc84f6c4304b5f8b7cc1663752cd0c40441"},
-        {"uid": "84B62AEC-DB66-48C5-91ED-F9BF8FA76275-2904-000003304F23DC02", "hash": "8785094ec64a06421d5e229d331bedc84f6c4304b5f8b7cc1663752cd0c40442"},
+        {
+            "uid": "84B62AEC-DB66-48C5-91ED-F9BF8FA76275-2904-000003304F23DC00",
+            "hash": "8785094ec64a06421d5e229d331bedc84f6c4304b5f8b7cc1663752cd0c40440",
+        },
+        {
+            "uid": "84B62AEC-DB66-48C5-91ED-F9BF8FA76275-2904-000003304F23DC01",
+            "hash": "8785094ec64a06421d5e229d331bedc84f6c4304b5f8b7cc1663752cd0c40441",
+        },
+        {
+            "uid": "84B62AEC-DB66-48C5-91ED-F9BF8FA76275-2904-000003304F23DC02",
+            "hash": "8785094ec64a06421d5e229d331bedc84f6c4304b5f8b7cc1663752cd0c40442",
+        },
     ]
     return recipes[:qty]
 
 
 def recipe_to_api_dict(recipe):
     return {
-        'photo_hash': recipe.photo_hash,
         'uid': recipe.uid,
+        'date_ended': recipe.date_ended,
         'hash': recipe.hash,
+        'photo_hash': recipe.photo_hash,
         'name': recipe.name,
-        'image_url': recipe.image_url,
-        # TODO: add other fields?
+        'photo_url': recipe.photo_url,
+        'ingredients': recipe.ingredients,
+        'source': recipe.source,
+        'total_time': recipe.total_time,
+        'cook_time': recipe.cook_time,
+        'prep_time': recipe.prep_time,
+        'created': recipe.created,
+        'description': recipe.description,
+        'source_url': recipe.source_url,
+        'difficulty': recipe.difficulty,
+        'directions': recipe.directions,
+        'notes': recipe.notes,
+        'nutritional_info': recipe.nutritional_info,
+        'servings': recipe.servings,
+        'rating': recipe.rating,
+        'on_favorites': recipe.on_favorites,
     }
 
 
 def recipes_to_api_dict(recipes):
-    return [
-        {'uid': r.uid, 'hash': r.hash} for r in recipes
+    return [{'uid': r.uid, 'hash': r.hash} for r in recipes]
+
+
+def get_test_categories_dict(qty=1):
+    categories = [
+        {
+            'name': 'Italian',
+            'uid': '5DE8CE0F-E88E-4C57-AD32-9BFCCA1C5784',
+            'parent_uid': None,
+            'order_flag': 20,
+        },
+        {
+            'name': 'Ethiopian',
+            'uid': 'C7829254-D675-4025-B1BF-57594FF91BBF',
+            'parent_uid': None,
+            'order_flag': 51,
+        },
+        {
+            'name': 'Breakfast',
+            'uid': '9E916884-FC1B-4696-9C61-EB21DE342F70',
+            'parent_uid': None,
+            'order_flag': 36,
+        },
     ]
+    return categories[:qty]

@@ -4,8 +4,8 @@ from uuid import uuid4
 import django_fsm
 import pytest
 
-from paprika_sync.core.models import PaprikaAccount, Recipe, NewsItem
-from paprika_sync.core.tests.factories import get_test_recipe_dict, get_test_recipes_dict, recipe_to_api_dict, recipes_to_api_dict, PaprikaAccountFactory, RecipeFactory
+from paprika_sync.core.models import PaprikaAccount, Recipe, NewsItem, Category
+from paprika_sync.core.tests.factories import get_test_recipe_dict, get_test_recipes_dict, recipe_to_api_dict, recipes_to_api_dict, PaprikaAccountFactory, RecipeFactory, get_test_categories_dict
 
 pytestmark = pytest.mark.django_db
 
@@ -21,7 +21,7 @@ def test_import_account(mock_recipe, mock_recipes, user):
     assert pa.alias == 'alias'
     mock_recipes.assert_called_once()
     r = pa.recipes.get()
-    assert r.name == 'Test Recipe 0'
+    assert r.name == 'Prosecutor'
     mock_recipe.assert_called_once()
 
 
@@ -110,3 +110,11 @@ def test_sync_account_recipes_from_api_recipe_deleted(user):
     assert Recipe.objects.get().date_ended is not None
     assert NewsItem.objects.all().count() == 1
     assert NewsItem.objects.get().type == NewsItem.TYPE_RECIPE_DELETED
+
+
+@mock.patch('paprika_sync.core.models.PaprikaAccount.get_categories', return_value=get_test_categories_dict(qty=3))
+def test_sync_categories(user):
+    pa = PaprikaAccountFactory()
+    assert Category.objects.all().count() == 0
+    pa.sync_categories()
+    assert Category.objects.all().count() == 3

@@ -38,12 +38,13 @@ left off
       - looked at using django-fsm ConcurrentTransitionMixin, but it doesn't seem like a great answer because I can't sensibly expose an in-progress state outside of the given transaction so that cronjobs can read it (ConcurrentTransitionMixin requires that you save changes in an atomic block, which means that I'd be wrapping all my save calls in an atomic block... guess that could work)
     - add last_synced field to PaprikaAccount
 - move actions to methods on PaprikaAccount
-- TODO: fix RecipeSerializer... complaining about image_url being invalid url and photo_hash being null
+- fix RecipeSerializer... complaining about image_url being invalid url and photo_hash being null
   - sometimes image_url points to a local, on-device url? is this the default image?
   - how to handle that paprika images are only accessible for a few minutes? cache them all on my own server?
     - JUST REMOVE all queryparams (Signature, Expires, AWSAccessKeyId) and it still works
 - add all other fields to recipe model
 - TODO: fetch categories when fetching recipes (do this in RecipeSerializer if it can't find a matching category in the database?)
+  - TODO: handle parent_uid for nested categories
 - TODO: make recipe list view
 - TODO: make recipe detail view
 - TODO: make recipe diff view

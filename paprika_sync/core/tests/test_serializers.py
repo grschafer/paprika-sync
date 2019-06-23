@@ -13,15 +13,8 @@ def test_serializer():
     assert rs.is_valid(), rs.errors
 
 
-def test_serializer_null_image_url_ok():
+def test_serializer_null_photo_url_ok():
     pa = PaprikaAccountFactory()
-    recipe = get_test_recipe_dict(overrides={'paprika_account': pa.id, 'image_url': None})
+    recipe = get_test_recipe_dict(overrides={'paprika_account': pa.id, 'photo_url': None})
     rs = RecipeSerializer(data=recipe)
     assert rs.is_valid(), rs.errors
-
-
-def test_serializer_error_on_missing_image_url():
-    pa = PaprikaAccountFactory()
-    recipe = get_test_recipe_dict(overrides={'paprika_account': pa.id}, del_keys=['image_url'])
-    rs = RecipeSerializer(data=recipe)
-    assert not rs.is_valid()

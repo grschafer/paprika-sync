@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="160px" height="90px" viewBox="0 0 160 90" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 55.2 (78181) - https://sketchapp.com -->
+    <title>missing-thumb</title>
+    <desc>Created with Sketch.</desc>
+    <g id="missing-thumb" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <rect id="Rectangle" stroke="#000000" stroke-width="3" fill="#FFFFFF" x="1.5" y="1.5" width="157" height="87" rx="8"></rect>
+        <path d="M15,75 L41.4644661,48.5355339 C43.4170876,46.5829124 46.5829124,46.5829124 48.5355339,48.5355339 L61.4644661,61.4644661 C63.4170876,63.4170876 66.5829124,63.4170876 68.5355339,61.4644661 L96.4644661,33.5355339 C98.4170876,31.5829124 101.582912,31.5829124 103.535534,33.5355339 L145,75 L15,75 Z" id="Path" fill="#000000"></path>
+        <circle id="Oval" fill="#000000" cx="33" cy="28" r="6"></circle>
+    </g>
+</svg>

@@ -10,6 +10,8 @@ left off
   - but just going to brew install sass and run it in --watch mode outside docker, for now
   - `sass --watch sass/project.scss css/project.css`
   - TODO: figure out sass with compressor for production deployment
+    - TODO: orrrr... just use normal css
+    - TODO: do the compression locally and upload resulting assets?
 - making /add-paprika-account view and form
   - form shows up, but formatting is bad
   - handle form submission and call actions.import_account
@@ -54,15 +56,22 @@ left off
   - test importing new account -- seems to import recipes and categories correctly
 - check that refactor of sync_recipes doesn't create newsitems for every recipe on new import
   - they do, fix it
-- TODO: make recipe list view
-- TODO: make recipe detail view
+- make recipe list view
+  - test it on mobile
+  - make a grid thumbnail version? yes, but needs more work to overlay recipe name and handle clicks and lazy-loading
+- make recipe detail view
 - TODO: make recipe diff view
 - TODO: make diff accounts view
 - TODO: deploy and share
+  - TODO: invitation link (should live in database so it's not committed in code)
+  - TODO: also share roadmap
+  - TODO: open source code (review for secrets)
 - TODO: figure out how to update recipes (do they get a new uid? or just an updated hash?)
 - TODO: add clone recipe (i.e. copy a recipe you don't have at all)
   - TODO: how to handle missing categories in destination account?
 - TODO: add update recipe (i.e. update your recipe with changes they've made)
+- TODO: weekly digest email
+- TODO: search, filter, sort on recipe list views
 
 
 general

@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+{% load humanize static %}
+
+{% block content %}
+
+<h1>{{ recipe.name }}</h1>
+
+
+{# TODO: convert to grid and stack labels above content for phone screens? #}
+
+<section class="table-responsive-sm recipe-detail">
+    <table class="table table-sm table-hover">
+        <tbody>
+            <tr>
+                <th scope="row">Thumbnail</th>
+                <td>
+                {% if recipe.photo_url %}
+                    <img src="{{ recipe.photo_url }}">
+                {% else %}
+                    <img src="{% static 'images/missing-thumb.svg' %}">
+                {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <th scope="row">Favorited</th>
+                <td>{{ recipe.on_favorites|yesno }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Rating</th>
+                <td>{{ recipe.rating }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Servings</th>
+                <td>{{ recipe.servings|linebreaks }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Difficulty</th>
+                <td>{{ recipe.difficulty }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Prep time</th>
+                <td>{{ recipe.prep_time }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Cook time</th>
+                <td>{{ recipe.cook_time }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Total time</th>
+                <td>{{ recipe.total_time }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Source</th>
+                <td>{{ recipe.source|linebreaks }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Source URL</th>
+                <td><a href="{{ recipe.source_url }}">{{ recipe.source_url|linebreaks }}</a></td>
+            </tr>
+            <tr>
+                <th scope="row">Categories</th>
+                <td>
+                    {% for category in recipe.categories.all %}
+                    {{ category.name }}{% if not forloop.last %}, {% endif %}
+                    {% empty %}
+                        Uncategorized
+                    {% endfor %}
+                </td>
+            </tr>
+            <tr>
+                <th scope="row">Description</th>
+                <td>{{ recipe.description|linebreaks }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Ingredients</th>
+                <td>{{ recipe.ingredients|linebreaks }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Directions</th>
+                <td>{{ recipe.directions|linebreaks }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Notes</th>
+                <td>{{ recipe.notes|linebreaks }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Nutrition</th>
+                <td>{{ recipe.nutritional_info|linebreaks }}</td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+
+{% endblock %}

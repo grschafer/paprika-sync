@@ -7,4 +7,7 @@ urlpatterns = [
     path("", views.HomeView.as_view(), name="home"),
     path("add-paprika-account", view=views.AddPaprikaAccountView.as_view(), name="add_paprika_account"),
     path("request-account-sync", view=views.RequestAccountSyncView.as_view(), name="request_account_sync"),
+    path("recipes", view=views.RecipeListView.as_view(), name="recipes"),
+    path("grid", view=views.RecipeGridView.as_view(), name="recipe-grid"),
+    path("recipe/<int:pk>", view=views.RecipeDetailView.as_view(), name="recipe"),
 ]

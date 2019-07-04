@@ -5,7 +5,7 @@ import requests.exceptions
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
-from django.views.generic import CreateView, ListView, RedirectView
+from django.views.generic import CreateView, ListView, RedirectView, DetailView
 
 from .forms import PaprikaAccountForm
 from .models import PaprikaAccount, NewsItem
@@ -62,3 +62,23 @@ class RequestAccountSyncView(LoginRequiredMixin, RedirectView):
             else:
                 messages.warning(request, 'Sync not requested for account {}, it is in state={}, expected state={}.'.format(pa, pa.import_sync_status, PaprikaAccount.SYNC_SUCCESS))
         return super().post(request, *args, **kwargs)
+
+
+class RecipeListView(LoginRequiredMixin, ListView):
+    # paginate_by = 25
+
+    def get_queryset(self):
+        return self.request.user.paprika_accounts.first().recipes.filter(date_ended__isnull=True).order_by('name')
+
+
+class RecipeGridView(LoginRequiredMixin, ListView):
+    template_name = 'core/recipe_grid.html'
+    paginate_by = 25
+
+    def get_queryset(self):
+        return self.request.user.paprika_accounts.first().recipes.filter(date_ended__isnull=True).order_by('name')
+
+
+class RecipeDetailView(LoginRequiredMixin, DetailView):
+    def get_queryset(self):
+        return self.request.user.paprika_accounts.first().recipes.filter(date_ended__isnull=True)

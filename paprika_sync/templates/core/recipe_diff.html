@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+{% load humanize static paprika %}
+
+{% block content %}
+
+{# TODO: convert to grid and stack labels above content for phone screens? #}
+
+<section class="table-responsive-sm recipe-diff">
+    <table class="table table-sm table-hover">
+        <tbody>
+            <tr>
+                <th scope="row">Name</th>
+                <td>{{ recipe.name }}</td>
+                <td class="{% diff recipe other 'name' %}">{{ other.name }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Thumbnail</th>
+                <td>
+                {% if recipe.photo_url %}
+                    <img src="{{ recipe.photo_url }}">
+                {% else %}
+                    <img src="{% static 'images/missing-thumb.svg' %}">
+                {% endif %}
+                </td>
+                <td class="{% diff recipe other 'photo_url' %}">
+                {% if other.photo_url %}
+                    <img src="{{ other.photo_url }}">
+                {% else %}
+                    <img src="{% static 'images/missing-thumb.svg' %}">
+                {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <th scope="row">Favorited</th>
+                <td>{{ recipe.on_favorites|yesno }}</td>
+                <td class="{% diff recipe other 'on_favorites' %}">{{ other.on_favorites|yesno }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Rating</th>
+                <td>{{ recipe.rating }}</td>
+                <td class="{% diff recipe other 'rating' %}">{{ other.rating }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Servings</th>
+                <td>{{ recipe.servings|linebreaks }}</td>
+                <td class="{% diff recipe other 'servings' %}">{{ other.servings|linebreaks }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Difficulty</th>
+                <td>{{ recipe.difficulty }}</td>
+                <td class="{% diff recipe other 'difficulty' %}">{{ other.difficulty }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Prep time</th>
+                <td>{{ recipe.prep_time }}</td>
+                <td class="{% diff recipe other 'prep_time' %}">{{ other.prep_time }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Cook time</th>
+                <td>{{ recipe.cook_time }}</td>
+                <td class="{% diff recipe other 'cook_time' %}">{{ other.cook_time }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Total time</th>
+                <td>{{ recipe.total_time }}</td>
+                <td class="{% diff recipe other 'total_time' %}">{{ other.total_time }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Source</th>
+                <td>{{ recipe.source|linebreaks }}</td>
+                <td class="{% diff recipe other 'source' %}">{{ other.source|linebreaks }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Source URL</th>
+                <td><a href="{{ recipe.source_url }}">{{ recipe.source_url|linebreaks }}</a></td>
+                <td class="{% diff recipe other 'source_url' %}"><a href="{{ other.source_url }}">{{ other.source_url|linebreaks }}</a></td>
+            </tr>
+            <tr>
+                <th scope="row">Categories</th>
+                <td>
+                    {% for category in recipe.categories.all %}
+                        {{ category.name }}{% if not forloop.last %}, {% endif %}
+                    {% empty %}
+                        Uncategorized
+                    {% endfor %}
+                </td>
+                <td class="{% diff recipe other 'categories' 'name' %}">
+                    {% for category in other.categories.all %}
+                        {{ category.name }}{% if not forloop.last %}, {% endif %}
+                    {% empty %}
+                        Uncategorized
+                    {% endfor %}
+                </td>
+            </tr>
+            <tr>
+                <th scope="row">Description</th>
+                <td>{{ recipe.description|linebreaks }}</td>
+                <td class="{% diff recipe other 'description' %}">{{ other.description|linebreaks }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Ingredients</th>
+                <td>{{ recipe.ingredients|linebreaks }}</td>
+                <td class="{% diff recipe other 'ingredients' %}">{{ other.ingredients|linebreaks }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Directions</th>
+                <td>{{ recipe.directions|linebreaks }}</td>
+                <td class="{% diff recipe other 'directions' %}">{{ other.directions|linebreaks }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Notes</th>
+                <td>{{ recipe.notes|linebreaks }}</td>
+                <td class="{% diff recipe other 'notes' %}">{{ other.notes|linebreaks }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Nutrition</th>
+                <td>{{ recipe.nutritional_info|linebreaks }}</td>
+                <td class="{% diff recipe other 'nutritional_info' %}">{{ other.nutritional_info|linebreaks }}</td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+
+{% endblock %}

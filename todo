@@ -60,10 +60,12 @@ left off
   - test it on mobile
   - make a grid thumbnail version? yes, but needs more work to overlay recipe name and handle clicks and lazy-loading
 - make recipe detail view
-- TODO: make recipe diff view
+- make recipe diff view
 - TODO: make diff accounts view
+- TODO: limit categories queryset to currently logged-in user (in admin)
 - TODO: deploy and share
   - TODO: invitation link (should live in database so it's not committed in code)
+  - TODO: make sure signup works (incl verification email, forgot password, etc.)
   - TODO: also share roadmap
   - TODO: open source code (review for secrets)
 - TODO: figure out how to update recipes (do they get a new uid? or just an updated hash?)

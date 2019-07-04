@@ -8,7 +8,7 @@ from django.urls import reverse_lazy
 from django.views.generic import CreateView, ListView, RedirectView, DetailView
 
 from .forms import PaprikaAccountForm
-from .models import PaprikaAccount, NewsItem
+from .models import PaprikaAccount, NewsItem, Recipe
 
 
 logger = logging.getLogger(__name__)
@@ -82,3 +82,16 @@ class RecipeGridView(LoginRequiredMixin, ListView):
 class RecipeDetailView(LoginRequiredMixin, DetailView):
     def get_queryset(self):
         return self.request.user.paprika_accounts.first().recipes.filter(date_ended__isnull=True)
+
+
+class RecipeDiffView(LoginRequiredMixin, DetailView):
+    template_name = 'core/recipe_diff.html'
+
+    def get_queryset(self):
+        return self.request.user.paprika_accounts.first().recipes.filter(date_ended__isnull=True)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        other_recipe = Recipe.objects.get(pk=self.kwargs['other_pk'])
+        context['other'] = other_recipe
+        return context

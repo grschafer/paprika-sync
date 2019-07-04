@@ -25,4 +25,9 @@
   display: block;
 }
 
+.recipe-diff .different {
+  color: red;
+  border: red 1px solid;
+}
+
 /*# sourceMappingURL=project.css.map */

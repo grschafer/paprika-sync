@@ -51,3 +51,9 @@ $red: #b94a48;
         display: block;
     }
 }
+.recipe-diff {
+    .different {
+        color: red;
+        border: red 1px solid;
+    }
+}

@@ -71,43 +71,17 @@ class PaprikaAccount(BaseModel):
     @fsm_log_by
     @transition(field=import_sync_status, source=[IMPORT_INPROGRESS], target=SYNC_SUCCESS, on_error=IMPORT_FAILURE)
     def import_recipes(self, recipes, by=None, **kwargs):
-        from .serializers import RecipeSerializer
-        try:
-            starting_recipe_count = self.recipes.count()
+        logger.info('start import_recipes for %s', self)
+        starting_recipe_count = self.recipes.count()
+        self._sync_recipes(recipes, make_news_items=False)
+        ending_recipe_count = self.recipes.count()
+        logger.info('Imported %s recipes', ending_recipe_count - starting_recipe_count)
 
-            for recipe in recipes:
-                print('.', end='')
-                uid = recipe['uid']
-                recipe_detail = self.get_recipe(uid)
-                recipe_name = recipe_detail['name']
-                if self.recipes.filter(uid=uid).exists():
-                    logger.info('Recipe already exists in %s: %s %s', self, recipe_name, uid)
-                    continue
-
-                recipe_detail['paprika_account'] = self.id
-                rs = RecipeSerializer(data=recipe_detail)
-                if rs.is_valid():
-                    rs.save()
-                else:
-                    logger.error('Invalid recipe %s: %s', recipe_name, rs.errors)
-                    # TODO: collect errors and show to user?
-
-            ending_recipe_count = self.recipes.count()
-            logger.info('Imported %s recipes', ending_recipe_count - starting_recipe_count)
-
-            NewsItem.objects.create(
-                paprika_account=self,
-                type=NewsItem.TYPE_NEW_ACCOUNT,
-                payload={'num_recipes': len(recipes)},
-            )
-        except Exception as e:
-            logger.exception('Import recipes for PaprikaAccount %s failed: %s', self, e)
-            raise  # go to IMPORT_FAILURE state
-        else:
-            # Import succeeded, reset failure count
-            self.last_synced = timezone.now()
-            self.sync_failure_count = 0
-            self.save()
+        NewsItem.objects.create(
+            paprika_account=self,
+            type=NewsItem.TYPE_NEW_ACCOUNT,
+            payload={'num_recipes': len(recipes)},
+        )
 
     @fsm_log_by
     @transition(field=import_sync_status, source=[SYNC_SUCCESS], target=SYNC_REQUESTED)
@@ -122,10 +96,16 @@ class PaprikaAccount(BaseModel):
     @fsm_log_by
     @transition(field=import_sync_status, source=[SYNC_INPROGRESS], target=SYNC_SUCCESS, on_error=SYNC_FAILURE)
     def sync_recipes(self, by=None, **kwargs):
+        logger.info('start sync_recipes for %s', self)
+        recipes = self.get_recipes()
+        self._sync_recipes(recipes)
+
+    def _sync_recipes(self, recipes, make_news_items=True):
+        # Sync categories, so we can import recipes that reference them
+        self.sync_categories()
+
         from .serializers import RecipeSerializer
         # Update Recipes from api, save revisions, create new NewsItems
-        logger.info('start sync_account_recipes_from_api for %s', self)
-        recipes = self.get_recipes()
 
         # Figure out what recipes were deleted from the API, if any
         db_uids = set(self.recipes.filter(date_ended__isnull=True).values_list('uid', flat=True))
@@ -135,12 +115,13 @@ class PaprikaAccount(BaseModel):
         try:
             if deleted_recipes:
                 to_delete = Recipe.objects.filter(paprika_account=self, uid__in=deleted_recipes)
-                for recipe in to_delete:
-                    NewsItem.objects.create(
-                        paprika_account=self,
-                        type=NewsItem.TYPE_RECIPE_DELETED,
-                        payload={'recipe': recipe.id},
-                    )
+                if make_news_items:
+                    for recipe in to_delete:
+                        NewsItem.objects.create(
+                            paprika_account=self,
+                            type=NewsItem.TYPE_RECIPE_DELETED,
+                            payload={'recipe': recipe.id},
+                        )
                 to_delete.update(date_ended=timezone.now())
 
             # Look for edited or newly-added recipes
@@ -166,13 +147,14 @@ class PaprikaAccount(BaseModel):
                         db_recipe.date_ended = timezone.now()
                         db_recipe.save()
 
-                        # Create a NewsItem for the diff between new and old recipes
-                        fields_changed = list(db_recipe.diff(rs.instance).keys())
-                        NewsItem.objects.create(
-                            paprika_account=self,
-                            type=NewsItem.TYPE_RECIPE_EDITED,
-                            payload={'fields_changed': fields_changed, 'recipe': rs.instance.id, 'previous_recipe': db_recipe.id},
-                        )
+                        if make_news_items:
+                            # Create a NewsItem for the diff between new and old recipes
+                            fields_changed = list(db_recipe.diff(rs.instance).keys())
+                            NewsItem.objects.create(
+                                paprika_account=self,
+                                type=NewsItem.TYPE_RECIPE_EDITED,
+                                payload={'fields_changed': fields_changed, 'recipe': rs.instance.id, 'previous_recipe': db_recipe.id},
+                            )
                     else:
                         pass  # No change in the recipe
 
@@ -185,18 +167,19 @@ class PaprikaAccount(BaseModel):
                     if rs.is_valid():
                         rs.save()
 
-                        NewsItem.objects.create(
-                            paprika_account=self,
-                            type=NewsItem.TYPE_RECIPE_ADDED,
-                            payload={'recipe': rs.instance.id},
-                        )
+                        if make_news_items:
+                            NewsItem.objects.create(
+                                paprika_account=self,
+                                type=NewsItem.TYPE_RECIPE_ADDED,
+                                payload={'recipe': rs.instance.id},
+                            )
                     else:
                         logger.error('Invalid recipe %s: %s', recipe_name, rs.errors)
                         # TODO: collect errors and show to user?
 
         except Exception as e:
             logger.exception('Sync recipes for PaprikaAccount %s failed: %s', self, e)
-            raise  # go to SYNC_FAILURE state
+            raise  # go to SYNC_FAILURE or IMPORT_FAILURE state
         else:
             # Sync succeeded, reset failure count
             self.last_synced = timezone.now()

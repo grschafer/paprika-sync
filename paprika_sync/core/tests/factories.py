@@ -1,8 +1,9 @@
 from django.utils import timezone
 
+import factory
 from factory import DjangoModelFactory, SubFactory, Faker
 
-from paprika_sync.core.models import PaprikaAccount, Recipe
+from paprika_sync.core.models import PaprikaAccount, Recipe, Category
 from paprika_sync.users.tests.factories import UserFactory
 
 
@@ -20,8 +21,19 @@ class PaprikaAccountFactory(DjangoModelFactory):
         django_get_or_create = ["username"]
 
 
+class CategoryFactory(DjangoModelFactory):
+    paprika_account = SubFactory(PaprikaAccountFactory)
+    uid = Faker('uuid4')
+    name = Faker('name')
+    parent_uid = Faker('uuid4')
+
+    class Meta:
+        model = Category
+
+
 class RecipeFactory(DjangoModelFactory):
     paprika_account = SubFactory(PaprikaAccountFactory)
+    # categories = SubFactory(CategoryFactory)
     uid = Faker('uuid4')
     date_ended = None
     hash = Faker('uuid4')
@@ -46,6 +58,19 @@ class RecipeFactory(DjangoModelFactory):
 
     class Meta:
         model = Recipe
+
+    @factory.post_generation
+    def categories(self, create, extracted, **kwargs):
+        if not create:
+            # Simple build, do nothing.
+            return
+
+        if extracted:
+            # A list of categories were passed in, use them
+            for category in extracted:
+                self.categories.add(category)
+        else:
+            self.categories.add(CategoryFactory(paprika_account=self.paprika_account))
 
 
 def get_test_recipe_dict(overrides=None, del_keys=None):
@@ -128,6 +153,7 @@ def recipe_to_api_dict(recipe):
         'servings': recipe.servings,
         'rating': recipe.rating,
         'on_favorites': recipe.on_favorites,
+        'categories': [cat.uid for cat in recipe.categories.all()] if recipe.id else [],
     }
 
 
@@ -138,22 +164,10 @@ def recipes_to_api_dict(recipes):
 def get_test_categories_dict(qty=1):
     categories = [
         {
-            'name': 'Italian',
-            'uid': '5DE8CE0F-E88E-4C57-AD32-9BFCCA1C5784',
+            'order_flag': 37,
+            'uid': '90A5A11B-204A-40BC-AEB0-E7849CB5C043',
             'parent_uid': None,
-            'order_flag': 20,
-        },
-        {
-            'name': 'Ethiopian',
-            'uid': 'C7829254-D675-4025-B1BF-57594FF91BBF',
-            'parent_uid': None,
-            'order_flag': 51,
-        },
-        {
-            'name': 'Breakfast',
-            'uid': '9E916884-FC1B-4696-9C61-EB21DE342F70',
-            'parent_uid': None,
-            'order_flag': 36,
-        },
+            'name': 'Drink',
+        }
     ]
     return categories[:qty]

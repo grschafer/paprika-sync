@@ -3,7 +3,7 @@ from django.contrib import admin
 from fsm_admin.mixins import FSMTransitionMixin
 from django_fsm_log.admin import StateLogInline
 
-from .models import PaprikaAccount, Recipe, Category
+from .models import PaprikaAccount, Recipe, Category, NewsItem
 
 
 @admin.register(PaprikaAccount)
@@ -22,3 +22,8 @@ class RecipeAdmin(admin.ModelAdmin):
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
     list_display = ('id', 'paprika_account', 'name')
+
+
+@admin.register(NewsItem)
+class NewsItemAdmin(admin.ModelAdmin):
+    list_display = ('id', 'paprika_account', 'type', 'created_date')

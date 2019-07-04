@@ -43,8 +43,17 @@ left off
   - how to handle that paprika images are only accessible for a few minutes? cache them all on my own server?
     - JUST REMOVE all queryparams (Signature, Expires, AWSAccessKeyId) and it still works
 - add all other fields to recipe model
-- TODO: fetch categories when fetching recipes (do this in RecipeSerializer if it can't find a matching category in the database?)
-  - TODO: handle parent_uid for nested categories
+- fetch categories when fetching recipes (do this in RecipeSerializer if it can't find a matching category in the database?)
+  - refactor import_recipes and sync_recipes to be more DRY (so don't have to sync_categories in multiple places)
+  - update serializers to handle categories
+  - update tests to handle categories
+  - figure out why some category uids have extra characters on the end... are these old, deleted category uids that are still hanging around?
+    - not sure, must be a paprika 2 thing? tested deleting categories and that removed them from the list of categories returned by the API, recipes aren't changed (still link to old categories)
+  - handle unknown/missing categories when serializing recipes
+  - handle parent_uid for nested categories
+  - test importing new account -- seems to import recipes and categories correctly
+- check that refactor of sync_recipes doesn't create newsitems for every recipe on new import
+  - they do, fix it
 - TODO: make recipe list view
 - TODO: make recipe detail view
 - TODO: make recipe diff view

@@ -222,15 +222,15 @@ class PaprikaAccount(BaseModel):
             db_category = Category.objects.filter(paprika_account=self, uid=category['uid']).first()
             if db_category:
                 # Update the instance in case it's been edited
-                rs = CategorySerializer(instance=db_category, data=category)
+                cs = CategorySerializer(instance=db_category, data=category)
             else:
                 category['paprika_account'] = self.id
-                rs = CategorySerializer(data=category)
+                cs = CategorySerializer(data=category)
 
-            if rs.is_valid():
-                rs.save()
+            if cs.is_valid():
+                cs.save()
             else:
-                logger.error('Invalid category %s: %s', category, rs.errors)
+                logger.error('Invalid category %s: %s', category, cs.errors)
                 # TODO: collect errors and show to user?
 
     def compare_accounts(self, other_account):
@@ -257,7 +257,6 @@ class PaprikaAccount(BaseModel):
     ##########################################################################
     # Paprika API helpers
     ##########################################################################
-
     def get_recipes(self):
         resp = requests.get(RECIPES_URL, auth=(self.username, self.password))
         resp.raise_for_status()
@@ -304,7 +303,7 @@ class Recipe(BaseModel):
     servings = models.CharField(max_length=200, blank=True)
     rating = models.PositiveSmallIntegerField(default=0)
     on_favorites = models.BooleanField(default=False)
-    # categories = ManyToMany
+    categories = models.ManyToManyField('core.Category', related_name='recipes')
 
     # TODO: add other fields (ingreds, directions, rating, source, categories, etc... anything that can change and should be flagged in a NewsItem)
     # TODO: add a 'deleted' flag?
@@ -315,8 +314,14 @@ class Recipe(BaseModel):
         fields_changed = {}
         for field in Recipe._meta.get_fields():
             if field.name not in Recipe.IGNORE_FIELDS_IN_DIFF:
-                if getattr(self, field.name) != getattr(other, field.name):
-                    fields_changed[field.name] = True
+                if field.one_to_many or field.many_to_many:
+                    self_list = list(getattr(self, field.name).values_list('pk', flat=True))
+                    other_list = list(getattr(other, field.name).values_list('pk', flat=True))
+                    if self_list != other_list:
+                        fields_changed[field.name] = True
+                else:
+                    if getattr(self, field.name) != getattr(other, field.name):
+                        fields_changed[field.name] = True
 
         return fields_changed
 
@@ -331,6 +336,12 @@ class Category(BaseModel):
     # Make this a relation?
     parent_uid = models.CharField(max_length=200, db_index=True, blank=True)
     # order_flag = models.IntegerField()  # Not sure what this field is for
+
+    class Meta:
+        verbose_name_plural = 'categories'
+
+    def __str__(self):
+        return self.name
 
 
 class NewsItem(BaseModel):

@@ -1,5 +1,6 @@
 from rest_framework import serializers
 
+from .fields import UidRelatedField
 from .models import Category, Recipe
 
 
@@ -20,6 +21,9 @@ class CategorySerializer(serializers.ModelSerializer):
 
 
 class RecipeSerializer(serializers.ModelSerializer):
+    # Recipes in Paprika API aren't updated to remove missing/deleted categories, so ignore any categories we don't know about
+    categories = UidRelatedField(queryset=Category.objects, many=True, ignore_missing_relation=True)
+
     class Meta:
         model = Recipe
         fields = '__all__'

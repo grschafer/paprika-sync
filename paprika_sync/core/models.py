@@ -283,7 +283,7 @@ class PaprikaAccount(BaseModel):
 class Recipe(BaseModel):
     paprika_account = models.ForeignKey('core.PaprikaAccount', related_name='recipes', on_delete=models.CASCADE)
     uid = models.CharField(max_length=200, db_index=True)
-    date_ended = models.DateTimeField(null=True, db_index=True, help_text='Date when this version of the Recipe was superseded (unset if this is the active Recipe for this uid)')
+    date_ended = models.DateTimeField(null=True, blank=True, db_index=True, help_text='Date when this version of the Recipe was superseded (unset if this is the active Recipe for this uid)')
     hash = models.CharField(max_length=200)
     photo_hash = models.CharField(max_length=200, blank=True)  # Can be null if no image set
     name = models.CharField(max_length=1000)

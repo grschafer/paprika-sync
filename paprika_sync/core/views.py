@@ -68,7 +68,7 @@ class RecipeListView(LoginRequiredMixin, ListView):
     # paginate_by = 25
 
     def get_queryset(self):
-        return self.request.user.paprika_accounts.first().recipes.filter(date_ended__isnull=True).order_by('name')
+        return self.request.user.paprika_accounts.first().recipes.order_by('name')
 
 
 class RecipeGridView(LoginRequiredMixin, ListView):
@@ -76,19 +76,19 @@ class RecipeGridView(LoginRequiredMixin, ListView):
     paginate_by = 25
 
     def get_queryset(self):
-        return self.request.user.paprika_accounts.first().recipes.filter(date_ended__isnull=True).order_by('name')
+        return self.request.user.paprika_accounts.first().recipes.order_by('name')
 
 
 class RecipeDetailView(LoginRequiredMixin, DetailView):
     def get_queryset(self):
-        return self.request.user.paprika_accounts.first().recipes.filter(date_ended__isnull=True)
+        return self.request.user.paprika_accounts.first().recipes
 
 
 class RecipeDiffView(LoginRequiredMixin, DetailView):
     template_name = 'core/recipe_diff.html'
 
     def get_queryset(self):
-        return self.request.user.paprika_accounts.first().recipes.filter(date_ended__isnull=True)
+        return self.request.user.paprika_accounts.first().recipes
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

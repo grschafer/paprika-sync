@@ -108,7 +108,7 @@ class PaprikaAccount(BaseModel):
         # Update Recipes from api, save revisions, create new NewsItems
 
         # Figure out what recipes were deleted from the API, if any
-        db_uids = set(self.recipes.filter(date_ended__isnull=True).values_list('uid', flat=True))
+        db_uids = set(self.recipes.values_list('uid', flat=True))
         api_uids = set(r['uid'] for r in recipes)
         deleted_recipes = db_uids - api_uids
 
@@ -129,7 +129,7 @@ class PaprikaAccount(BaseModel):
             for recipe in recipes:
                 print('.', end='')
                 uid = recipe['uid']
-                db_recipe = Recipe.objects.filter(paprika_account=self, uid=uid, date_ended__isnull=True).first()
+                db_recipe = self.recipes.filter(uid=uid).first()
                 if db_recipe:
                     if db_recipe.hash != recipe['hash']:
                         # TODO: lots of duplication of recipe creation...
@@ -276,12 +276,16 @@ class PaprikaAccount(BaseModel):
     # End Paprika API helpers
     ##########################################################################
 
+    @property
+    def recipes(self):
+        return self.all_recipes.filter(date_ended__isnull=True)
+
     def __str__(self):
         return '{} ({})'.format(self.alias, self.username)
 
 
 class Recipe(BaseModel):
-    paprika_account = models.ForeignKey('core.PaprikaAccount', related_name='recipes', on_delete=models.CASCADE)
+    paprika_account = models.ForeignKey('core.PaprikaAccount', related_name='all_recipes', on_delete=models.CASCADE)
     uid = models.CharField(max_length=200, db_index=True)
     date_ended = models.DateTimeField(null=True, blank=True, db_index=True, help_text='Date when this version of the Recipe was superseded (unset if this is the active Recipe for this uid)')
     hash = models.CharField(max_length=200)

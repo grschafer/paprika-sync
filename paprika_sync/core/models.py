@@ -323,7 +323,7 @@ class Recipe(BaseModel):
     servings = models.CharField(max_length=200, blank=True)
     rating = models.PositiveSmallIntegerField(default=0)
     on_favorites = models.BooleanField(default=False)
-    categories = models.ManyToManyField('core.Category', related_name='recipes')
+    categories = models.ManyToManyField('core.Category', related_name='recipes', blank=True)
 
     # TODO: add other fields (ingreds, directions, rating, source, categories, etc... anything that can change and should be flagged in a NewsItem)
     # TODO: add a 'deleted' flag?

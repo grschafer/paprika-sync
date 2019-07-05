@@ -61,7 +61,9 @@ left off
   - make a grid thumbnail version? yes, but needs more work to overlay recipe name and handle clicks and lazy-loading
 - make recipe detail view
 - make recipe diff view
-- TODO: make diff accounts view
+- make diff accounts view
+- TODO: make view of all other accounts
+- TODO: update nav
 - TODO: limit categories queryset to currently logged-in user (in admin)
 - TODO: deploy and share
   - TODO: invitation link (should live in database so it's not committed in code)

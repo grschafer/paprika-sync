@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% load humanize %}
+
+{% block content %}
+
+<h1>Comparing recipes between you and {{ other_account.alias }}</h1>
+
+
+<section class="table-responsive recipe-list">
+    <table class="table table-sm">
+        <thead>
+            <tr>
+                <th scope="col">Name</th>
+                <th scope="col">{{ my_account.alias }}</th>
+                <th scope="col">{{ other_account.alias }}</th>
+                <th scope="col">Diffs</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for name, my_id, your_id, content_mismatch in diff_list %}
+            <tr>
+                <th scope="row">{{ name }}</th>
+                <td>
+                    {{ my_id|yesno:"X," }}
+                    {% if your_id and not my_id %}
+                        <input type="checkbox">
+                    {% endif %}
+                </td>
+                <td>{{ your_id|yesno:"X," }}</td>
+                <td>
+                    {% if content_mismatch %}
+                        <a href="{% url 'core:recipe-diff' pk=my_id other_pk=your_id %}">Show</a>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</section>
+
+
+{% if is_paginated %}
+<div class="pagination">
+    <span class="step-links">
+        {% if page_obj.has_previous %}
+            <a href="?page=1">&laquo; first</a>
+            <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ page_obj.number }} of {{ paginator.num_pages }}.
+        </span>
+
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}">next</a>
+            <a href="?page={{ paginator.num_pages }}">last &raquo;</a>
+        {% endif %}
+    </span>
+</div>
+{% endif %}
+
+{% endblock %}

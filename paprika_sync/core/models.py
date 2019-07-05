@@ -233,12 +233,28 @@ class PaprikaAccount(BaseModel):
                 logger.error('Invalid category %s: %s', category, cs.errors)
                 # TODO: collect errors and show to user?
 
-    def compare_accounts(self, other_account):
-        logger.info('start compare_accounts between %s and %s', self, other_account)
+    def compare_accounts(self, your_account):
+        logger.info('start compare_accounts between %s and %s', self, your_account)
         # Collect all recipes from both accounts, determine which are common between them
         # Return: list of (Recipe, my_account_has_recipe, your_account_has_recipe, accounts_differ)
         # accounts_differ = both accounts have the recipe, but the versions do not match exactly
-        pass
+        mine = {r.name: r for r in self.recipes.all()}
+        yours = {r.name: r for r in your_account.recipes.all()}
+        all_recipes = self.recipes.values_list('name', flat=True).union(your_account.recipes.values_list('name', flat=True)).order_by('name')
+        diff_list = []
+        for name in all_recipes:
+            my_recipe = mine.get(name)
+            your_recipe = yours.get(name)
+            diff_list.append(
+                (
+                    name,
+                    my_recipe.id if my_recipe else None,
+                    your_recipe.id if your_recipe else None,
+                    my_recipe.hash != your_recipe.hash if my_recipe and your_recipe else None,
+                )
+            )
+
+        return diff_list
 
     def clone_recipes(self, recipes, from_account):
         logger.info('start clone_recipes %s from %s to %s', recipes, from_account, self)

@@ -95,3 +95,18 @@ class RecipeDiffView(LoginRequiredMixin, DetailView):
         other_recipe = Recipe.objects.get(pk=self.kwargs['other_pk'])
         context['other'] = other_recipe
         return context
+
+
+class RecipeListDiffView(LoginRequiredMixin, ListView):
+    template_name = 'core/recipes_diff.html'
+    context_object_name = 'diff_list'
+
+    def get_queryset(self):
+        other_account = PaprikaAccount.objects.get(alias=self.kwargs['other_alias'])
+        return self.request.user.paprika_accounts.first().compare_accounts(other_account)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['my_account'] = self.request.user.paprika_accounts.first()
+        context['other_account'] = PaprikaAccount.objects.get(alias=self.kwargs['other_alias'])
+        return context

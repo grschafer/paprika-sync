@@ -62,8 +62,8 @@ left off
 - make recipe detail view
 - make recipe diff view
 - make diff accounts view
-- TODO: make view of all other accounts
-- TODO: update nav
+- make view of all other accounts
+- update nav
 - TODO: limit categories queryset to currently logged-in user (in admin)
 - TODO: deploy and share
   - TODO: invitation link (should live in database so it's not committed in code)

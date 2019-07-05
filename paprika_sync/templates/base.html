@@ -37,48 +37,54 @@
 
     <div class="mb-1">
       <nav class="navbar navbar-expand-md navbar-light bg-light">
+        {% url 'core:home' as home_url %}
+        {% url 'core:add_paprika_account' as add_account_url %}
+        {% url 'core:recipes' as recipes_url %}
+        {% url 'core:accounts' as accounts_url %}
+        {% url 'account_signup' as signup_url %}
+        {% url 'account_login' as login_url %}
+        {% url 'account_logout' as logout_url %}
         <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
-        <a class="navbar-brand" href="{% url 'core:home' %}">Paprika Sync</a>
+        <a class="navbar-brand" href="{{ home_url }}">Paprika Sync</a>
 
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <ul class="navbar-nav mr-auto">
-            <li class="nav-item active">
-              <a class="nav-link" href="{% url 'core:home' %}">Home <span class="sr-only">(current)</span></a>
-            </li>
             {% if request.user.is_authenticated %}
+              {% comment %}
               <li class="nav-item">
                 {# URL provided by django-allauth/account/urls.py #}
                 <a class="nav-link" href="{% url 'users:detail' request.user.username  %}">{% trans "My Profile" %}</a>
               </li>
-              <li class="nav-item">
-                <a class="nav-link" href="{% url 'core:add_paprika_account' %}">{% trans "Add Paprika Account" %}</a>
+              {% endcomment %}
+              <li class="nav-item {% if request.path == home_url %}active{% endif %}">
+                <a class="nav-link" href="{{ home_url }}">News Feed</a>
               </li>
-              <li class="nav-item">
-                <a class="nav-link" href="{% url 'core:recipes' %}">Your Recipes</a>
+              {% if request.user.paprika_accounts.all %}
+              <li class="nav-item {% if request.path == recipes_url %}active{% endif %}">
+                <a class="nav-link" href="{{ recipes_url }}">Your Recipes</a>
               </li>
-              <li class="nav-item">
-                <a class="nav-link" href="#">Other Users</a>
+              <li class="nav-item {% if request.path == accounts_url %}active{% endif %}">
+                <a class="nav-link" href="{{ accounts_url }}">Compare Recipes</a>
               </li>
-              <li class="nav-item">
+              {% else %}
+                <li class="nav-item {% if request.path == add_account_url %}active{% endif %}">
+                  <a class="nav-link" href="{{ add_account_url }}">{% trans "Add Paprika Account" %}</a>
+                </li>
+              {% endif %}
+              <li class="nav-item {% if request.path == logout_url %}active{% endif %}">
                 {# URL provided by django-allauth/account/urls.py #}
-                <a class="nav-link" href="{% url 'account_logout' %}">{% trans "Sign Out" %}</a>
-              </li>
-              <li class="nav-item">
-                  <form method="post" action="{% url 'core:request_account_sync' %}">
-                      {% csrf_token %}
-                      <button type="submit" class="btn nav-link oi oi-reload" title="request sync of recipes">
-                  </form>
+                <a class="nav-link" href="{{ logout_url }}">{% trans "Sign Out" %}</a>
               </li>
             {% else %}
-              <li class="nav-item">
+              <li class="nav-item {% if request.path == signup_url %}active{% endif %}">
                 {# URL provided by django-allauth/account/urls.py #}
-                <a id="sign-up-link" class="nav-link" href="{% url 'account_signup' %}">{% trans "Sign Up" %}</a>
+                <a id="sign-up-link" class="nav-link" href="{{ signup_url }}">{% trans "Sign Up" %}</a>
               </li>
-              <li class="nav-item">
+              <li class="nav-item {% if request.path == login_url %}active{% endif %}">
                 {# URL provided by django-allauth/account/urls.py #}
-                <a id="log-in-link" class="nav-link" href="{% url 'account_login' %}">{% trans "Sign In" %}</a>
+                <a id="log-in-link" class="nav-link" href="{{ login_url }}">{% trans "Sign In" %}</a>
               </li>
             {% endif %}
           </ul>

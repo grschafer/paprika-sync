@@ -30,4 +30,11 @@
   border: red 1px solid;
 }
 
+form.request-sync p {
+  text-align: right;
+}
+form.request-sync button {
+  padding: 4px;
+}
+
 /*# sourceMappingURL=project.css.map */

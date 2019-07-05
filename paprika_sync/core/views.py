@@ -51,7 +51,7 @@ class AddPaprikaAccountView(LoginRequiredMixin, CreateView):
 
 class RequestAccountSyncView(LoginRequiredMixin, RedirectView):
     http_method_names = ['post']
-    pattern_name = 'core:home'
+    pattern_name = 'core:recipes'
 
     def post(self, request, *args, **kwargs):
         for pa in request.user.paprika_accounts.all():

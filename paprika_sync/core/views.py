@@ -110,3 +110,7 @@ class RecipeListDiffView(LoginRequiredMixin, ListView):
         context['my_account'] = self.request.user.paprika_accounts.first()
         context['other_account'] = PaprikaAccount.objects.get(alias=self.kwargs['other_alias'])
         return context
+
+
+class AccountListView(LoginRequiredMixin, ListView):
+    queryset = PaprikaAccount.objects.all()

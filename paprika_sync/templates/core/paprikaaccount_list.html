@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% load humanize %}
+
+{% block content %}
+
+<h1>Paprika Accounts</h1>
+
+
+<section class="table-responsive account-list">
+    <table class="table table-sm">
+        <tbody>
+            {% for account in paprikaaccount_list %}
+            <tr>
+                <th scope="row">{{ account.alias }}</th>
+                {% if account in request.user.paprika_accounts.all %}
+                    <td><a href="{% url 'core:recipes' %}">View your recipes</a></td>
+                {% else %}
+                    <td><a href="{% url 'core:recipes-diff' other_alias=account.alias %}">Compare recipes</a></td>
+                {% endif %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</section>
+
+
+{% if is_paginated %}
+<div class="pagination">
+    <span class="step-links">
+        {% if page_obj.has_previous %}
+            <a href="?page=1">&laquo; first</a>
+            <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ page_obj.number }} of {{ paginator.num_pages }}.
+        </span>
+
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}">next</a>
+            <a href="?page={{ paginator.num_pages }}">last &raquo;</a>
+        {% endif %}
+    </span>
+</div>
+{% endif %}
+
+{% endblock %}

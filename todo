@@ -68,11 +68,15 @@ left off
 - make paprikaaccount form bootstrappy
 - update all "not implemented yet" stuff (clone recipes, newsitems links)
 - TODO: deploy and share
-  - TODO: invitation link (should live in database so it's not committed in code)
+  - switch from caddy to traefik
+    - https://github.com/pydanny/cookiecutter-django/pull/1714
+  - TODO: invitation link (should live in database or environment so it's not committed in code)
+    - TODO: disable normal registration
     - TODO: limit signups to invitees
   - TODO: make sure signup works (incl verification email, forgot password, etc.)
   - TODO: also share feature roadmap (trello board?)
   - TODO: open source code (review for secrets)
+  - TODO: change HSTS in config/settings/production.py
 - TODO: figure out how to update recipes (do they get a new uid? or just an updated hash?)
 - TODO: add clone recipe (i.e. copy a recipe you don't have at all)
   - TODO: how to handle missing categories in destination account?
@@ -81,6 +85,7 @@ left off
 - TODO: weekly digest email
 - TODO: search, filter, sort on recipe list views
 - TODO: limit categories queryset to currently logged-in user (in admin)
+- TODO: privacy page (allow setting default and per-user checkboxes for "publish my actions to" and "show me actions from")
 
 
 general

@@ -66,8 +66,7 @@ left off
 - update nav
 - update auth to use email only, login immediately on email confirm
 - make paprikaaccount form bootstrappy
-- TODO: improve newslist formatting
-- TODO: update all "not implemented yet" stuff (clone recipes, newsitems links)
+- update all "not implemented yet" stuff (clone recipes, newsitems links)
 - TODO: deploy and share
   - TODO: invitation link (should live in database so it's not committed in code)
     - TODO: limit signups to invitees
@@ -78,6 +77,7 @@ left off
 - TODO: add clone recipe (i.e. copy a recipe you don't have at all)
   - TODO: how to handle missing categories in destination account?
 - TODO: add update recipe (i.e. update your recipe with changes they've made)
+- TODO: improve newslist formatting, language
 - TODO: weekly digest email
 - TODO: search, filter, sort on recipe list views
 - TODO: limit categories queryset to currently logged-in user (in admin)

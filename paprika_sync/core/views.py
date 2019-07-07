@@ -80,8 +80,8 @@ class RecipeGridView(LoginRequiredMixin, ListView):
 
 
 class RecipeDetailView(LoginRequiredMixin, DetailView):
-    def get_queryset(self):
-        return self.request.user.paprika_accounts.first().recipes
+    # Don't require that the user owns the recipe (so you can view others' recipes)
+    queryset = Recipe.objects.all()
 
 
 class RecipeDiffView(LoginRequiredMixin, DetailView):

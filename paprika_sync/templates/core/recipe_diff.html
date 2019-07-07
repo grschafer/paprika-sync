@@ -3,16 +3,19 @@
 
 {% block content %}
 
-{# TODO: convert to grid and stack labels above content for phone screens? #}
+
+<h1>{{ recipe.name }}</h1>
 
 <section class="table-responsive-sm recipe-diff">
     <table class="table table-sm table-hover">
-        <tbody>
+        <thead>
             <tr>
-                <th scope="row">Name</th>
-                <td>{{ recipe.name }}</td>
-                <td class="{% diff recipe other 'name' %}">{{ other.name }}</td>
+                <th scope="row">Owner</th>
+                <th scope="col">{{ recipe.paprika_account.alias }}</th>
+                <th scope="col">{{ other.paprika_account.alias }}</th>
             </tr>
+        </thead>
+        <tbody>
             <tr>
                 <th scope="row">Thumbnail</th>
                 <td>
@@ -119,6 +122,9 @@
             </tr>
         </tbody>
     </table>
+
+    <button type="submit" class="btn btn-primary" disabled>Overwrite your version of this recipe with {{ other.paprika_account.alias }}'s version (not implemented yet)</button>
 </section>
+
 
 {% endblock %}

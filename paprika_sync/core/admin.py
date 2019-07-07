@@ -17,6 +17,7 @@ class PaprikaAccountAdmin(FSMTransitionMixin, admin.ModelAdmin):
 @admin.register(Recipe)
 class RecipeAdmin(admin.ModelAdmin):
     list_display = ('id', 'paprika_account', 'name')
+    list_filter = ('paprika_account__alias',)
 
 
 @admin.register(Category)

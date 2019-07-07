@@ -4,9 +4,12 @@
 {% block content %}
 
 <h1>{{ recipe.name }}</h1>
+{% if recipe.paprika_account.user == request.user %}
+<small>Recipe belongs to: <a href="{% url 'core:recipes' %}">{{ recipe.paprika_account.alias }}</a></small>
+{% else %}
+<small>Recipe belongs to: <a href="{% url 'core:recipes-diff' other_alias=recipe.paprika_account.alias %}">{{ recipe.paprika_account.alias }}</a></small>
+{% endif %}
 
-
-{# TODO: convert to grid and stack labels above content for phone screens? #}
 
 <section class="table-responsive-sm recipe-detail">
     <table class="table table-sm">

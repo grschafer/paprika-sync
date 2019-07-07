@@ -64,11 +64,15 @@ left off
 - make diff accounts view
 - make view of all other accounts
 - update nav
-- TODO: limit categories queryset to currently logged-in user (in admin)
+- update auth to use email only, login immediately on email confirm
+- make paprikaaccount form bootstrappy
+- TODO: improve newslist formatting
+- TODO: update all "not implemented yet" stuff (clone recipes, newsitems links)
 - TODO: deploy and share
   - TODO: invitation link (should live in database so it's not committed in code)
+    - TODO: limit signups to invitees
   - TODO: make sure signup works (incl verification email, forgot password, etc.)
-  - TODO: also share roadmap
+  - TODO: also share feature roadmap (trello board?)
   - TODO: open source code (review for secrets)
 - TODO: figure out how to update recipes (do they get a new uid? or just an updated hash?)
 - TODO: add clone recipe (i.e. copy a recipe you don't have at all)
@@ -76,6 +80,7 @@ left off
 - TODO: add update recipe (i.e. update your recipe with changes they've made)
 - TODO: weekly digest email
 - TODO: search, filter, sort on recipe list views
+- TODO: limit categories queryset to currently logged-in user (in admin)
 
 
 general

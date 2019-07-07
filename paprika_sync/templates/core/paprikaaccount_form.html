@@ -4,17 +4,34 @@
 
 {% block content %}
 
-{% if not user.paprika_accounts.exists %}
-    <p>Looks like you don't have a PaprikaAccount associated yet! Add one below to sync your recipes.</p>
-{% endif %}
+<div class="col-md-6 offset-md-3">
 
-<p class="alert alert-danger">WARNING: The Paprika app's servers only accept username and password in <strong>plaintext</strong>, meaning that if my server gets hacked the hacker will have your Paprika app username and password. <strong>Do not enter your Paprika app username and password below if you use it for any other service (e.g. banks, email, work, etc.)</strong>. You should change your Paprika app login to be a unique password before continuing.</p>
+    {% if not user.paprika_accounts.exists %}
+        <p>Looks like you don't have a PaprikaAccount associated yet! Add one below to sync your recipes.</p>
+    {% endif %}
 
-<form id="add-paprika-account-form" method="post">
-    {% csrf_token %}
-    <table>
-        {{ form.as_table }}
-    </table>
-    <input type="submit">
-</form>
+    <p class="alert alert-danger">WARNING: The Paprika app's servers only accept username and password in <strong>plaintext</strong>, meaning that if my server gets hacked the hacker will have your Paprika app username and password. <strong>Do not enter your Paprika app username and password below if you use it for any other service (e.g. banks, email, work, etc.)</strong>. You should change your Paprika app login to be a unique password before continuing.</p>
+
+    <form id="add-paprika-account-form" method="post">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+        <div class="form-group">
+            {{ form.username.errors }}
+            {{ form.username.label }}
+            <input type="text" name="{{ form.username.html_name }}" class="form-control" maxlength="{{ form.username.max_length }}" required id="{{ form.username.id_for_label }}">
+        </div>
+        <div class="form-group">
+            {{ form.password.errors }}
+            {{ form.password.label }}
+            <input type="text" name="{{ form.password.html_name }}" class="form-control" maxlength="{{ form.password.max_length }}" required id="{{ form.password.id_for_label }}">
+        </div>
+        <div class="form-group">
+            {{ form.alias.errors }}
+            {{ form.alias.label }}
+            <input type="text" name="{{ form.alias.html_name }}" class="form-control" maxlength="{{ form.alias.max_length }}" required id="{{ form.alias.id_for_label }}" aria-describedby="aliasHelpBlock">
+            <small id="aliasHelpBlock" class="form-text text-muted">{{ form.alias.help_text }}</small>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+</div>
 {% endblock content %}

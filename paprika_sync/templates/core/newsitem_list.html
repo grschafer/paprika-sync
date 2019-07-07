@@ -5,25 +5,25 @@
 
 <h1>News</h1>
 
-{% for newsitem in object_list %}
+{% for newsitem in newsitem_list %}
 
 <div class="newsitem card">
     <div class="card-body">
-        <h6 class="card-subtitle text-muted">{{ newsitem.created_date|naturaltime }}</h6>
+        <h6 class="card-subtitle text-muted" title="{{ newsitem.created_date }}">{{ newsitem.created_date|naturaltime }}</h6>
         <p class="card-text">{{ newsitem.paprika_account.alias }} {{ newsitem.type }}</p>
         {% if not newsitem.paprika_account in request.user.paprika_accounts.all %}
             {% if newsitem.type == newsitem.TYPE_RECIPE_ADDED %}
-                <a href="#not-implemented-yet">Add recipe to your account (not implemented yet)</a>
+                <p><a href="#not-implemented-yet">Add recipe to your account (not implemented yet)</a></p>
             {% elif newsitem.type == newsitem.TYPE_RECIPE_EDITED %}
-                <a href="#not-implemented-yet">Add recipe to your account (not implemented yet)</a>
-                <a href="#not-implemented-yet">View edits (not implemented yet)</a>
-                {#
+                <p><a href="#not-implemented-yet">Add recipe to your account (not implemented yet)</a></p>
+                <p><a href="#not-implemented-yet">View edits (not implemented yet)</a></p>
+                {% comment %}
                 Hide this option because if we show the edit of "Bob rated recipe X 5 stars" and you update to match (via clone) and there are other previous changes that you didn't copy over, you might be surprised when other things change (unrelated to the specific change mentioned in the NewsItem description.
                 Alternative is to have finer-grained "recipe edited" types, for each field and it only copies that.
                 <a href="#not-implemented-yet">Update your recipe with these edits (not implemented yet)</a>
-                #}
+                {% endcomment %}
             {% elif newsitem.type == newsitem.TYPE_RECIPE_DELETED %}
-                <a href="#not-implemented-yet">Delete recipe from your account (not implemented yet)</a>
+                {# <a href="#not-implemented-yet">Delete recipe from your account (not implemented yet)</a> #}
             {% endif %}
         {% endif %}
     </div>

@@ -9,9 +9,9 @@ left off
   - could take package.json and gulpfile.js from cookiecutter-django to mimic if I had answered YES to using a js_task_runner...
   - but just going to brew install sass and run it in --watch mode outside docker, for now
   - `sass --watch sass/project.scss css/project.css`
-  - TODO: figure out sass with compressor for production deployment
-    - TODO: orrrr... just use normal css
-    - TODO: do the compression locally and upload resulting assets?
+  - figure out sass with compressor for production deployment
+    - do the compression locally and upload resulting assets?
+      - doing this for now
 - making /add-paprika-account view and form
   - form shows up, but formatting is bad
   - handle form submission and call actions.import_account

@@ -70,6 +70,15 @@ left off
 - TODO: deploy and share
   - switch from caddy to traefik
     - https://github.com/pydanny/cookiecutter-django/pull/1714
+  - TODO: deploy
+    - wrote deploy.sh script
+    - update sentry from api to newer sentry_sdk
+    - env vars not loading when running compose files in production...
+      - SENTRY_DSN is loaded from env WITH quotes (https://github.com/docker/compose/issues/3702) so removed quotes there
+      - having to fix everything by re-deploying, kinda hard to change things on the server (can't docker exec into container and run entrypoint script, which is needed for db connection info)
+  - TODO: make admin user account
+  - TODO: run cronjobs (make a helper script to install them on deploy)
+  - TODO: supervisor to restart docker-compose command on server reboot
   - TODO: invitation link (should live in database or environment so it's not committed in code)
     - TODO: disable normal registration
     - TODO: limit signups to invitees
@@ -77,6 +86,9 @@ left off
   - TODO: also share feature roadmap (trello board?)
   - TODO: open source code (review for secrets)
   - TODO: change HSTS in config/settings/production.py
+  - TODO: test sending email to paprika-sync.com
+  - TODO: try out digitalocean CDN
+    - does whitenoise fingerprint asset files? looks like yes
 - TODO: figure out how to update recipes (do they get a new uid? or just an updated hash?)
 - TODO: add clone recipe (i.e. copy a recipe you don't have at all)
   - TODO: how to handle missing categories in destination account?
@@ -104,3 +116,7 @@ see tasks here: https://github.com/grschafer/paprika-sync/projects/1
 to force rebuild the container...
     force rebuild: docker-compose build django
     or delete the image: docker rmi -f paprika_sync_local_django
+
+connect to production:
+    docker-machine env paprika-sync
+    eval $(docker-machine env paprika-sync)

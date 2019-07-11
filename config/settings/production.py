@@ -135,38 +135,56 @@ INSTALLED_APPS += ['gunicorn']  # noqa F405
 # http://whitenoise.evans.io/en/latest/django.html#enable-whitenoise
 MIDDLEWARE.insert(1, 'whitenoise.middleware.WhiteNoiseMiddleware')  # noqa F405
 
-LOGGING = {
+import logging.config  # NOQA
+LOGGING_CONFIG = None
+logging.config.dictConfig({
     'version': 1,
-    'disable_existing_loggers': True,
+    'disable_existing_loggers': False,
     'root': {
-        'level': 'WARNING',
         'handlers': ['console'],
+        'level': 'INFO',
+    },
+    'filters': {
+        'require_debug_false': {
+            '()': 'django.utils.log.RequireDebugFalse',
+        },
+        'require_debug_true': {
+            '()': 'django.utils.log.RequireDebugTrue',
+        },
     },
     'formatters': {
+        'django.server': {
+            '()': 'django.utils.log.ServerFormatter',
+            'format': '[{server_time}] {message}',
+            'style': '{',
+        },
         'verbose': {'format': '[%(asctime)s %(levelname)s %(processName)s %(process)d %(thread)d %(name)s] %(message)s'},
     },
     'handlers': {
         'console': {
-            'level': 'DEBUG',
+            'level': 'INFO',
+            'filters': ['require_debug_true'],
             'class': 'logging.StreamHandler',
-            'formatter': 'verbose'
-        }
+            'formatter': 'verbose',
+        },
+        'django.server': {
+            'level': 'INFO',
+            'class': 'logging.StreamHandler',
+            'formatter': 'django.server',
+        },
     },
     'loggers': {
-        'django.db.backends': {
-            'level': 'ERROR',
+        'django': {
             'handlers': ['console'],
+            'level': 'INFO',
+        },
+        'django.server': {
+            'handlers': ['django.server'],
+            'level': 'INFO',
             'propagate': False,
         },
-        # Errors logged by the SDK itself
-        "sentry_sdk": {"level": "ERROR", "handlers": ["console"], "propagate": False},
-        'django.security.DisallowedHost': {
-            'level': 'ERROR',
-            'handlers': ['console'],
-            'propagate': False,
-        },
-    },
-}
+    }
+})
 
 # Sentry
 # ------------------------------------------------------------------------------

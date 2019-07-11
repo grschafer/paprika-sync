@@ -4,6 +4,7 @@ import requests.exceptions
 
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db import transaction
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, ListView, RedirectView, DetailView
 
@@ -42,7 +43,9 @@ class AddPaprikaAccountView(LoginRequiredMixin, CreateView):
 
     def post(self, request, *args, **kwargs):
         try:
-            return super().post(request, *args, **kwargs)
+            # Don't create account if fetching from paprika API fails
+            with transaction.atomic():
+                return super().post(request, *args, **kwargs)
         except requests.exceptions.RequestException as e:
             logger.exception('Error importing account for user %s: %s', request.user, e)
             messages.error(request, 'Error importing account: {}'.format(e))

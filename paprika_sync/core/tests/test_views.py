@@ -15,7 +15,7 @@ def test_login_redirect_to_add_paprika_account_if_no_paprika_accounts_associated
     verified_user.set_password('testpassword')
     verified_user.save()
     response = client.post(reverse('account_login'), {'login': verified_user.username, 'password': 'testpassword'}, follow=True)
-    assert response.wsgi_request.path == reverse('core:add_paprika_account')
+    assert response.wsgi_request.path == reverse('core:add-paprika-account')
     assert response.redirect_chain
     assert response.redirect_chain[0][0] == reverse('users:redirect')
 
@@ -24,5 +24,5 @@ def test_login_redirect_to_add_paprika_account_if_no_paprika_accounts_associated
 @mock.patch('paprika_sync.core.models.PaprikaAccount.get_recipe', return_value=get_test_recipe_dict())
 @override_settings(RECIPE_THRESHOLD_TO_DEFER_IMPORT=0)
 def test_paprika_account_import_deferred_message(mock_recipe, mock_recipes, user_client):
-    response = user_client.post(reverse('core:add_paprika_account'), {'username': 'un', 'password': 'pw', 'alias': 'myname'}, follow=True)
+    response = user_client.post(reverse('core:add-paprika-account'), {'username': 'un', 'password': 'pw', 'alias': 'myname'}, follow=True)
     assert 'Your account contains many recipes! Importing will occur in the background' in response.content.decode('utf-8')

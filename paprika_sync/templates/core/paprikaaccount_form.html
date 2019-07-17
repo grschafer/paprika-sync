@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}Add Paprika Account{% endblock %}
 
@@ -10,7 +11,11 @@
         <p>Looks like you don't have a PaprikaAccount associated yet! Add one below to sync your recipes.</p>
     {% endif %}
 
-    <p class="alert alert-danger">WARNING: The Paprika app's servers only accept username and password in <strong>plaintext</strong>, meaning that if my server gets hacked the hacker will have your Paprika app username and password. <strong>Do not enter your Paprika app username and password below if you use it for any other service (e.g. banks, email, work, etc.)</strong>. You should change your Paprika app login to be a unique password before continuing.</p>
+    <p>If you have not enabled <strong>Cloud Sync</strong> in the Paprika app, you must do that first! Please go to Settings in the app and sign up for a Cloud Sync account, as shown below.</p>
+
+    <a href="{% static 'images/cloud-sync-signup.jpg' %}"><img class="cloud-sync-signup" src="{% static 'images/cloud-sync-signup.jpg' %}" alt="Cloud Sync signup flow"></a>
+
+    <p class="alert alert-danger">WARNING: Due to how the Paprika app cloud sync works, I have to store your email and password in <strong>plaintext</strong>, meaning that if my server gets hacked the hacker will have your Paprika app username and password. <strong>Do not enter your Paprika app username and password below if you use it for any other service (e.g. banks, email, work, etc.)</strong>. You should change your Paprika app login to be a unique password before continuing.</p>
 
     <form id="add-paprika-account-form" method="post">
         {% csrf_token %}

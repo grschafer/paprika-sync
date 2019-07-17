@@ -79,7 +79,7 @@ left off
         - use `docker-compose run` (rather than eval) which will bring up a new container (and run entrypoint) but changes will write to the same db
   - make admin user account
   - TODO: user test run
-    - TODO: add note that you must have a paprika cloud sync account (give instructions for this) for the site to work
+    - add note that you must have a paprika cloud sync account (give instructions for this) for the site to work
     - TODO: change "username" to "paprika cloud sync account email" or similar
     - if cloud sync for the first time and try to associate paprika account before sync finishes, creating PaprikaAccount works but shows error: 401 Client Error: UNAUTHORIZED
       - maybe username/password is actually wrong

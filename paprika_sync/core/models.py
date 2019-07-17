@@ -46,8 +46,8 @@ class PaprikaAccount(BaseModel):
     IMPORT_SYNC_STATUS_CHOICES_LIST = (NEW_ACCOUNT, IMPORT_DEFERRED, IMPORT_INPROGRESS, SYNC_REQUESTED, SYNC_INPROGRESS, SYNC_SUCCESS, IMPORT_FAILURE, SYNC_FAILURE)
 
     user = models.ForeignKey(get_user_model(), related_name='paprika_accounts', on_delete=models.CASCADE)
-    username = models.CharField(max_length=150, unique=True, help_text='Username to login to paprika')
-    password = models.CharField(max_length=128, help_text='Password to login to paprika')
+    username = models.CharField(max_length=150, unique=True, verbose_name='Paprika Cloud Sync Email', help_text='Email to login to Paprika Cloud Sync')
+    password = models.CharField(max_length=128, verbose_name='Paprika Cloud Sync Password', help_text='Password to login to Paprika Cloud Sync')
     alias = models.CharField(max_length=150, unique=True, verbose_name="Name", help_text='Your name, for displaying in news feed items (e.g. "Alice added recipe XYZ", "Bob rated recipe Y 5 stars")')
 
     import_sync_status = FSMField(choices=IMPORT_SYNC_STATUS_CHOICES, default=NEW_ACCOUNT, protected=True, help_text='Status of importing/syncing recipes')

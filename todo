@@ -80,7 +80,7 @@ left off
   - make admin user account
   - TODO: user test run
     - add note that you must have a paprika cloud sync account (give instructions for this) for the site to work
-    - TODO: change "username" to "paprika cloud sync account email" or similar
+    - change "username" to "paprika cloud sync account email" or similar
     - if cloud sync for the first time and try to associate paprika account before sync finishes, creating PaprikaAccount works but shows error: 401 Client Error: UNAUTHORIZED
       - maybe username/password is actually wrong
         - confirm user/pass works, otherwise prompt again

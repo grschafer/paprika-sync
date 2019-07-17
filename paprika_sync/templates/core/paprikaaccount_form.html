@@ -15,7 +15,7 @@
 
     <a href="{% static 'images/cloud-sync-signup.jpg' %}"><img class="cloud-sync-signup" src="{% static 'images/cloud-sync-signup.jpg' %}" alt="Cloud Sync signup flow"></a>
 
-    <p class="alert alert-danger">WARNING: Due to how the Paprika app cloud sync works, I have to store your email and password in <strong>plaintext</strong>, meaning that if my server gets hacked the hacker will have your Paprika app username and password. <strong>Do not enter your Paprika app username and password below if you use it for any other service (e.g. banks, email, work, etc.)</strong>. You should change your Paprika app login to be a unique password before continuing.</p>
+    <p class="alert alert-danger">WARNING: Due to how the Paprika app Cloud Sync works, I have to store your email and password in <strong>unencrypted plain text</strong>, meaning that if my server gets hacked the hacker will have the email and password you use for Paprika app Cloud Sync. <strong>Do not enter your Paprika app Cloud Sync email and password below if you use the password for any other service (e.g. banks, email, work, etc.)</strong>. You should change your Paprika app Cloud Sync password to be unique before continuing.</p>
 
     <form id="add-paprika-account-form" method="post">
         {% csrf_token %}

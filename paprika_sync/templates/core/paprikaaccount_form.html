@@ -23,12 +23,12 @@
         <div class="form-group">
             {{ form.username.errors }}
             {{ form.username.label }}
-            <input type="text" name="{{ form.username.html_name }}" class="form-control" maxlength="{{ form.username.max_length }}" required id="{{ form.username.id_for_label }}">
+            <input type="email" autocorrect="off" autocapitalize="none" name="{{ form.username.html_name }}" class="form-control" maxlength="{{ form.username.max_length }}" required id="{{ form.username.id_for_label }}">
         </div>
         <div class="form-group">
             {{ form.password.errors }}
             {{ form.password.label }}
-            <input type="text" name="{{ form.password.html_name }}" class="form-control" maxlength="{{ form.password.max_length }}" required id="{{ form.password.id_for_label }}">
+            <input type="text" autocorrect="off" autocapitalize="none" name="{{ form.password.html_name }}" class="form-control" maxlength="{{ form.password.max_length }}" required id="{{ form.password.id_for_label }}">
         </div>
         <div class="form-group">
             {{ form.alias.errors }}

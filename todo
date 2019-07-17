@@ -78,13 +78,13 @@ left off
       - having to fix everything by re-deploying, kinda hard to change things on the server (can't docker exec into container and run entrypoint script, which is needed for db connection info)
         - use `docker-compose run` (rather than eval) which will bring up a new container (and run entrypoint) but changes will write to the same db
   - make admin user account
-  - TODO: user test run
+  - user test run
     - add note that you must have a paprika cloud sync account (give instructions for this) for the site to work
     - change "username" to "paprika cloud sync account email" or similar
     - if cloud sync for the first time and try to associate paprika account before sync finishes, creating PaprikaAccount works but shows error: 401 Client Error: UNAUTHORIZED
       - maybe username/password is actually wrong
         - confirm user/pass works, otherwise prompt again
-    - TODO: prevent auto-capitalization on mobile devices: https://stackoverflow.com/questions/5171764/how-do-you-turn-off-auto-capitalisation-in-html-form-fields-in-ios
+    - prevent auto-capitalization on mobile devices: https://stackoverflow.com/questions/5171764/how-do-you-turn-off-auto-capitalisation-in-html-form-fields-in-ios
   - TODO: fix logging in production
   - TODO: run cronjobs (make a helper script to install them on deploy)
   - TODO: supervisor to restart docker-compose command on server reboot

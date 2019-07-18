@@ -124,3 +124,5 @@ def test_sync_categories(mock_categories, user):
     assert Category.objects.all().count() == 0
     pa.sync_categories()
     assert Category.objects.all().count() == 1
+    pa.sync_categories()
+    assert Category.objects.all().count() == 1

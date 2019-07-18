@@ -219,12 +219,13 @@ class PaprikaAccount(BaseModel):
         categories = self.get_categories()
 
         for category in categories:
+            category['paprika_account'] = self.id
+
             db_category = Category.objects.filter(paprika_account=self, uid=category['uid']).first()
             if db_category:
                 # Update the instance in case it's been edited
                 cs = CategorySerializer(instance=db_category, data=category)
             else:
-                category['paprika_account'] = self.id
                 cs = CategorySerializer(data=category)
 
             if cs.is_valid():

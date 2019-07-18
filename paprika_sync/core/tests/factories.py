@@ -9,7 +9,7 @@ from paprika_sync.users.tests.factories import UserFactory
 
 class PaprikaAccountFactory(DjangoModelFactory):
     user = SubFactory(UserFactory)
-    username = Faker("user_name")
+    username = Faker("email")
     alias = Faker("name")
     password = Faker("password", length=42)
     import_sync_status = PaprikaAccount.SYNC_SUCCESS

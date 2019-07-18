@@ -15,6 +15,8 @@ ARCH="$(docker-machine ssh paprika-sync -- uname -m)"
 docker-machine ssh paprika-sync -- "which docker-compose || curl -L \"https://github.com/docker/compose/releases/download/1.24.0/docker-compose-$PLAT-$ARCH\" -o /usr/local/bin/docker-compose && chmod +x /usr/local/bin/docker-compose"
 
 docker-machine ssh paprika-sync -- docker-compose -f /app/production.yml build
+docker-machine ssh paprika-sync -- mkdir -p /var/log/cronlogs
+docker-machine ssh paprika-sync -- bash /app/scripts/install_crontab.sh
 docker-machine ssh paprika-sync -- docker-compose -f /app/production.yml stop django
 docker-machine ssh paprika-sync -- docker-compose -f /app/production.yml up -d
 

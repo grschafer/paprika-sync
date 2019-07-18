@@ -6,6 +6,7 @@ from django.db import transaction
 
 from paprika_sync.core.models import PaprikaAccount
 from paprika_sync.core.serializers import RecipeSerializer, CategorySerializer
+from paprika_sync.core.utils import log_start_end
 
 
 logger = logging.getLogger(__name__)
@@ -34,6 +35,7 @@ class Command(BaseCommand):
             help="Removes all of account's existing recipes before importing",
         )
 
+    @log_start_end(logger)
     def handle(self, *args, **options):
         recipes_file = options['file']
         categories_file = options['categories_file']

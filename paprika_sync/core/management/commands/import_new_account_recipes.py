@@ -3,6 +3,7 @@ import logging
 from django.core.management.base import BaseCommand
 
 from paprika_sync.core.models import PaprikaAccount
+from paprika_sync.core.utils import log_start_end
 
 
 logger = logging.getLogger(__name__)
@@ -11,6 +12,7 @@ logger = logging.getLogger(__name__)
 class Command(BaseCommand):
     help = 'For any PaprikaAccounts deferred or failed account imports, import all their recipes. Intended to run on cron every minute.'
 
+    @log_start_end(logger)
     def handle(self, *args, **options):
         accounts_to_import = PaprikaAccount.objects.filter(
             import_sync_status__in=(PaprikaAccount.IMPORT_DEFERRED, PaprikaAccount.IMPORT_FAILURE),

@@ -102,7 +102,11 @@ class PaprikaAccount(BaseModel):
 
     def _sync_recipes(self, recipes, make_news_items=True):
         # Sync categories, so we can import recipes that reference them
-        self.sync_categories()
+        try:
+            self.sync_categories()
+        except Exception as e:
+            logger.exception('Sync categories for PaprikaAccount %s failed: %s', self, e)
+            raise  # go to SYNC_FAILURE or IMPORT_FAILURE state
 
         from .serializers import RecipeSerializer
         # Update Recipes from api, save revisions, create new NewsItems

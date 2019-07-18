@@ -4,6 +4,7 @@ import logging
 from django.core.management.base import BaseCommand
 
 from paprika_sync.core.models import PaprikaAccount
+from paprika_sync.core.utils import log_start_end
 
 
 logger = logging.getLogger(__name__)
@@ -18,6 +19,7 @@ class Command(BaseCommand):
             help='ID of PaprikaAccount to download recipes for',
         )
 
+    @log_start_end(logger)
     def handle(self, *args, **options):
         pa_id = options['paprika_account_id']
         logger.info('Starting API download of recipes and categories for PaprikaAccount %s', pa_id)

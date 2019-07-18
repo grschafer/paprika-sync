@@ -5,7 +5,7 @@ left off
 
 - fix not being able to debug w/ ipdb
   - runserver wasn't pid 1 in the container, so added 'exec' to start script
-- TODO: install sass and watch
+- install sass and watch
   - could take package.json and gulpfile.js from cookiecutter-django to mimic if I had answered YES to using a js_task_runner...
   - but just going to brew install sass and run it in --watch mode outside docker, for now
   - `sass --watch sass/project.scss css/project.css`
@@ -25,7 +25,7 @@ left off
   - add basic newsfeed to homepage
   - fix logging config (no log statements or prints show in docker)
 - no failure count, b/c should give user immediate feedback if they requested the import and it fails
-- TODO: make sync-ing functionality work
+- make sync-ing functionality work
   - mgmt command to regularly sync all accounts
   - create new Recipe if new uid and if hash differs for existing uid
   - produce NewsItem for any diffs, additions, deletions
@@ -34,8 +34,8 @@ left off
   - add "force-sync" button to UI (in navbar?)
     - make this just change a field on PaprikaAccount (sync_status? requested, inprogress, done) that an every minute cronjob checks?
     - diagram state changes
-    - TODO: test state changes
-      - TODO: test unique constraint on PaprikaAccount.username and alias
+    - test state changes
+      - test unique constraint on PaprikaAccount.username and alias
     - disallow any model changes til import/sync completes...
       - looked at using django-fsm ConcurrentTransitionMixin, but it doesn't seem like a great answer because I can't sensibly expose an in-progress state outside of the given transaction so that cronjobs can read it (ConcurrentTransitionMixin requires that you save changes in an atomic block, which means that I'd be wrapping all my save calls in an atomic block... guess that could work)
     - add last_synced field to PaprikaAccount
@@ -85,8 +85,13 @@ left off
       - maybe username/password is actually wrong
         - confirm user/pass works, otherwise prompt again
     - prevent auto-capitalization on mobile devices: https://stackoverflow.com/questions/5171764/how-do-you-turn-off-auto-capitalisation-in-html-form-fields-in-ios
-  - TODO: fix logging in production
-  - TODO: run cronjobs (make a helper script to install them on deploy)
+  - fix logging in production
+  - run cronjobs (make a helper script to install them on deploy)
+    - need to be careful about crontab interpreting any output as worthy of emailing? no mailto set up
+    - not too happy with efficiency of creating new container to run the cronjob command then removing it... and doing this every minute
+    - category import failed when they already existed!
+      - test requested sync again... working now
+    - use run_one_instance wrapper for cronjobs so if they slow down we don't run many versions
   - TODO: supervisor to restart docker-compose command on server reboot
   - TODO: invitation link (should live in database or environment so it's not committed in code)
     - TODO: disable normal registration
@@ -94,6 +99,7 @@ left off
   - TODO: make sure signup works (incl verification email, forgot password, etc.)
   - TODO: also share feature roadmap (trello board?)
   - TODO: open source code (review for secrets)
+    - TODO: link to repo from website footer
   - TODO: change HSTS in config/settings/production.py
   - TODO: test sending email to paprika-sync.com
   - TODO: try out digitalocean CDN

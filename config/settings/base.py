@@ -256,3 +256,40 @@ SOCIALACCOUNT_ADAPTER = 'paprika_sync.users.adapters.SocialAccountAdapter'
 # ------------------------------------------------------------------------------
 RECIPE_THRESHOLD_TO_DEFER_IMPORT = 30
 SYNC_FAILURES_NEEDED_TO_STOP_RETRYING = 5
+
+
+import logging.config  # NOQA
+LOGGING_CONFIG = None
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'filters': {
+        'require_debug_false': {
+            '()': 'django.utils.log.RequireDebugFalse',
+        },
+        'require_debug_true': {
+            '()': 'django.utils.log.RequireDebugTrue',
+        },
+    },
+    'formatters': {
+        'verbose': {'format': '[%(asctime)s %(levelname)s %(processName)s %(process)d %(thread)d %(name)s] %(message)s'},
+    },
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': env.str("DJANGO_ROOT_LOG_LEVEL", default='INFO'),
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+            'level': 'INFO',
+        },
+        # Add here if particular loggers are noisy, need higher level
+    },
+}
+logging.config.dictConfig(LOGGING)

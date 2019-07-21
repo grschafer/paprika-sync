@@ -5,6 +5,7 @@ import requests.exceptions
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db import transaction
+from django.http import Http404
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, ListView, RedirectView, DetailView
 
@@ -71,7 +72,10 @@ class RecipeListView(LoginRequiredMixin, ListView):
     # paginate_by = 25
 
     def get_queryset(self):
-        return self.request.user.paprika_accounts.first().recipes.order_by('name')
+        try:
+            return self.request.user.paprika_accounts.get().recipes.order_by('name')
+        except PaprikaAccount.DoesNotExist:
+            raise Http404
 
 
 class RecipeGridView(LoginRequiredMixin, ListView):
@@ -79,7 +83,10 @@ class RecipeGridView(LoginRequiredMixin, ListView):
     paginate_by = 25
 
     def get_queryset(self):
-        return self.request.user.paprika_accounts.first().recipes.order_by('name')
+        try:
+            return self.request.user.paprika_accounts.get().recipes.order_by('name')
+        except PaprikaAccount.DoesNotExist:
+            raise Http404
 
 
 class RecipeDetailView(LoginRequiredMixin, DetailView):
@@ -91,7 +98,10 @@ class RecipeDiffView(LoginRequiredMixin, DetailView):
     template_name = 'core/recipe_diff.html'
 
     def get_queryset(self):
-        return self.request.user.paprika_accounts.first().recipes
+        try:
+            return self.request.user.paprika_accounts.get().recipes
+        except PaprikaAccount.DoesNotExist:
+            raise Http404
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -105,13 +115,19 @@ class RecipeListDiffView(LoginRequiredMixin, ListView):
     context_object_name = 'diff_list'
 
     def get_queryset(self):
-        other_account = PaprikaAccount.objects.get(alias=self.kwargs['other_alias'])
-        return self.request.user.paprika_accounts.first().compare_accounts(other_account)
+        try:
+            other_account = PaprikaAccount.objects.get(alias=self.kwargs['other_alias'])
+            return self.request.user.paprika_accounts.get().compare_accounts(other_account)
+        except PaprikaAccount.DoesNotExist:
+            raise Http404
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['my_account'] = self.request.user.paprika_accounts.first()
-        context['other_account'] = PaprikaAccount.objects.get(alias=self.kwargs['other_alias'])
+        try:
+            context['my_account'] = self.request.user.paprika_accounts.get()
+            context['other_account'] = PaprikaAccount.objects.get(alias=self.kwargs['other_alias'])
+        except PaprikaAccount.DoesNotExist:
+            raise Http404
         return context
 
 

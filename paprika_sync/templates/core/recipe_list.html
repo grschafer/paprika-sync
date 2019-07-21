@@ -7,9 +7,7 @@
 
 <form method="post" class="request-sync" action="{% url 'core:request-account-sync' %}">
     {% csrf_token %}
-    <p>Force sync:
-        <button type="submit" class="btn nav-link oi oi-reload" title="request sync of recipes"></button>
-    </p>
+    <p><button type="submit" class="btn btn-primary" title="request sync of recipes">Force sync of your recipes</button></p>
 </form>
 
 <section class="table-responsive recipe-list">

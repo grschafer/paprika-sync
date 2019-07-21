@@ -1,0 +1,22 @@
+# Systemd service for running paprika-sync docker containers
+#
+# Reference for writing this file
+# https://stackoverflow.com/a/48066454
+
+[Unit]
+Description=Paprika Sync Docker Compose Service
+Requires=docker.service
+After=docker.service
+
+[Service]
+User=root
+Group=root
+WorkingDirectory=/app
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/local/bin/docker-compose -f production.yml up -d
+ExecStop=/usr/local/bin/docker-compose -f production.yml down
+TimeoutStartSec=0
+
+[Install]
+WantedBy=multi-user.target

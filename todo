@@ -92,18 +92,26 @@ left off
     - category import failed when they already existed!
       - test requested sync again... working now
     - use run_one_instance wrapper for cronjobs so if they slow down we don't run many versions
-  - TODO: supervisor to restart docker-compose command on server reboot
+  - supervisor to restart docker-compose command on server reboot
+    - or use systemd?
+    - test restarting machine
+  - TODO: logrotate for cronlogs
+  - TODO: change force sync to be a descriptive button
   - TODO: invitation link (should live in database or environment so it's not committed in code)
     - TODO: disable normal registration
     - TODO: limit signups to invitees
   - TODO: make sure signup works (incl verification email, forgot password, etc.)
+  - TODO: test with account that has many recipes
   - TODO: also share feature roadmap (trello board?)
+  - TODO: add sample .production env files
   - TODO: open source code (review for secrets)
+    - TODO: update README to talk about setup (e.g. deploy, crontab scripts, supervisor)
     - TODO: link to repo from website footer
   - TODO: change HSTS in config/settings/production.py
   - TODO: test sending email to paprika-sync.com
   - TODO: try out digitalocean CDN
     - does whitenoise fingerprint asset files? looks like yes
+  - TODO: test setting up a new machine? might break with the domain stuff
 - TODO: figure out how to update recipes (do they get a new uid? or just an updated hash?)
 - TODO: add clone recipe (i.e. copy a recipe you don't have at all)
   - TODO: how to handle missing categories in destination account?
@@ -112,7 +120,14 @@ left off
 - TODO: weekly digest email
 - TODO: search, filter, sort on recipe list views
 - TODO: limit categories queryset to currently logged-in user (in admin)
+- TODO: set up deadmansnitch or uptime robot for website
+- TODO: every-minute cronjobs are expensive, maybe change those to API endpoints hit with ajax? but then there might be request timeout that kills the serverside process
+  - could offload making all the paprika API requests to AWS lambda then just give full json file back for importing into db
+  - TODO: could use SQS to enqueue and a separate, always-running process to work on the jobs (jobs being, import new account and sync existing account)
+  - TODO: could use SQS to enqueue and a separate, always-running process to work on the jobs (jobs being, import new account and sync existing account)
+  - TODO: could use SQS to enqueue and a separate, always-running process to work on the jobs (jobs being, import new account and sync existing account)
 - TODO: privacy page (allow setting default and per-user checkboxes for "publish my actions to" and "show me actions from")
+- TODO: zero-downtime deploys
 
 
 general

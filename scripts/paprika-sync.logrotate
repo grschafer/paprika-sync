@@ -1,0 +1,8 @@
+/var/log/cronlogs/*.log
+{
+    rotate 10
+    weekly
+    missingok
+    compress
+    delaycompress
+}

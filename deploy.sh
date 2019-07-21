@@ -19,6 +19,7 @@ docker-machine ssh paprika-sync -- docker-compose -f /app/production.yml build
 docker-machine ssh paprika-sync -- mkdir -p /var/log/cronlogs
 docker-machine ssh paprika-sync -- bash /app/scripts/install_crontab.sh
 docker-machine ssh paprika-sync -- cp -f /app/scripts/paprika-sync.service /etc/systemd/system
+docker-machine ssh paprika-sync -- cp -f /app/scripts/paprika-sync.logrotate /etc/logrotate.d/paprika-sync
 docker-machine ssh paprika-sync -- systemctl daemon-reload
 docker-machine ssh paprika-sync -- systemctl enable paprika-sync
 docker-machine ssh paprika-sync -- systemctl restart paprika-sync

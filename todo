@@ -95,7 +95,7 @@ left off
   - supervisor to restart docker-compose command on server reboot
     - or use systemd?
     - test restarting machine
-  - TODO: logrotate for cronlogs
+  - logrotate for cronlogs
   - TODO: change force sync to be a descriptive button
   - TODO: invitation link (should live in database or environment so it's not committed in code)
     - TODO: disable normal registration

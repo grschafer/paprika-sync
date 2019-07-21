@@ -11,3 +11,12 @@ REDIS_URL=redis://redis:6379/0
 # Logging
 # ------------------------------------------------------------------------------
 DJANGO_ROOT_LOG_LEVEL=DEBUG
+
+
+# django-allauth
+# ------------------------------------------------------------------------------
+DJANGO_ACCOUNT_ALLOW_REGISTRATION=False
+
+# Registration invite token
+# ------------------------------------------------------------------------------
+REGISTRATION_INVITE_TOKEN=test

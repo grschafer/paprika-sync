@@ -96,10 +96,10 @@ left off
     - or use systemd?
     - test restarting machine
   - logrotate for cronlogs
-  - TODO: change force sync to be a descriptive button
-  - TODO: invitation link (should live in database or environment so it's not committed in code)
-    - TODO: disable normal registration
-    - TODO: limit signups to invitees
+  - change force sync to be a descriptive button
+  - invitation link (should live in database or environment so it's not committed in code)
+    - disable normal registration and limit signups to invitees
+    - write tests
   - TODO: make sure signup works (incl verification email, forgot password, etc.)
   - TODO: test with account that has many recipes
   - TODO: also share feature roadmap (trello board?)

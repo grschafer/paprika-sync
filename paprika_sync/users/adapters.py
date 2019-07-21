@@ -9,6 +9,11 @@ from django.http import HttpRequest
 class AccountAdapter(DefaultAccountAdapter):
 
     def is_open_for_signup(self, request: HttpRequest):
+        allow_registration = getattr(settings, "ACCOUNT_ALLOW_REGISTRATION", True)
+        if not allow_registration:
+            invite_token = getattr(settings, "REGISTRATION_INVITE_TOKEN", None)
+            if invite_token and request.GET.get('invite') == invite_token:
+                return True
         return getattr(settings, "ACCOUNT_ALLOW_REGISTRATION", True)
 
 

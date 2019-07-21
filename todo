@@ -127,6 +127,7 @@ left off
   - TODO: could use SQS to enqueue and a separate, always-running process to work on the jobs (jobs being, import new account and sync existing account)
   - TODO: could use SQS to enqueue and a separate, always-running process to work on the jobs (jobs being, import new account and sync existing account)
 - TODO: privacy page (allow setting default and per-user checkboxes for "publish my actions to" and "show me actions from")
+- TODO: instacart integration?
 - TODO: zero-downtime deploys
 
 

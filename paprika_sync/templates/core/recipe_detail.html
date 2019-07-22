@@ -10,20 +10,16 @@
 <small>Recipe belongs to: <a href="{% url 'core:recipes-diff' other_alias=recipe.paprika_account.alias %}">{{ recipe.paprika_account.alias }}</a></small>
 {% endif %}
 
+{% if recipe.photo_url %}
+<img src="{{ recipe.photo_url }}">
+{% else %}
+<img src="{% static 'images/missing-thumb.svg' %}">
+{% endif %}
+
 
 <section class="table-responsive-sm recipe-detail">
     <table class="table table-sm">
         <tbody>
-            <tr>
-                <th scope="row">Thumbnail</th>
-                <td>
-                {% if recipe.photo_url %}
-                    <img src="{{ recipe.photo_url }}">
-                {% else %}
-                    <img src="{% static 'images/missing-thumb.svg' %}">
-                {% endif %}
-                </td>
-            </tr>
             <tr>
                 <th scope="row">Favorited</th>
                 <td>{{ recipe.on_favorites|yesno }}</td>

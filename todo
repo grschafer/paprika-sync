@@ -104,17 +104,17 @@ left off
   - test with account that has many recipes
   - add about page
     - add changelog
-  - TODO: review mobile UX
-  - TODO: also share feature roadmap (trello board?)
-  - TODO: open source code (review for secrets)
-    - TODO: add sample .production env files
-    - TODO: update README to talk about setup (e.g. deploy, crontab scripts, supervisor)
-    - TODO: link to repo from website footer
-  - TODO: change HSTS in config/settings/production.py
+  - review mobile UX
+  - open source code (review for secrets)
+    - add sample .production env files
+    - update README to talk about setup (e.g. deploy, crontab scripts, supervisor)
+    - link to repo from website about page
+  - change HSTS in config/settings/production.py
   - TODO: test sending email to paprika-sync.com
   - TODO: try out digitalocean CDN
     - does whitenoise fingerprint asset files? looks like yes
   - TODO: test setting up a new machine? might break with the domain stuff
+- TODO: share feature roadmap (trello board?)
 - TODO: add "new" icon to navbar for new changelog items (get latest changelog date on server init, save it to localStorage when visited)
 - TODO: figure out how to update recipes (do they get a new uid? or just an updated hash?)
 - TODO: add "compare accounts" link to "new_account" newsitem type

@@ -276,6 +276,7 @@ paprika_sync/media/
 .env
 .envs/*
 !.envs/.local/
+!.envs/.production-django-sample
 
 
 *.css.map

@@ -164,9 +164,9 @@ def recipes_to_api_dict(recipes):
 def get_test_categories_dict(qty=1):
     categories = [
         {
-            'order_flag': 37,
+            # 'order_flag': 37,
             'uid': '90A5A11B-204A-40BC-AEB0-E7849CB5C043',
-            'parent_uid': None,
+            'parent_uid': '',
             'name': 'Drink',
         }
     ]

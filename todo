@@ -104,7 +104,6 @@ left off
   - test with account that has many recipes
   - add about page
     - add changelog
-    - add "new" icon to navbar
   - TODO: review mobile UX
   - TODO: also share feature roadmap (trello board?)
   - TODO: open source code (review for secrets)
@@ -116,6 +115,7 @@ left off
   - TODO: try out digitalocean CDN
     - does whitenoise fingerprint asset files? looks like yes
   - TODO: test setting up a new machine? might break with the domain stuff
+- TODO: add "new" icon to navbar for new changelog items (get latest changelog date on server init, save it to localStorage when visited)
 - TODO: figure out how to update recipes (do they get a new uid? or just an updated hash?)
 - TODO: add "compare accounts" link to "new_account" newsitem type
 - TODO: add clone recipe (i.e. copy a recipe you don't have at all)
@@ -146,9 +146,7 @@ to continuously re-compile sass: sass --watch paprika_sync/static/sass/project.s
 
 to run tests: docker-compose -f local.yml run django pytest paprika_sync/core
 
-see bashin.sh for docker commands (e.g. running a shell)
-
-see tasks here: https://github.com/grschafer/paprika-sync/projects/1
+to run a shell: docker-compose -f local.yml run django shell_plus
 
 to force rebuild the container...
     force rebuild: docker-compose build django

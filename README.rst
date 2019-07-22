@@ -13,7 +13,7 @@ Webapp for comparing and syncing multiple Paprika Recipe Manager accounts
 
 This webapp is unofficial and unaffiliated with Paprika Recipe Manager.
 
-Thanks to <https://gist.github.com/mattdsteele/7386ec363badfdeaad05a418b9a1f30a> for documentation of the Paprika API.
+Thanks to https://gist.github.com/mattdsteele/7386ec363badfdeaad05a418b9a1f30a for documentation of the Paprika API.
 
 
 Settings
@@ -109,5 +109,6 @@ See detailed `cookiecutter-django Docker documentation`_.
 
 .. _`cookiecutter-django Docker documentation`: http://cookiecutter-django.readthedocs.io/en/latest/deployment-with-docker.html
 
+Deploy scripts (for cronjobs, systemd, logrotate, etc.) can be found in the scripts folder.
 
 

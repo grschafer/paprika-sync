@@ -42,6 +42,7 @@
         {% url 'account_signup' as signup_url %}
         {% url 'account_login' as login_url %}
         {% url 'account_logout' as logout_url %}
+        {% url 'core:about' as about_url %}
         <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
@@ -71,11 +72,17 @@
                   <a class="nav-link" href="{{ add_account_url }}">{% trans "Add Paprika Account" %}</a>
                 </li>
               {% endif %}
+              <li class="nav-item {% if request.path == about_url %}active{% endif %}">
+                <a class="nav-link" href="{{ about_url }}">{% trans "About" %}</a>
+              </li>
               <li class="nav-item {% if request.path == logout_url %}active{% endif %}">
                 {# URL provided by django-allauth/account/urls.py #}
                 <a class="nav-link" href="{{ logout_url }}">{% trans "Sign Out" %}</a>
               </li>
             {% else %}
+              <li class="nav-item {% if request.path == about_url %}active{% endif %}">
+                <a class="nav-link" href="{{ about_url }}">{% trans "About" %}</a>
+              </li>
               <li class="nav-item {% if request.path == signup_url %}active{% endif %}">
                 {# URL provided by django-allauth/account/urls.py #}
                 <a id="sign-up-link" class="nav-link" href="{{ signup_url }}">{% trans "Sign Up" %}</a>

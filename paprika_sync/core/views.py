@@ -7,7 +7,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db import transaction
 from django.http import Http404
 from django.urls import reverse_lazy
-from django.views.generic import CreateView, ListView, RedirectView, DetailView
+from django.views.generic import CreateView, ListView, RedirectView, DetailView, TemplateView
 
 from .forms import PaprikaAccountForm
 from .models import PaprikaAccount, NewsItem, Recipe
@@ -23,6 +23,10 @@ class HomeView(LoginRequiredMixin, ListView):
     queryset = NewsItem.objects.all()
     paginate_by = 25
     # Uses template paprika_account/templates/core/newsitem_list.html
+
+
+class AboutView(TemplateView):
+    template_name = 'core/about.html'
 
 
 class AddPaprikaAccountView(LoginRequiredMixin, CreateView):

@@ -5,6 +5,7 @@ from . import views
 app_name = "core"
 urlpatterns = [
     path("", views.HomeView.as_view(), name="home"),
+    path("about", view=views.AboutView.as_view(), name="about"),
     path("accounts/add", view=views.AddPaprikaAccountView.as_view(), name="add-paprika-account"),
     path("account/sync", view=views.RequestAccountSyncView.as_view(), name="request-account-sync"),
     path("recipes", view=views.RecipeListView.as_view(), name="recipes"),

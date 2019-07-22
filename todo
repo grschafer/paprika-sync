@@ -100,11 +100,15 @@ left off
   - invitation link (should live in database or environment so it's not committed in code)
     - disable normal registration and limit signups to invitees
     - write tests
-  - TODO: make sure signup works (incl verification email, forgot password, etc.)
-  - TODO: test with account that has many recipes
+  - make sure signup works (incl verification email, forgot password, etc.)
+  - test with account that has many recipes
+  - add about page
+    - add changelog
+    - add "new" icon to navbar
+  - TODO: review mobile UX
   - TODO: also share feature roadmap (trello board?)
-  - TODO: add sample .production env files
   - TODO: open source code (review for secrets)
+    - TODO: add sample .production env files
     - TODO: update README to talk about setup (e.g. deploy, crontab scripts, supervisor)
     - TODO: link to repo from website footer
   - TODO: change HSTS in config/settings/production.py
@@ -113,6 +117,7 @@ left off
     - does whitenoise fingerprint asset files? looks like yes
   - TODO: test setting up a new machine? might break with the domain stuff
 - TODO: figure out how to update recipes (do they get a new uid? or just an updated hash?)
+- TODO: add "compare accounts" link to "new_account" newsitem type
 - TODO: add clone recipe (i.e. copy a recipe you don't have at all)
   - TODO: how to handle missing categories in destination account?
 - TODO: add update recipe (i.e. update your recipe with changes they've made)
@@ -128,6 +133,7 @@ left off
   - TODO: could use SQS to enqueue and a separate, always-running process to work on the jobs (jobs being, import new account and sync existing account)
 - TODO: privacy page (allow setting default and per-user checkboxes for "publish my actions to" and "show me actions from")
 - TODO: instacart integration?
+- TODO: db backups
 - TODO: zero-downtime deploys
 
 

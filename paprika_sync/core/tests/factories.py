@@ -93,7 +93,7 @@ def get_test_recipe_dict(overrides=None, del_keys=None):
         "in_trash": False,
         "directions": "Shake, chilled single rocks glass, no garnish.",
         "categories": ["90A5A11B-204A-40BC-AEB0-E7849CB5C043"],
-        "photo_url": None,
+        "photo_url": 'http://uploads.paprikaapp.com.s3.amazonaws.com/117337/0972A167-C41F-44D0-8C5A-7FEB109FDB7A-915-000000FD7616CB77.jpg?Signature=21mKNUap6q6HOxUQSw94d2yrR3o%3D&Expires=1563838240&AWSAccessKeyId=AKIAJA4A42FBJBMX5ARA',
         "cook_time": "2 min",
         "name": "Prosecutor",
         "created": "2019-06-16 22:32:01",

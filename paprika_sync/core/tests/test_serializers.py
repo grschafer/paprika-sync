@@ -20,6 +20,21 @@ def test_serializer_null_photo_url_ok():
     assert rs.is_valid(), rs.errors
 
 
+def test_serializer_photo_url_strips_querystring():
+    pa = PaprikaAccountFactory()
+    recipe = get_test_recipe_dict(overrides={'paprika_account': pa.id, 'categories': []})
+    rs = RecipeSerializer(data=recipe)
+    assert rs.is_valid(), rs.errors
+    assert '?' not in rs.validated_data['photo_url']
+
+
+def test_serializer_null_description_ok():
+    pa = PaprikaAccountFactory()
+    recipe = get_test_recipe_dict(overrides={'paprika_account': pa.id, 'categories': [], 'description': None})
+    rs = RecipeSerializer(data=recipe)
+    assert rs.is_valid(), rs.errors
+
+
 def test_serializer_supports_mixed_valid_and_bad_categories():
     pa = PaprikaAccountFactory()
     cat = CategoryFactory(**get_test_categories_dict()[0], paprika_account=pa)

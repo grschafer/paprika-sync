@@ -67,7 +67,7 @@ left off
 - update auth to use email only, login immediately on email confirm
 - make paprikaaccount form bootstrappy
 - update all "not implemented yet" stuff (clone recipes, newsitems links)
-- TODO: deploy and share
+- deploy and share
   - switch from caddy to traefik
     - https://github.com/pydanny/cookiecutter-django/pull/1714
   - deploy
@@ -113,9 +113,16 @@ left off
   - why didn't categories associate with recipes in prod?
     - write test
   - share
+- fix issue with recipes having null values for fields
+  - also make sure that this doesn't block importing other recipes
+    - it doesn't
+  - write a test
+- TODO: show import errors to user?
 - TODO: test sending email to paprika-sync.com
   - seems like it forwards correctly now
   - TODO: change "from" addresses to support@mg.paprika-sync.com instead of noreply@paprika-sync.com
+- TODO: set custom user agent on requests to paprika API
+- TODO: put showcase screenshots on about page?
 - TODO: add "compare accounts" link to "new_account" newsitem type
 - TODO: share feature roadmap (trello board?)
 - TODO: add "new" icon to navbar for new changelog items (get latest changelog date on server init, save it to localStorage when visited)

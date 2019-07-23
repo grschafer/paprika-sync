@@ -27,19 +27,37 @@ class RecipeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Recipe
         fields = '__all__'
-        # TODO: add exclude for date_ended
-        extra_kwargs = {
-            # These fields may be null in the API, we transform them to empty strings below
-            'photo_hash': {'allow_null': True},
-            'photo_url': {'allow_null': True},
-        }
+        # TODO: add exclude for date_ended?
 
     def validate_photo_url(self, value):
-        if value is None:
-            return ''
         # Strip off query params so image access doesn't expire
         # TODO: Download the url to local server instead of adding load to paprika's s3 account
         return value.partition('?')[0]
 
-    def validate_photo_hash(self, value):
-        return '' if value is None else value
+    def to_internal_value(self, data):
+        'Convert null fields to empty string as recommended for django db models'
+        null_to_empty_str_fields = {
+            'cook_time',
+            'description',
+            'difficulty',
+            'directions',
+            'image_url',
+            'in_trash',
+            'is_pinned',
+            'notes',
+            'nutritional_info',
+            'on_grocery_list',
+            'photo',
+            'photo_hash',
+            'photo_large',
+            'photo_url',
+            'prep_time',
+            'scale',
+            'servings',
+            'source_url',
+            'total_time',
+        }
+        for key, value in data.items():
+            if key in null_to_empty_str_fields and value is None:
+                data[key] = ''
+        return super().to_internal_value(data)

@@ -117,6 +117,10 @@ left off
   - also make sure that this doesn't block importing other recipes
     - it doesn't
   - write a test
+- categories duplicated because they attach to the original account and the account the recipes were copied to
+  - limit to categories in same paprika account
+- TODO: fix bug where all thumbnails show as different... uid in url matches but there's a user id prefix or something changing
+- TODO: deleted recipes are showing... save that field and exclude it from PaprikaAccount.recipes
 - TODO: show import errors to user?
 - TODO: test sending email to paprika-sync.com
   - seems like it forwards correctly now

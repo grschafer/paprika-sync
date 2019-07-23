@@ -64,5 +64,13 @@ class UidRelatedField(serializers.RelatedField):
         except (TypeError, ValueError):
             self.fail('incorrect_type', data_type=type(data).__name__)
 
+    def get_queryset(self):
+        # Reach into RecipeSerializer to get paprika account we should filter on.
+        # To prevent associating a Recipe with Categories outside of its
+        # PaprikaAccount (can happen when exporting recipes and importing to a
+        # different account
+        paprika_account = self.parent.parent.initial_data['paprika_account']
+        return super().get_queryset().filter(paprika_account=paprika_account)
+
     def to_representation(self, value):
         return value.uid

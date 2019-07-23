@@ -29,8 +29,8 @@ class Command(BaseCommand):
 
     @log_start_end(logger)
     def handle(self, *args, **options):
-        requested = options['requested']
-        if requested:
+        self.requested = options['requested']
+        if self.requested:
             accounts_to_sync = PaprikaAccount.objects.filter(
                 import_sync_status__in=(PaprikaAccount.SYNC_REQUESTED, PaprikaAccount.SYNC_FAILURE),
                 sync_failure_count__lt=5,
@@ -51,7 +51,7 @@ class Command(BaseCommand):
                 pa.save()
 
     def sync_account(self, paprika_account):
-        logger.info('Starting regular background sync of recipes for %s', paprika_account)
+        logger.info('Starting %s background sync of recipes for %s', 'requested' if self.requested else 'regular', paprika_account)
         # Change status to 'in progress'
         paprika_account.start_sync_recipes()
         paprika_account.save()

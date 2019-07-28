@@ -119,6 +119,28 @@ def test_sync_account_recipes_from_api_recipe_deleted(mock_categories, user):
 
 
 @mock.patch('paprika_sync.core.models.PaprikaAccount.get_categories', return_value=get_test_categories_dict())
+def test_sync_account_recipes_from_api_recipe_trashed(mock_categories, user):
+    pa = PaprikaAccountFactory()
+    r1 = RecipeFactory(paprika_account=pa)
+    r1.in_trash = True
+    r1.hash = str(uuid4())
+
+    recipes_api_dict = recipes_to_api_dict([r1])
+    recipe_api_dict = recipe_to_api_dict(r1)
+    pa.start_sync_recipes()
+    with mock.patch('paprika_sync.core.models.PaprikaAccount.get_recipes', return_value=recipes_api_dict), mock.patch('paprika_sync.core.models.PaprikaAccount.get_recipe', return_value=recipe_api_dict):
+        pa.sync_recipes()
+
+    assert Recipe.objects.all().count() == 2
+    assert Recipe.objects.earliest('id').date_ended is not None
+    assert not Recipe.objects.earliest('id').in_trash
+    assert Recipe.objects.latest('id').date_ended is None
+    assert Recipe.objects.latest('id').in_trash
+    assert NewsItem.objects.all().count() == 1
+    assert NewsItem.objects.get().type == NewsItem.TYPE_RECIPE_DELETED
+
+
+@mock.patch('paprika_sync.core.models.PaprikaAccount.get_categories', return_value=get_test_categories_dict())
 def test_sync_categories(mock_categories, user):
     pa = PaprikaAccountFactory()
     assert Category.objects.all().count() == 0

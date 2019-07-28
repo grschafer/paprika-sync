@@ -153,11 +153,12 @@ class PaprikaAccount(BaseModel):
                         db_recipe.save()
 
                         if make_news_items:
+                            action_type = NewsItem.TYPE_RECIPE_DELETED if rs.instance.in_trash and not db_recipe.in_trash else NewsItem.TYPE_RECIPE_EDITED
                             # Create a NewsItem for the diff between new and old recipes
                             fields_changed = list(db_recipe.diff(rs.instance).keys())
                             NewsItem.objects.create(
                                 paprika_account=self,
-                                type=NewsItem.TYPE_RECIPE_EDITED,
+                                type=action_type,
                                 payload={'fields_changed': fields_changed, 'recipe': rs.instance.id, 'previous_recipe': db_recipe.id},
                             )
                     else:
@@ -300,7 +301,7 @@ class PaprikaAccount(BaseModel):
 
     @property
     def recipes(self):
-        return self.all_recipes.filter(date_ended__isnull=True)
+        return self.all_recipes.filter(date_ended__isnull=True).exclude(in_trash=True)
 
     def __str__(self):
         return '{} ({})'.format(self.alias, self.username)
@@ -331,6 +332,7 @@ class Recipe(BaseModel):
     rating = models.PositiveSmallIntegerField(default=0)
     on_favorites = models.BooleanField(default=False)
     categories = models.ManyToManyField('core.Category', related_name='recipes', blank=True)
+    in_trash = models.BooleanField(default=False, help_text='True if recipe was deleted in Paprika app')
 
     # TODO: add other fields (ingreds, directions, rating, source, categories, etc... anything that can change and should be flagged in a NewsItem)
     # TODO: add a 'deleted' flag?

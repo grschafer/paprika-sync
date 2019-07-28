@@ -55,6 +55,7 @@ class RecipeFactory(DjangoModelFactory):
     servings = Faker('word')
     rating = Faker('pyint', min=0, max=5)
     on_favorites = Faker('pybool')
+    in_trash = False
 
     class Meta:
         model = Recipe
@@ -154,6 +155,7 @@ def recipe_to_api_dict(recipe):
         'rating': recipe.rating,
         'on_favorites': recipe.on_favorites,
         'categories': [cat.uid for cat in recipe.categories.all()] if recipe.id else [],
+        'in_trash': recipe.in_trash,
     }
 
 

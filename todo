@@ -127,6 +127,7 @@ left off
   - mgmt command to update hash for all recipes? use it when changing the recipe model? maybe YAGNI
     - just did this in the migration
 - TODO: deleted recipes are showing... save that field and exclude it from PaprikaAccount.recipes
+  - TODO: test importing before adding field, then triggering sync -- does it update correctly?
 - TODO: show import errors to user?
 - TODO: test sending email to paprika-sync.com
   - seems like it forwards correctly now

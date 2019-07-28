@@ -28,11 +28,18 @@ class RecipeSerializer(serializers.ModelSerializer):
         model = Recipe
         fields = '__all__'
         # TODO: add exclude for date_ended?
+        extra_kwargs = {
+            'in_trash': {'allow_null': True},
+        }
 
     def validate_photo_url(self, value):
         # Strip off query params so image access doesn't expire
         # TODO: Download the url to local server instead of adding load to paprika's s3 account
         return value.partition('?')[0]
+
+    def validate_in_trash(self, value):
+        # Translate null to False
+        return False if value is None else value
 
     def to_internal_value(self, data):
         'Convert null fields to empty string as recommended for django db models'

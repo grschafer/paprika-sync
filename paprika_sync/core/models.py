@@ -1,3 +1,4 @@
+import hashlib
 import logging
 
 import requests
@@ -255,7 +256,7 @@ class PaprikaAccount(BaseModel):
                     name,
                     my_recipe.id if my_recipe else None,
                     your_recipe.id if your_recipe else None,
-                    my_recipe.hash != your_recipe.hash if my_recipe and your_recipe else None,
+                    my_recipe.import_stable_hash != your_recipe.import_stable_hash if my_recipe and your_recipe else None,
                 )
             )
 
@@ -310,6 +311,7 @@ class Recipe(BaseModel):
     uid = models.CharField(max_length=200, db_index=True)
     date_ended = models.DateTimeField(null=True, blank=True, db_index=True, help_text='Date when this version of the Recipe was superseded (unset if this is the active Recipe for this uid)')
     hash = models.CharField(max_length=200)
+    import_stable_hash = models.CharField(max_length=200, blank=True, help_text='Hash of recipe data that is stable, even if a recipe is imported from another account')
     photo_hash = models.CharField(max_length=200, blank=True)  # Can be null if no image set
     name = models.CharField(max_length=1000)
     photo_url = models.URLField(max_length=1000, blank=True, help_text="Thumbnail for recipe")
@@ -332,16 +334,34 @@ class Recipe(BaseModel):
 
     # TODO: add other fields (ingreds, directions, rating, source, categories, etc... anything that can change and should be flagged in a NewsItem)
     # TODO: add a 'deleted' flag?
-    IGNORE_FIELDS_IN_DIFF = {'id', 'created_date', 'modified_date', 'paprika_account', 'date_ended'}
+
+    # photo_url ignored because photo_hash indicates whether the photos are different
+    FIELDS_TO_DIFF = ['photo_hash', 'name', 'ingredients', 'source', 'total_time', 'cook_time', 'prep_time', 'description', 'source_url', 'difficulty', 'directions', 'notes', 'nutritional_info', 'servings', 'rating', 'categories']
+
+    def compute_import_stable_hash(self):
+        'Hash that is stable, even if a recipe is imported from another account'
+        hash = hashlib.sha1()
+        for field in sorted(Recipe._meta.get_fields(), key=lambda f: f.name):
+            if field.name in Recipe.FIELDS_TO_DIFF:
+                if field.one_to_many or field.many_to_many:
+                    value_list = getattr(self, field.name).values_list('name', flat=True)
+                    value = ','.join(value_list)
+                    add = value.encode()
+                    hash.update(add)
+                else:
+                    value = getattr(self, field.name)
+                    add = str(value).encode()
+                    hash.update(add)
+        return hash.hexdigest()
 
     def diff(self, other):
         'Diffs 2 Recipes, returning {field_name: True, ...} containing all fields changed'
         fields_changed = {}
         for field in Recipe._meta.get_fields():
-            if field.name not in Recipe.IGNORE_FIELDS_IN_DIFF:
+            if field.name in Recipe.FIELDS_TO_DIFF:
                 if field.one_to_many or field.many_to_many:
-                    self_list = list(getattr(self, field.name).values_list('pk', flat=True))
-                    other_list = list(getattr(other, field.name).values_list('pk', flat=True))
+                    self_list = set(getattr(self, field.name).values_list('name', flat=True))
+                    other_list = set(getattr(other, field.name).values_list('name', flat=True))
                     if self_list != other_list:
                         fields_changed[field.name] = True
                 else:
@@ -350,6 +370,13 @@ class Recipe(BaseModel):
 
         return fields_changed
 
+    def save(self, *args, **kwargs):
+        self.import_stable_hash = self.compute_import_stable_hash()
+        super().save(*args, **kwargs)
+
+    class Meta:
+        ordering = ['-id']
+
     def __str__(self):
         return self.name
 
@@ -357,13 +384,14 @@ class Recipe(BaseModel):
 class Category(BaseModel):
     paprika_account = models.ForeignKey('core.PaprikaAccount', related_name='categories', on_delete=models.CASCADE)
     uid = models.CharField(max_length=200, db_index=True)
-    name = models.CharField(max_length=1000)
+    name = models.CharField(max_length=1000, db_index=True)
     # Make this a relation?
     parent_uid = models.CharField(max_length=200, db_index=True, blank=True)
     # order_flag = models.IntegerField()  # Not sure what this field is for
 
     class Meta:
         verbose_name_plural = 'categories'
+        ordering = ['name']
 
     def __str__(self):
         return self.name

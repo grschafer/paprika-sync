@@ -119,7 +119,11 @@ left off
   - write a test
 - categories duplicated because they attach to the original account and the account the recipes were copied to
   - limit to categories in same paprika account
-- TODO: fix bug where all thumbnails show as different... uid in url matches but there's a user id prefix or something changing
+- fix bug where all thumbnails show as different... uid in url matches but there's a user id prefix or something changing
+  - have to calc my own recipe hash to be able to diff recipes quickly, add new field to model
+    - getting somewhat spurious diffs b/c my account doesn't have nested categories... just reimport my account to fix, perhaps
+  - mgmt command to update hash for all recipes? use it when changing the recipe model? maybe YAGNI
+    - just did this in the migration
 - TODO: deleted recipes are showing... save that field and exclude it from PaprikaAccount.recipes
 - TODO: show import errors to user?
 - TODO: test sending email to paprika-sync.com
@@ -128,15 +132,17 @@ left off
 - TODO: set custom user agent on requests to paprika API
 - TODO: put showcase screenshots on about page?
 - TODO: add "compare accounts" link to "new_account" newsitem type
+- TODO: weekly digest email
 - TODO: share feature roadmap (trello board?)
 - TODO: add "new" icon to navbar for new changelog items (get latest changelog date on server init, save it to localStorage when visited)
 - TODO: figure out how to update recipes (do they get a new uid? or just an updated hash?)
 - TODO: add clone recipe (i.e. copy a recipe you don't have at all)
+  - TODO: initially, don't try to clone categories, just notify that it's imported as uncategorized
   - TODO: how to handle missing categories in destination account?
 - TODO: add update recipe (i.e. update your recipe with changes they've made)
 - TODO: improve newslist formatting, language
-- TODO: weekly digest email
 - TODO: search, filter, sort on recipe list views
+  - TODO: add site-wide recipe search
 - TODO: limit categories queryset to currently logged-in user (in admin)
 - TODO: set up deadmansnitch or uptime robot for website
 - TODO: every-minute cronjobs are expensive, maybe change those to API endpoints hit with ajax? but then there might be request timeout that kills the serverside process

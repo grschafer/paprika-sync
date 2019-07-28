@@ -90,7 +90,7 @@ class PaprikaAccount(BaseModel):
         pass
 
     @fsm_log_by
-    @transition(field=import_sync_status, source=[SYNC_SUCCESS, SYNC_REQUESTED], target=SYNC_INPROGRESS)
+    @transition(field=import_sync_status, source=[SYNC_SUCCESS, SYNC_REQUESTED, SYNC_FAILURE], target=SYNC_INPROGRESS)
     def start_sync_recipes(self, by=None, **kwargs):
         pass
 
@@ -134,7 +134,7 @@ class PaprikaAccount(BaseModel):
             for recipe in recipes:
                 print('.', end='')
                 uid = recipe['uid']
-                db_recipe = self.recipes.filter(uid=uid).first()
+                db_recipe = self.recipes.filter(uid=uid).last()
                 if db_recipe:
                     if db_recipe.hash != recipe['hash']:
                         # TODO: lots of duplication of recipe creation...
@@ -144,23 +144,23 @@ class PaprikaAccount(BaseModel):
                         rs = RecipeSerializer(data=recipe_detail)
                         if rs.is_valid():
                             rs.save()
+
+                            # Expire the old recipe
+                            db_recipe.date_ended = timezone.now()
+                            db_recipe.save()
+
+                            if make_news_items:
+                                action_type = NewsItem.TYPE_RECIPE_DELETED if rs.instance.in_trash and not db_recipe.in_trash else NewsItem.TYPE_RECIPE_EDITED
+                                # Create a NewsItem for the diff between new and old recipes
+                                fields_changed = list(db_recipe.diff(rs.instance).keys())
+                                NewsItem.objects.create(
+                                    paprika_account=self,
+                                    type=action_type,
+                                    payload={'fields_changed': fields_changed, 'recipe': rs.instance.id, 'previous_recipe': db_recipe.id},
+                                )
                         else:
                             logger.error('Invalid recipe %s: %s', recipe_name, rs.errors)
                             # TODO: collect errors and show to user?
-
-                        # Expire the old recipe
-                        db_recipe.date_ended = timezone.now()
-                        db_recipe.save()
-
-                        if make_news_items:
-                            action_type = NewsItem.TYPE_RECIPE_DELETED if rs.instance.in_trash and not db_recipe.in_trash else NewsItem.TYPE_RECIPE_EDITED
-                            # Create a NewsItem for the diff between new and old recipes
-                            fields_changed = list(db_recipe.diff(rs.instance).keys())
-                            NewsItem.objects.create(
-                                paprika_account=self,
-                                type=action_type,
-                                payload={'fields_changed': fields_changed, 'recipe': rs.instance.id, 'previous_recipe': db_recipe.id},
-                            )
                     else:
                         pass  # No change in the recipe
 
@@ -173,7 +173,7 @@ class PaprikaAccount(BaseModel):
                     if rs.is_valid():
                         rs.save()
 
-                        if make_news_items:
+                        if make_news_items and not rs.instance.in_trash:
                             NewsItem.objects.create(
                                 paprika_account=self,
                                 type=NewsItem.TYPE_RECIPE_ADDED,
@@ -381,9 +381,6 @@ class Recipe(BaseModel):
     def save(self, *args, **kwargs):
         self.import_stable_hash = self.compute_import_stable_hash()
         super().save(*args, **kwargs)
-
-    class Meta:
-        ordering = ['-id']
 
     def __str__(self):
         return self.name

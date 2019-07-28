@@ -97,7 +97,7 @@ def test_sync_account_recipes_from_api_recipe_edited(mock_categories, user):
     assert NewsItem.objects.all().count() == 1
     ni = NewsItem.objects.get()
     assert ni.type == NewsItem.TYPE_RECIPE_EDITED
-    assert set(ni.payload['fields_changed']) == {'name', 'hash'}
+    assert set(ni.payload['fields_changed']) == {'name'}
     assert ni.payload['recipe'] == r2.id
     assert ni.payload['previous_recipe'] == r1.id
 

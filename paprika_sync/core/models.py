@@ -368,8 +368,8 @@ class Recipe(BaseModel):
         for field in Recipe._meta.get_fields():
             if field.name in Recipe.FIELDS_TO_DIFF:
                 if field.one_to_many or field.many_to_many:
-                    self_list = getattr(self, field.name).values_list('name', flat=True)
-                    other_list = getattr(other, field.name).values_list('name', flat=True)
+                    self_list = list(getattr(self, field.name).values_list('name', flat=True))
+                    other_list = list(getattr(other, field.name).values_list('name', flat=True))
                     if self_list != other_list:
                         fields_changed[field.name] = True
                 else:

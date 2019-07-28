@@ -292,6 +292,8 @@ LOGGING = {
             'level': 'INFO',
         },
         'parso': {'level': 'INFO'},
+        'faker': {'level': 'INFO'},
+        'factory': {'level': 'INFO'},
         # Add here if particular loggers are noisy, need higher level
     },
 }

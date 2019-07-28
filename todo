@@ -126,11 +126,11 @@ left off
       - excluding categories for now (makes it hard to add new Recipes due to needing pk in relation, also diff users might have diff organization/categorization schemes)
   - mgmt command to update hash for all recipes? use it when changing the recipe model? maybe YAGNI
     - just did this in the migration
-- TODO: deleted recipes are showing... save that field and exclude it from PaprikaAccount.recipes
-  - TODO: test importing before adding field, then triggering sync -- does it update correctly?
+- deleted recipes are showing... save that field and exclude it from PaprikaAccount.recipes
+  - test importing before adding field, then triggering sync -- does it update correctly?
     - doesn't work because hashes match...
     - wipe account and re-sync? no, would lose associated NewsItems from edits
-    - TODO: just script it from the json and update existing recipes
+    - just script it from the json and update existing recipes
 - TODO: show import errors to user?
 - TODO: test sending email to paprika-sync.com
   - seems like it forwards correctly now

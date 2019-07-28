@@ -291,6 +291,7 @@ LOGGING = {
             'handlers': ['console'],
             'level': 'INFO',
         },
+        'parso': {'level': 'INFO'},
         # Add here if particular loggers are noisy, need higher level
     },
 }

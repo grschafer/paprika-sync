@@ -335,6 +335,7 @@ class Recipe(BaseModel):
     # TODO: add other fields (ingreds, directions, rating, source, categories, etc... anything that can change and should be flagged in a NewsItem)
     # TODO: add a 'deleted' flag?
 
+    FIELDS_TO_HASH = ['photo_hash', 'name', 'ingredients', 'source', 'total_time', 'cook_time', 'prep_time', 'description', 'source_url', 'difficulty', 'directions', 'notes', 'nutritional_info', 'servings', 'rating']
     # photo_url ignored because photo_hash indicates whether the photos are different
     FIELDS_TO_DIFF = ['photo_hash', 'name', 'ingredients', 'source', 'total_time', 'cook_time', 'prep_time', 'description', 'source_url', 'difficulty', 'directions', 'notes', 'nutritional_info', 'servings', 'rating', 'categories']
 
@@ -342,13 +343,18 @@ class Recipe(BaseModel):
         'Hash that is stable, even if a recipe is imported from another account'
         hash = hashlib.sha1()
         for field in sorted(Recipe._meta.get_fields(), key=lambda f: f.name):
-            if field.name in Recipe.FIELDS_TO_DIFF:
-                if field.one_to_many or field.many_to_many:
-                    value_list = getattr(self, field.name).values_list('name', flat=True)
-                    value = ','.join(value_list)
-                    add = value.encode()
-                    hash.update(add)
-                else:
+            if field.name in Recipe.FIELDS_TO_HASH:
+                # Not hashing categories because it's more difficult to add new
+                # Recipes because the relationship requires an ID (categories
+                # are associated after the Recipe is saved). Also, it may not
+                # be worth flagging differences in categorization, because
+                # users may have different personal organization schemes.
+                # if field.one_to_many or field.many_to_many:
+                #     value_list = getattr(self, field.name).values_list('name', flat=True)
+                #     value = ','.join(value_list)
+                #     add = value.encode()
+                #     hash.update(add)
+                # else:
                     value = getattr(self, field.name)
                     add = str(value).encode()
                     hash.update(add)
@@ -360,8 +366,8 @@ class Recipe(BaseModel):
         for field in Recipe._meta.get_fields():
             if field.name in Recipe.FIELDS_TO_DIFF:
                 if field.one_to_many or field.many_to_many:
-                    self_list = set(getattr(self, field.name).values_list('name', flat=True))
-                    other_list = set(getattr(other, field.name).values_list('name', flat=True))
+                    self_list = getattr(self, field.name).values_list('name', flat=True)
+                    other_list = getattr(other, field.name).values_list('name', flat=True)
                     if self_list != other_list:
                         fields_changed[field.name] = True
                 else:

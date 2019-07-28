@@ -4,20 +4,25 @@ import hashlib
 from django.db import migrations, models
 
 
-FIELDS_TO_DIFF = ['photo_hash', 'name', 'ingredients', 'source', 'total_time', 'cook_time', 'prep_time', 'description', 'source_url', 'difficulty', 'directions', 'notes', 'nutritional_info', 'servings', 'rating', 'categories']
+FIELDS_TO_HASH = ['photo_hash', 'name', 'ingredients', 'source', 'total_time', 'cook_time', 'prep_time', 'description', 'source_url', 'difficulty', 'directions', 'notes', 'nutritional_info', 'servings', 'rating']
 
 
 def compute_import_stable_hash(Recipe, recipe):
     'Hash that is stable, even if a recipe is imported from another account'
     hash = hashlib.sha1()
     for field in sorted(Recipe._meta.get_fields(), key=lambda f: f.name):
-        if field.name in FIELDS_TO_DIFF:
-            if field.one_to_many or field.many_to_many:
-                value_list = getattr(recipe, field.name).values_list('name', flat=True)
-                value = ','.join(value_list)
-                add = value.encode()
-                hash.update(add)
-            else:
+        if field.name in FIELDS_TO_HASH:
+            # Not hashing categories because it's more difficult to add new
+            # Recipes because the relationship requires an ID (categories
+            # are associated after the Recipe is saved). Also, it may not
+            # be worth flagging differences in categorization, because
+            # users may have different personal organization schemes.
+            # if field.one_to_many or field.many_to_many:
+            #     value_list = getattr(recipe, field.name).values_list('name', flat=True)
+            #     value = ','.join(value_list)
+            #     add = value.encode()
+            #     hash.update(add)
+            # else:
                 value = getattr(recipe, field.name)
                 add = str(value).encode()
                 hash.update(add)

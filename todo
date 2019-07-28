@@ -122,6 +122,8 @@ left off
 - fix bug where all thumbnails show as different... uid in url matches but there's a user id prefix or something changing
   - have to calc my own recipe hash to be able to diff recipes quickly, add new field to model
     - getting somewhat spurious diffs b/c my account doesn't have nested categories... just reimport my account to fix, perhaps
+    - how to handle hashing categories before Recipe has id? exclude hashing categories?
+      - excluding categories for now (makes it hard to add new Recipes due to needing pk in relation, also diff users might have diff organization/categorization schemes)
   - mgmt command to update hash for all recipes? use it when changing the recipe model? maybe YAGNI
     - just did this in the migration
 - TODO: deleted recipes are showing... save that field and exclude it from PaprikaAccount.recipes

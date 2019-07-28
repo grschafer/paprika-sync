@@ -120,6 +120,7 @@ left off
 - categories duplicated because they attach to the original account and the account the recipes were copied to
   - limit to categories in same paprika account
 - TODO: fix bug where all thumbnails show as different... uid in url matches but there's a user id prefix or something changing
+  - TODO: have to calc my own recipe hash to be able to diff recipes quickly, add new field to model
 - TODO: deleted recipes are showing... save that field and exclude it from PaprikaAccount.recipes
 - TODO: show import errors to user?
 - TODO: test sending email to paprika-sync.com

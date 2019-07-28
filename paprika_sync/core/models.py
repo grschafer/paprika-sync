@@ -1,4 +1,5 @@
 import logging
+import os.path
 
 import requests
 
@@ -255,7 +256,9 @@ class PaprikaAccount(BaseModel):
                     name,
                     my_recipe.id if my_recipe else None,
                     your_recipe.id if your_recipe else None,
-                    my_recipe.hash != your_recipe.hash if my_recipe and your_recipe else None,
+                    # TODO: this fixes spurious diffs, but slows pageload time from ~0.5s to ~14s and increases # queries from 10 to 1214
+                    # TODO: calculate my own hash with the data I care about (category names, photo_url field name), etc.
+                    bool(my_recipe.diff(your_recipe)) if my_recipe and your_recipe else None,
                 )
             )
 
@@ -332,7 +335,8 @@ class Recipe(BaseModel):
 
     # TODO: add other fields (ingreds, directions, rating, source, categories, etc... anything that can change and should be flagged in a NewsItem)
     # TODO: add a 'deleted' flag?
-    IGNORE_FIELDS_IN_DIFF = {'id', 'created_date', 'modified_date', 'paprika_account', 'date_ended'}
+
+    IGNORE_FIELDS_IN_DIFF = {'id', 'created_date', 'modified_date', 'paprika_account', 'date_ended', 'created', 'hash'}
 
     def diff(self, other):
         'Diffs 2 Recipes, returning {field_name: True, ...} containing all fields changed'
@@ -340,9 +344,13 @@ class Recipe(BaseModel):
         for field in Recipe._meta.get_fields():
             if field.name not in Recipe.IGNORE_FIELDS_IN_DIFF:
                 if field.one_to_many or field.many_to_many:
-                    self_list = list(getattr(self, field.name).values_list('pk', flat=True))
-                    other_list = list(getattr(other, field.name).values_list('pk', flat=True))
+                    self_list = set(getattr(self, field.name).values_list('name', flat=True))
+                    other_list = set(getattr(other, field.name).values_list('name', flat=True))
                     if self_list != other_list:
+                        fields_changed[field.name] = True
+                elif field.name == 'photo_url':
+                    # Only compare "<uid>.jpg" filename part of photos, because same photo gets different prefix folder if uploaded to multiple accounts
+                    if os.path.basename(getattr(self, field.name)) != os.path.basename(getattr(other, field.name)):
                         fields_changed[field.name] = True
                 else:
                     if getattr(self, field.name) != getattr(other, field.name):

@@ -25,7 +25,7 @@
                     <img src="{% static 'images/missing-thumb.svg' %}">
                 {% endif %}
                 </td>
-                <td class="{% diff recipe other 'photo_url' %}">
+                <td class="{% diff recipe other 'photo_url' by_url_uid=True %}">
                 {% if other.photo_url %}
                     <img src="{{ other.photo_url }}">
                 {% else %}
@@ -87,7 +87,7 @@
                         Uncategorized
                     {% endfor %}
                 </td>
-                <td class="{% diff recipe other 'categories' 'name' %}">
+                <td class="{% diff recipe other 'categories' sub_field='name' %}">
                     {% for category in other.categories.all %}
                         {{ category.name }}{% if not forloop.last %}, {% endif %}
                     {% empty %}

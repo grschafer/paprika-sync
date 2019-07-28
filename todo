@@ -140,6 +140,7 @@ left off
   - TODO: could use SQS to enqueue and a separate, always-running process to work on the jobs (jobs being, import new account and sync existing account)
   - TODO: could use SQS to enqueue and a separate, always-running process to work on the jobs (jobs being, import new account and sync existing account)
   - TODO: could use SQS to enqueue and a separate, always-running process to work on the jobs (jobs being, import new account and sync existing account)
+  - TODO: or just use redis locally with pubsub
 - TODO: devops extras
   - TODO: try out digitalocean CDN
     - does whitenoise fingerprint asset files? looks like yes

@@ -1,4 +1,5 @@
 import functools
+import re
 
 
 # Logs start and end of the wrapped function
@@ -13,3 +14,18 @@ def log_start_end(logger):
             return val
         return wrapper
     return decorator
+
+
+def strip_query_params(url):
+    return url.partition('?')[0]
+
+
+PAPRIKA_S3_KEY_REGEX = re.compile(r'http://uploads.paprikaapp.com.s3.amazonaws.com/(?P<key>.*)')
+
+
+def make_s3_url_https(url):
+    match = PAPRIKA_S3_KEY_REGEX.match(url)
+    if match:
+        key = match.group("key")
+        return f'https://s3.amazonaws.com/uploads.paprikaapp.com/{key}'
+    return url

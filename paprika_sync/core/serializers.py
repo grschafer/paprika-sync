@@ -2,6 +2,7 @@ from rest_framework import serializers
 
 from .fields import UidRelatedField
 from .models import Category, Recipe
+from .utils import strip_query_params, make_s3_url_https
 
 
 # Handy reference for serializers: http://cdrf.co/
@@ -56,7 +57,8 @@ class RecipeSerializer(serializers.ModelSerializer):
     def validate_photo_url(self, value):
         # Strip off query params so image access doesn't expire
         # TODO: Download the url to local server instead of adding load to paprika's s3 account
-        return value.partition('?')[0]
+        # Rearrange url to use https version (s3.amazonaws.com/<bucket> instead of <bucket>.s3.amazonaws.com)
+        return make_s3_url_https(strip_query_params(value))
 
     def validate_in_trash(self, value):
         # Translate null to False

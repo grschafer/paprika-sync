@@ -9,7 +9,11 @@
             <p class="card-text">{{ newsitem.paprika_account.alias }} created a new account!</p>
 
             {% if my_account %}
-                <a href="{% url 'core:recipes-diff' other_alias=newsitem.paprika_account.alias %}" class="btn btn-primary">Compare recipes</a>
+                {% if my_account != newsitem.paprika_account %}
+                    <a href="{% url 'core:recipes-diff' other_alias=newsitem.paprika_account.alias %}" class="btn btn-primary">Compare recipes</a>
+                {% else %}
+                    <a href="{% url 'core:recipes' %}" class="btn btn-primary">View your recipes</a>
+                {% endif %}
             {% endif %}
 
         {% elif newsitem.type == newsitem.TYPE_RECIPE_ADDED %}

@@ -26,13 +26,15 @@ def forwards(apps, schema_editor):
                 ni.save()
 
                 new_payload = ni.payload.copy()
+                del new_payload['fields_changed']
                 new_payload['original_newsitem'] = ni.id
                 ni2 = NewsItem.objects.create(
-                    created_date=ni.created_date,
                     paprika_account=ni.paprika_account,
                     type=TYPE_RECIPE_RATED,
                     payload=new_payload,
                 )
+                ni2.created_date = ni.created_date
+                ni2.save()
                 print(f'Spliting NewsItem {ni.id} ({ni.payload["fields_changed"]}) into new NewsItem {ni2.id}')
 
 

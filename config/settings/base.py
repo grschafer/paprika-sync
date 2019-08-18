@@ -259,6 +259,10 @@ SYNC_FAILURES_NEEDED_TO_STOP_RETRYING = 5
 
 REGISTRATION_INVITE_TOKEN = env.str('REGISTRATION_INVITE_TOKEN', None)
 
+# https://docs.djangoproject.com/en/dev/ref/settings/#session-cookie-age
+# Large cookie age to minimize having to re-login
+SESSION_COOKIE_AGE = 2**31 - 1
+
 
 import logging.config  # NOQA
 LOGGING_CONFIG = None

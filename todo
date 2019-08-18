@@ -157,11 +157,11 @@ left off
   - dropped to 60 queries, ~900ms overall page time (local)
   - also prefetching paprika-account drops to 35 queries, ~600ms overall page time (local)
 - add recipe thumbnails to homepage
+- prevent logging out -- make identity cookies last forever? currently, 2 weeks means you might have to login every time you visit
 - TODO: aside: switch to f-strings
 - TODO: weekly digest email
   - TODO: add opt-out option in settings
   - TODO: add one-click opt-out option in email itself
-- TODO: prevent logging out -- make identity cookies last forever? currently, 2 weeks means you might have to login every time you visit
 - TODO: set custom user agent on requests to paprika API
 - TODO: put showcase screenshots/video on about page?
 - TODO: share feature roadmap (trello board?)

@@ -8,6 +8,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.postgres.fields import JSONField
 from django.db import models
 from django.utils import timezone
+from django.utils.functional import cached_property
 
 from django_fsm import FSMField, transition
 from django_fsm_log.decorators import fsm_log_by
@@ -420,3 +421,14 @@ class NewsItem(BaseModel):
 
     def __str__(self):
         return '{} by {}'.format(self.type, self.paprika_account)
+
+    def rating_changed(self):
+        return self.type == NewsItem.TYPE_RECIPE_EDITED and self.payload['fields_changed'] == ['rating']
+
+    @cached_property
+    def recipe(self):
+        return self.paprika_account.all_recipes.get(id=self.payload['recipe'])
+
+    @cached_property
+    def previous_recipe(self):
+        return self.paprika_account.all_recipes.get(id=self.payload['previous_recipe'])

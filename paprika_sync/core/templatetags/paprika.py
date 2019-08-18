@@ -15,3 +15,12 @@ def diff(recipe, other, field, sub_field=None):
     if mine != yours:
         return 'different'
     return ''
+
+
+@register.simple_tag
+def has_similar_recipe(my_account, recipe):
+    if my_account:
+        matching = my_account.recipes.filter(name=recipe.name)
+        if matching:
+            return matching.last()
+    return False

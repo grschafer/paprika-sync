@@ -59,4 +59,12 @@ img.cloud-sync-signup {
   margin-bottom: 1rem;
 }
 
+.newsitem.card {
+  margin: 10px 0px;
+}
+.newsitem.card .card-subtitle {
+  font-size: 85%;
+  float: right;
+}
+
 /*# sourceMappingURL=project.css.map */

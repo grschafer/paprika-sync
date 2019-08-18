@@ -134,19 +134,29 @@ left off
 - sticky table header
   - on th elems, position:sticky and top:0px and box-shadow:0px 1px 0 #dee2e6
   - on table-responsive, unset overflow-x
-- TODO: show import errors to user?
-- TODO: test sending email to paprika-sync.com
+- TODO: update changelog from here
+- TODO: update changelog from here
+- TODO: update changelog from here
+- test sending email to paprika-sync.com
   - seems like it forwards correctly now
-  - TODO: change "from" addresses to support@mg.paprika-sync.com instead of noreply@paprika-sync.com
-- TODO: set custom user agent on requests to paprika API
-- TODO: put showcase screenshots/video on about page?
-- TODO: add "compare accounts" link to "new_account" newsitem type
+  - change "from" addresses to support@mg.paprika-sync.com instead of noreply@paprika-sync.com
 - TODO: make newsitems on news feed more descriptive (ie - what part of the recipe changed)
+  - add "compare accounts" link to "new_account" newsitem type
+  - link to compare before-after editing recipe
+  - template tag to see if a newsitem recipe already exists in your account
+  - TODO: always split rating into its own NewsItem? yes
+  - TODO: add last-date-edited or similar to the recipe-diff view (for distinguishing edited versions)
+  - TODO: watch page performance while adding lots of one-off recipe lookups
+- TODO: aside: switch to f-strings
 - TODO: improve newslist formatting, language
-- TODO: prevent logging out -- make identity cookies last forever? currently, 2 weeks means you might have to login every time you visit
+  - TODO: make pagination span full width on mobile, or have min width between buttons for easier tapping
+  - TODO: add some margin-bottom to base template, so bottom of page is more accessible on mobile
 - TODO: weekly digest email
   - TODO: add opt-out option in settings
   - TODO: add one-click opt-out option in email itself
+- TODO: prevent logging out -- make identity cookies last forever? currently, 2 weeks means you might have to login every time you visit
+- TODO: set custom user agent on requests to paprika API
+- TODO: put showcase screenshots/video on about page?
 - TODO: share feature roadmap (trello board?)
 - TODO: add "new" icon to navbar for new changelog items (get latest changelog date on server init, save it to localStorage when visited)
   - TODO: or do it via db, so it translates across devices
@@ -155,6 +165,7 @@ left off
   - TODO: initially, don't try to clone categories, just notify that it's imported as uncategorized
   - TODO: eventually, prompt user if they want to copy any categories they don't have? what about categories spelled similarly... do a fuzzy string match?
 - TODO: add update recipe (i.e. update your recipe with changes they've made)
+- TODO: show finer-grained diffs (hard to see diff in changed ingredients, directions, notes)
 - TODO: search, filter, sort on recipe list views
   - TODO: add site-wide recipe search
 - TODO: limit categories queryset to currently logged-in user (in admin)

@@ -100,12 +100,7 @@ class RecipeDetailView(LoginRequiredMixin, DetailView):
 
 class RecipeDiffView(LoginRequiredMixin, DetailView):
     template_name = 'core/recipe_diff.html'
-
-    def get_queryset(self):
-        try:
-            return self.request.user.paprika_accounts.get().recipes
-        except PaprikaAccount.DoesNotExist:
-            raise Http404
+    queryset = Recipe.objects.all()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

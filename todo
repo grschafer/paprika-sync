@@ -131,32 +131,38 @@ left off
     - doesn't work because hashes match...
     - wipe account and re-sync? no, would lose associated NewsItems from edits
     - just script it from the json and update existing recipes
+- sticky table header
+  - on th elems, position:sticky and top:0px and box-shadow:0px 1px 0 #dee2e6
+  - on table-responsive, unset overflow-x
 - TODO: show import errors to user?
 - TODO: test sending email to paprika-sync.com
   - seems like it forwards correctly now
   - TODO: change "from" addresses to support@mg.paprika-sync.com instead of noreply@paprika-sync.com
 - TODO: set custom user agent on requests to paprika API
-- TODO: put showcase screenshots on about page?
+- TODO: put showcase screenshots/video on about page?
 - TODO: add "compare accounts" link to "new_account" newsitem type
+- TODO: make newsitems on news feed more descriptive (ie - what part of the recipe changed)
+- TODO: improve newslist formatting, language
+- TODO: prevent logging out -- make identity cookies last forever? currently, 2 weeks means you might have to login every time you visit
 - TODO: weekly digest email
+  - TODO: add opt-out option in settings
+  - TODO: add one-click opt-out option in email itself
 - TODO: share feature roadmap (trello board?)
 - TODO: add "new" icon to navbar for new changelog items (get latest changelog date on server init, save it to localStorage when visited)
+  - TODO: or do it via db, so it translates across devices
 - TODO: figure out how to update recipes (do they get a new uid? or just an updated hash?)
 - TODO: add clone recipe (i.e. copy a recipe you don't have at all)
   - TODO: initially, don't try to clone categories, just notify that it's imported as uncategorized
-  - TODO: how to handle missing categories in destination account?
+  - TODO: eventually, prompt user if they want to copy any categories they don't have? what about categories spelled similarly... do a fuzzy string match?
 - TODO: add update recipe (i.e. update your recipe with changes they've made)
-- TODO: improve newslist formatting, language
 - TODO: search, filter, sort on recipe list views
   - TODO: add site-wide recipe search
 - TODO: limit categories queryset to currently logged-in user (in admin)
 - TODO: set up deadmansnitch or uptime robot for website
 - TODO: every-minute cronjobs are expensive, maybe change those to API endpoints hit with ajax? but then there might be request timeout that kills the serverside process
   - could offload making all the paprika API requests to AWS lambda then just give full json file back for importing into db
-  - TODO: could use SQS to enqueue and a separate, always-running process to work on the jobs (jobs being, import new account and sync existing account)
-  - TODO: could use SQS to enqueue and a separate, always-running process to work on the jobs (jobs being, import new account and sync existing account)
-  - TODO: could use SQS to enqueue and a separate, always-running process to work on the jobs (jobs being, import new account and sync existing account)
-  - TODO: or just use redis locally with pubsub
+  - TODO: could use SQS to enqueue and a separate, always-running process to work on the jobs (jobs being: import new account and sync existing account)
+  - TODO: or just use redis locally with pubsub to an always-running process
 - TODO: devops extras
   - TODO: try out digitalocean CDN
     - does whitenoise fingerprint asset files? looks like yes

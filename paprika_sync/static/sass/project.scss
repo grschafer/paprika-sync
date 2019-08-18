@@ -63,6 +63,16 @@ $red: #b94a48;
         border: red 1px solid;
     }
 }
+.stick-header.table-responsive {
+    overflow-x: unset;
+
+    thead th {
+        position: sticky;
+        top: -1px;
+        background-color: white;
+        box-shadow: inset 0px -1px 0 #dee2e6;
+    }
+}
 form.request-sync {
     p {
         text-align: right;

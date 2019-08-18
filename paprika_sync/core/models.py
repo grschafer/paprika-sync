@@ -151,23 +151,29 @@ class PaprikaAccount(BaseModel):
                             db_recipe.save()
 
                             if make_news_items:
-                                action_type = NewsItem.TYPE_RECIPE_DELETED if rs.instance.in_trash and not db_recipe.in_trash else NewsItem.TYPE_RECIPE_EDITED
-                                # Create a NewsItem for the diff between new and old recipes
-                                fields_changed = list(db_recipe.diff(rs.instance).keys())
-                                if fields_changed:
-                                    if 'rating' in fields_changed:
-                                        NewsItem.objects.create(
-                                            paprika_account=self,
-                                            type=NewsItem.TYPE_RECIPE_RATED,
-                                            payload={'recipe': rs.instance.id, 'previous_recipe': db_recipe.id},
-                                        )
-                                        fields_changed.remove('rating')
+                                if rs.instance.in_trash and not db_recipe.in_trash:
+                                    NewsItem.objects.create(
+                                        paprika_account=self,
+                                        type=NewsItem.TYPE_RECIPE_DELETED,
+                                        payload={'recipe': rs.instance.id, 'previous_recipe': db_recipe.id},
+                                    )
+                                else:
+                                    # Create a NewsItem for the diff between new and old recipes
+                                    fields_changed = list(db_recipe.diff(rs.instance).keys())
                                     if fields_changed:
-                                        NewsItem.objects.create(
-                                            paprika_account=self,
-                                            type=action_type,
-                                            payload={'fields_changed': fields_changed, 'recipe': rs.instance.id, 'previous_recipe': db_recipe.id},
-                                        )
+                                        if 'rating' in fields_changed:
+                                            NewsItem.objects.create(
+                                                paprika_account=self,
+                                                type=NewsItem.TYPE_RECIPE_RATED,
+                                                payload={'recipe': rs.instance.id, 'previous_recipe': db_recipe.id},
+                                            )
+                                            fields_changed.remove('rating')
+                                        if fields_changed:
+                                            NewsItem.objects.create(
+                                                paprika_account=self,
+                                                type=NewsItem.TYPE_RECIPE_EDITED,
+                                                payload={'fields_changed': fields_changed, 'recipe': rs.instance.id, 'previous_recipe': db_recipe.id},
+                                            )
                         else:
                             logger.error('Invalid recipe %s: %s', recipe_name, rs.errors)
                             # TODO: collect errors and show to user?

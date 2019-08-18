@@ -155,6 +155,11 @@ left off
 - improve newslist formatting, language
   - make pagination span full width on mobile, or have min width between buttons for easier tapping
   - add some margin-bottom to base template, so bottom of page is more accessible on mobile
+- shift NewsItem.payload fields into model directly (esp. recipe relation, for faster homepage queries)
+  - 96 queries, ~1375ms overall page time (local)
+  - dropped to 60 queries, ~900ms overall page time (local)
+  - also prefetching paprika-account drops to 35 queries, ~600ms overall page time (local)
+- TODO: add recipe thumbnails to homepage
 - TODO: aside: switch to f-strings
 - TODO: weekly digest email
   - TODO: add opt-out option in settings

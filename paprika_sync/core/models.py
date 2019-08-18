@@ -431,17 +431,11 @@ class NewsItem(BaseModel):
     paprika_account = models.ForeignKey('core.PaprikaAccount', related_name='+', on_delete=models.CASCADE)
     type = models.CharField(max_length=100, choices=TYPE_CHOICES)
     payload = JSONField(default=dict, help_text='Specifies details (e.g. what fields of a recipe were updated)')
+    recipe = models.ForeignKey('core.Recipe', null=True, blank=True, related_name='+', on_delete=models.CASCADE, help_text='Related recipe (e.g. if type is added, edited, rated, deleted)')
+    previous_recipe = models.ForeignKey('core.Recipe', null=True, blank=True, related_name='+', on_delete=models.CASCADE, help_text='Previous version of the recipe')
 
     class Meta:
         ordering = ('-id',)
 
     def __str__(self):
         return '{} by {}'.format(self.type, self.paprika_account)
-
-    @cached_property
-    def recipe(self):
-        return self.paprika_account.all_recipes.get(id=self.payload['recipe'])
-
-    @cached_property
-    def previous_recipe(self):
-        return self.paprika_account.all_recipes.get(id=self.payload['previous_recipe'])

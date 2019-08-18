@@ -29,3 +29,4 @@ class CategoryAdmin(admin.ModelAdmin):
 @admin.register(NewsItem)
 class NewsItemAdmin(admin.ModelAdmin):
     list_display = ('id', 'paprika_account', 'type', 'created_date')
+    raw_id_fields = ('recipe', 'previous_recipe')

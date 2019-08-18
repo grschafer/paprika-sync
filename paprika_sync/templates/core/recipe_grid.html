@@ -3,10 +3,9 @@
 
 {% block content %}
 
-<h1>Your Recipes</h1>
-
 
 <section class="recipe-grid">
+    <h1>Your Recipes</h1>
     {% for recipe in recipe_list %}
         {% if recipe.photo_url %}
             <img src="{{ recipe.photo_url }}" alt="{{ recipe.name }}">
@@ -17,24 +16,6 @@
 </section>
 
 
-{% if is_paginated %}
-<div class="pagination">
-    <span class="step-links">
-        {% if page_obj.has_previous %}
-            <a href="?page=1">&laquo; first</a>
-            <a href="?page={{ page_obj.previous_page_number }}">previous</a>
-        {% endif %}
-
-        <span class="current">
-            Page {{ page_obj.number }} of {{ paginator.num_pages }}.
-        </span>
-
-        {% if page_obj.has_next %}
-            <a href="?page={{ page_obj.next_page_number }}">next</a>
-            <a href="?page={{ paginator.num_pages }}">last &raquo;</a>
-        {% endif %}
-    </span>
-</div>
-{% endif %}
+{% include 'core/_pagination.html' %}
 
 {% endblock %}

@@ -89,7 +89,11 @@ form.request-sync {
     }
 }
 section {
-    margin-top: 2em;
+    margin: 3rem 0;
+
+    h1 {
+        margin-bottom: 1rem;
+    }
 }
 img.cloud-sync-signup {
     width: 100%;
@@ -102,4 +106,7 @@ img.cloud-sync-signup {
         font-size: 85%;
         float: right;
     }
+}
+.pagination {
+    margin-bottom: 2rem;
 }

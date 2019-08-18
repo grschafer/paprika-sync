@@ -2,31 +2,17 @@
 
 {% block content %}
 
-<h1>News</h1>
+<section class="news-feed">
+    <h1>News</h1>
 
+    {% with my_account=request.user.paprika_accounts.get %}
+        {% for newsitem in newsitem_list %}
+            {% include 'core/_card.html' %}
+        {% endfor %}
+    {% endwith %}
 
-{% with my_account=request.user.paprika_accounts.get %}
-    {% for newsitem in newsitem_list %}
-        {% include 'core/_card.html' %}
-    {% endfor %}
-{% endwith %}
+</section>
 
-<div class="pagination">
-    <span class="step-links">
-        {% if page_obj.has_previous %}
-            <a href="?page=1">&laquo; first</a>
-            <a href="?page={{ page_obj.previous_page_number }}">previous</a>
-        {% endif %}
-
-        <span class="current">
-            Page {{ page_obj.number }} of {{ paginator.num_pages }}.
-        </span>
-
-        {% if page_obj.has_next %}
-            <a href="?page={{ page_obj.next_page_number }}">next</a>
-            <a href="?page={{ paginator.num_pages }}">last &raquo;</a>
-        {% endif %}
-    </span>
-</div>
+{% include 'core/_pagination.html' %}
 
 {% endblock %}

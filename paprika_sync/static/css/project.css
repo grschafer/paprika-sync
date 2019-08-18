@@ -59,7 +59,10 @@ form.request-sync p {
 }
 
 section {
-  margin-top: 2em;
+  margin: 3rem 0;
+}
+section h1 {
+  margin-bottom: 1rem;
 }
 
 img.cloud-sync-signup {
@@ -73,6 +76,10 @@ img.cloud-sync-signup {
 .newsitem.card .card-subtitle {
   font-size: 85%;
   float: right;
+}
+
+.pagination {
+  margin-bottom: 2rem;
 }
 
 /*# sourceMappingURL=project.css.map */

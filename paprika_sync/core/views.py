@@ -112,6 +112,7 @@ class RecipeDiffView(LoginRequiredMixin, DetailView):
 class RecipeListDiffView(LoginRequiredMixin, ListView):
     template_name = 'core/recipes_diff.html'
     context_object_name = 'diff_list'
+    # paginate_by = 25
 
     def get_queryset(self):
         try:

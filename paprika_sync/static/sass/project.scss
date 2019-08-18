@@ -101,10 +101,19 @@ img.cloud-sync-signup {
 }
 .newsitem.card {
     margin: 10px 0px;
+    flex-direction: row;
 
     .card-subtitle {
         font-size: 85%;
         float: right;
+        margin-left: 4px;
+    }
+    .card-img {
+        width: 120px;
+
+        @media (max-width: 767px) {
+            display: none;
+        }
     }
 }
 .pagination {

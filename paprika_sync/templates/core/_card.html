@@ -1,6 +1,19 @@
 {% load humanize paprika %}
 
+{% comment %}
+Not loading images on narrow screen from
+https://medium.com/@mike_masey/how-to-use-the-picture-element-to-prevent-images-loading-on-mobile-devices-1376e33b190e
+{% endcomment %}
+
 <div class="newsitem card">
+    {% if newsitem.recipe and newsitem.recipe.photo_url %}
+        <picture>
+            <source media="(max-width: 767px)" sizes="1px" srcset="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7 1w"/>
+            <source media="(min-width: 768px)" sizes="120px" srcset="{{ newsitem.recipe.photo_url }}"/>
+
+            <img src="{{ newsitem.recipe.photo_url }}" class="card-img" alt="{{ newsitem.recipe.name }}">
+        </picture>
+    {% endif %}
     <div class="card-body">
         <h6 class="card-subtitle text-muted" title="{{ newsitem.created_date }}">{{ newsitem.created_date|date:"D, M j" }}</h6>
 
@@ -22,7 +35,7 @@
 
             {% has_similar_recipe my_account newsitem.recipe as my_recipe %}
             {% if my_account and not my_recipe %}
-                <a href="" class="btn btn-primary disabled">Add recipe to your account (not implemented yet)</a>
+                <a href="" class="btn btn-primary disabled">Add recipe to your account</a>
             {% endif %}
 
         {% elif newsitem.type == newsitem.TYPE_RECIPE_EDITED %}
@@ -33,9 +46,9 @@
             {% if my_account %}
                 {% has_similar_recipe my_account newsitem.recipe as my_recipe %}
                 {% if my_recipe %}
-                    <a class="btn btn-primary disabled" href="">Update your recipe with these edits (not implemented yet)</a>
+                    <a class="btn btn-primary disabled" href="">Update your recipe with these edits</a>
                 {% else %}
-                    <a class="btn btn-primary disabled" href="">Add recipe to your account (not implemented yet)</a>
+                    <a class="btn btn-primary disabled" href="">Add recipe to your account</a>
                 {% endif %}
             {% endif %}
 
@@ -45,7 +58,7 @@
 
             {% has_similar_recipe my_account newsitem.recipe as my_recipe %}
             {% if my_account and not my_recipe %}
-                <a class="btn btn-primary disabled" href="">Add recipe to your account (not implemented yet)</a>
+                <a class="btn btn-primary disabled" href="">Add recipe to your account</a>
             {% endif %}
 
         {% elif newsitem.type == newsitem.TYPE_RECIPE_DELETED %}

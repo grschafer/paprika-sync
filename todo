@@ -159,7 +159,7 @@ left off
   - 96 queries, ~1375ms overall page time (local)
   - dropped to 60 queries, ~900ms overall page time (local)
   - also prefetching paprika-account drops to 35 queries, ~600ms overall page time (local)
-- TODO: add recipe thumbnails to homepage
+- add recipe thumbnails to homepage
 - TODO: aside: switch to f-strings
 - TODO: weekly digest email
   - TODO: add opt-out option in settings

@@ -17,6 +17,11 @@
         </thead>
         <tbody>
             <tr>
+                <th scope="row">Updated</th>
+                <td title="{{ recipe.modified_date }}">{{ recipe.modified_date|date:"D, M j" }}</td>
+                <td title="{{ other.modified_date }}">{{ other.modified_date|date:"D, M j" }}</td>
+            </tr>
+            <tr>
                 <th scope="row">Thumbnail</th>
                 <td>
                 {% if recipe.photo_url %}
@@ -123,7 +128,7 @@
         </tbody>
     </table>
 
-    <button type="submit" class="btn btn-primary" disabled>Overwrite your version of this recipe with {{ other.paprika_account.alias }}'s version (not implemented yet)</button>
+    <a href="" class="btn btn-primary disabled">Overwrite your version of this recipe with {{ other.paprika_account.alias }}'s version (not implemented yet)</a>
 </section>
 
 

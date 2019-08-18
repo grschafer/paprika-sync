@@ -62,6 +62,16 @@ $red: #b94a48;
         color: red;
         border: red 1px solid;
     }
+
+    a.btn {
+        white-space: normal;
+    }
+
+    @media (max-width: 767px) {
+        img {
+            width: 140px;
+        }
+    }
 }
 .stick-header.table-responsive {
     overflow-x: unset;

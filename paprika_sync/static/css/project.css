@@ -35,6 +35,14 @@
   color: red;
   border: red 1px solid;
 }
+.recipe-diff a.btn {
+  white-space: normal;
+}
+@media (max-width: 767px) {
+  .recipe-diff img {
+    width: 140px;
+  }
+}
 
 .stick-header.table-responsive {
   overflow-x: unset;

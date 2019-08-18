@@ -154,11 +154,20 @@ class PaprikaAccount(BaseModel):
                                 action_type = NewsItem.TYPE_RECIPE_DELETED if rs.instance.in_trash and not db_recipe.in_trash else NewsItem.TYPE_RECIPE_EDITED
                                 # Create a NewsItem for the diff between new and old recipes
                                 fields_changed = list(db_recipe.diff(rs.instance).keys())
-                                NewsItem.objects.create(
-                                    paprika_account=self,
-                                    type=action_type,
-                                    payload={'fields_changed': fields_changed, 'recipe': rs.instance.id, 'previous_recipe': db_recipe.id},
-                                )
+                                if fields_changed:
+                                    if 'rating' in fields_changed:
+                                        NewsItem.objects.create(
+                                            paprika_account=self,
+                                            type=NewsItem.TYPE_RECIPE_RATED,
+                                            payload={'recipe': rs.instance.id, 'previous_recipe': db_recipe.id},
+                                        )
+                                        fields_changed.remove('rating')
+                                    if fields_changed:
+                                        NewsItem.objects.create(
+                                            paprika_account=self,
+                                            type=action_type,
+                                            payload={'fields_changed': fields_changed, 'recipe': rs.instance.id, 'previous_recipe': db_recipe.id},
+                                        )
                         else:
                             logger.error('Invalid recipe %s: %s', recipe_name, rs.errors)
                             # TODO: collect errors and show to user?
@@ -338,9 +347,9 @@ class Recipe(BaseModel):
     # TODO: add other fields (ingreds, directions, rating, source, categories, etc... anything that can change and should be flagged in a NewsItem)
     # TODO: add a 'deleted' flag?
 
-    FIELDS_TO_HASH = ['photo_hash', 'name', 'ingredients', 'source', 'total_time', 'cook_time', 'prep_time', 'description', 'source_url', 'difficulty', 'directions', 'notes', 'nutritional_info', 'servings', 'rating']
+    FIELDS_TO_HASH = {'photo_hash', 'name', 'ingredients', 'source', 'total_time', 'cook_time', 'prep_time', 'description', 'source_url', 'difficulty', 'directions', 'notes', 'nutritional_info', 'servings', 'rating'}
     # photo_url ignored because photo_hash indicates whether the photos are different
-    FIELDS_TO_DIFF = ['photo_hash', 'name', 'ingredients', 'source', 'total_time', 'cook_time', 'prep_time', 'description', 'source_url', 'difficulty', 'directions', 'notes', 'nutritional_info', 'servings', 'rating', 'categories']
+    FIELDS_TO_DIFF = {'photo_hash', 'name', 'ingredients', 'source', 'total_time', 'cook_time', 'prep_time', 'description', 'source_url', 'difficulty', 'directions', 'notes', 'nutritional_info', 'servings', 'rating', 'categories'}
 
     def compute_import_stable_hash(self):
         'Hash that is stable, even if a recipe is imported from another account'
@@ -404,14 +413,15 @@ class Category(BaseModel):
 
 
 class NewsItem(BaseModel):
-    TYPE_NEW_ACCOUNT, TYPE_RECIPE_ADDED, TYPE_RECIPE_EDITED, TYPE_RECIPE_DELETED = 'new_account', 'recipe_added', 'recipe_edited', 'recipe_deleted'
+    TYPE_NEW_ACCOUNT, TYPE_RECIPE_ADDED, TYPE_RECIPE_EDITED, TYPE_RECIPE_RATED, TYPE_RECIPE_DELETED = 'new_account', 'recipe_added', 'recipe_edited', 'recipe_rated', 'recipe_deleted'
     TYPE_CHOICES = (
         (TYPE_NEW_ACCOUNT, TYPE_NEW_ACCOUNT),
         (TYPE_RECIPE_ADDED, TYPE_RECIPE_ADDED),
         (TYPE_RECIPE_EDITED, TYPE_RECIPE_EDITED),
+        (TYPE_RECIPE_RATED, TYPE_RECIPE_RATED),
         (TYPE_RECIPE_DELETED, TYPE_RECIPE_DELETED),
     )
-    TYPE_CHOICES_LIST = (TYPE_NEW_ACCOUNT, TYPE_RECIPE_ADDED, TYPE_RECIPE_EDITED, TYPE_RECIPE_DELETED)
+    TYPE_CHOICES_LIST = (TYPE_NEW_ACCOUNT, TYPE_RECIPE_ADDED, TYPE_RECIPE_EDITED, TYPE_RECIPE_RATED, TYPE_RECIPE_DELETED)
     paprika_account = models.ForeignKey('core.PaprikaAccount', related_name='+', on_delete=models.CASCADE)
     type = models.CharField(max_length=100, choices=TYPE_CHOICES)
     payload = JSONField(default=dict, help_text='Specifies details (e.g. what fields of a recipe were updated)')
@@ -421,9 +431,6 @@ class NewsItem(BaseModel):
 
     def __str__(self):
         return '{} by {}'.format(self.type, self.paprika_account)
-
-    def rating_changed(self):
-        return self.type == NewsItem.TYPE_RECIPE_EDITED and self.payload['fields_changed'] == ['rating']
 
     @cached_property
     def recipe(self):

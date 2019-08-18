@@ -23,24 +23,25 @@
 
         {% elif newsitem.type == newsitem.TYPE_RECIPE_EDITED %}
 
-            {% has_similar_recipe my_account newsitem.recipe as my_recipe %}
-            {% if newsitem.rating_changed %}
-                <p class="card-text">{{ newsitem.paprika_account.alias }} rated <a href="{% url 'core:recipe' newsitem.recipe.id %}">{{ newsitem.recipe.name }}</a> {{ newsitem.recipe.rating }} stars</p>
+            <p class="card-text">{{ newsitem.paprika_account.alias }} edited <a href="{% url 'core:recipe' newsitem.recipe.id %}">{{ newsitem.recipe.name }}</a>: changed {{ newsitem.payload.fields_changed|join:', ' }}</p>
 
-                {% if my_account and not my_recipe %}
+            <a class="btn btn-primary" href="{% url 'core:recipe-diff' newsitem.previous_recipe.id newsitem.recipe.id %}">View edits</a>
+            {% if my_account %}
+                {% has_similar_recipe my_account newsitem.recipe as my_recipe %}
+                {% if my_recipe %}
+                    <a class="btn btn-primary disabled" href="">Update your recipe with these edits (not implemented yet)</a>
+                {% else %}
                     <a class="btn btn-primary disabled" href="">Add recipe to your account (not implemented yet)</a>
                 {% endif %}
-            {% else %}
-                <p class="card-text">{{ newsitem.paprika_account.alias }} edited <a href="{% url 'core:recipe' newsitem.recipe.id %}">{{ newsitem.recipe.name }}</a>: changed {{ newsitem.payload.fields_changed|join:', ' }}</p>
+            {% endif %}
 
-                <a class="btn btn-primary" href="{% url 'core:recipe-diff' newsitem.previous_recipe.id newsitem.recipe.id %}">View edits</a>
-                {% if my_account %}
-                    {% if my_recipe %}
-                        <a class="btn btn-primary disabled" href="">Update your recipe with these edits (not implemented yet)</a>
-                    {% else %}
-                        <a class="btn btn-primary disabled" href="">Add recipe to your account (not implemented yet)</a>
-                    {% endif %}
-                {% endif %}
+        {% elif newsitem.type == newsitem.TYPE_RECIPE_RATED %}
+
+            <p class="card-text">{{ newsitem.paprika_account.alias }} rated <a href="{% url 'core:recipe' newsitem.recipe.id %}">{{ newsitem.recipe.name }}</a> {{ newsitem.recipe.rating }} stars</p>
+
+            {% has_similar_recipe my_account newsitem.recipe as my_recipe %}
+            {% if my_account and not my_recipe %}
+                <a class="btn btn-primary disabled" href="">Add recipe to your account (not implemented yet)</a>
             {% endif %}
 
         {% elif newsitem.type == newsitem.TYPE_RECIPE_DELETED %}

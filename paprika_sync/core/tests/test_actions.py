@@ -103,6 +103,52 @@ def test_sync_account_recipes_from_api_recipe_edited(mock_categories, user):
 
 
 @mock.patch('paprika_sync.core.models.PaprikaAccount.get_categories', return_value=get_test_categories_dict())
+def test_sync_account_recipes_from_api_recipe_edited_rating_only(mock_categories, user):
+    pa = PaprikaAccountFactory()
+    r1 = RecipeFactory(paprika_account=pa, rating=0)
+    new_rating = 5
+    r1.rating = new_rating
+    r1.hash = str(uuid4())
+
+    recipes_api_dict = recipes_to_api_dict([r1])
+    recipe_api_dict = recipe_to_api_dict(r1)
+    pa.start_sync_recipes()
+    with mock.patch('paprika_sync.core.models.PaprikaAccount.get_recipes', return_value=recipes_api_dict), mock.patch('paprika_sync.core.models.PaprikaAccount.get_recipe', return_value=recipe_api_dict):
+        pa.sync_recipes()
+
+    r1, r2 = Recipe.objects.all().order_by('id')
+    assert NewsItem.objects.all().count() == 1
+    ni = NewsItem.objects.get()
+    assert ni.type == NewsItem.TYPE_RECIPE_RATED
+    assert r1.rating == 0
+    assert r2.rating == new_rating
+
+
+@mock.patch('paprika_sync.core.models.PaprikaAccount.get_categories', return_value=get_test_categories_dict())
+def test_sync_account_recipes_from_api_recipe_edited_rating_and_other_fields(mock_categories, user):
+    pa = PaprikaAccountFactory()
+    r1 = RecipeFactory(paprika_account=pa, rating=0)
+    new_rating = 5
+    new_notes = 'These notes are different'
+    r1.rating = new_rating
+    r1.notes = new_notes
+    r1.hash = str(uuid4())
+
+    recipes_api_dict = recipes_to_api_dict([r1])
+    recipe_api_dict = recipe_to_api_dict(r1)
+    pa.start_sync_recipes()
+    with mock.patch('paprika_sync.core.models.PaprikaAccount.get_recipes', return_value=recipes_api_dict), mock.patch('paprika_sync.core.models.PaprikaAccount.get_recipe', return_value=recipe_api_dict):
+        pa.sync_recipes()
+
+    r1, r2 = Recipe.objects.all().order_by('id')
+    assert NewsItem.objects.all().count() == 2
+    ni1, ni2 = NewsItem.objects.all().order_by('id')
+    assert ni1.type == NewsItem.TYPE_RECIPE_RATED
+    assert ni2.type == NewsItem.TYPE_RECIPE_EDITED
+    assert ni2.payload['fields_changed'] == ['notes']
+
+
+@mock.patch('paprika_sync.core.models.PaprikaAccount.get_categories', return_value=get_test_categories_dict())
 def test_sync_account_recipes_from_api_recipe_deleted(mock_categories, user):
     pa = PaprikaAccountFactory()
     RecipeFactory(paprika_account=pa)

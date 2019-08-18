@@ -144,9 +144,12 @@ left off
   - add "compare accounts" link to "new_account" newsitem type
   - link to compare before-after editing recipe
   - template tag to see if a newsitem recipe already exists in your account
-  - TODO: always split rating into its own NewsItem? yes
+  - always split rating into its own NewsItem? yes
+    - don't create NewsItem if no fields_changed?
+      - delete existing EDITED NewsItems with no fields_changed (or with fields_changed of 'hash' or other fields that aren't user-visible)
   - TODO: add last-date-edited or similar to the recipe-diff view (for distinguishing edited versions)
   - TODO: watch page performance while adding lots of one-off recipe lookups
+- TODO: take a backup before deploying
 - TODO: aside: switch to f-strings
 - TODO: improve newslist formatting, language
   - TODO: make pagination span full width on mobile, or have min width between buttons for easier tapping

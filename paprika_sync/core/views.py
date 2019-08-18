@@ -20,7 +20,7 @@ logger = logging.getLogger(__name__)
 
 
 class HomeView(LoginRequiredMixin, ListView):
-    queryset = NewsItem.objects.all()
+    queryset = NewsItem.objects.all().order_by('-created_date')
     paginate_by = 25
     # Uses template paprika_account/templates/core/newsitem_list.html
 

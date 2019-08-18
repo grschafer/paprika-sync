@@ -23,6 +23,27 @@ class CategorySerializer(serializers.ModelSerializer):
 class RecipeSerializer(serializers.ModelSerializer):
     # Recipes in Paprika API aren't updated to remove missing/deleted categories, so ignore any categories we don't know about
     categories = UidRelatedField(queryset=Category.objects, many=True, ignore_missing_relation=True)
+    NULL_TO_EMPTY_STR_FIELDS = {
+        'cook_time',
+        'description',
+        'difficulty',
+        'directions',
+        'image_url',
+        'in_trash',
+        'is_pinned',
+        'notes',
+        'nutritional_info',
+        'on_grocery_list',
+        'photo',
+        'photo_hash',
+        'photo_large',
+        'photo_url',
+        'prep_time',
+        'scale',
+        'servings',
+        'source_url',
+        'total_time',
+    }
 
     class Meta:
         model = Recipe
@@ -43,28 +64,7 @@ class RecipeSerializer(serializers.ModelSerializer):
 
     def to_internal_value(self, data):
         'Convert null fields to empty string as recommended for django db models'
-        null_to_empty_str_fields = {
-            'cook_time',
-            'description',
-            'difficulty',
-            'directions',
-            'image_url',
-            'in_trash',
-            'is_pinned',
-            'notes',
-            'nutritional_info',
-            'on_grocery_list',
-            'photo',
-            'photo_hash',
-            'photo_large',
-            'photo_url',
-            'prep_time',
-            'scale',
-            'servings',
-            'source_url',
-            'total_time',
-        }
         for key, value in data.items():
-            if key in null_to_empty_str_fields and value is None:
+            if key in RecipeSerializer.NULL_TO_EMPTY_STR_FIELDS and value is None:
                 data[key] = ''
         return super().to_internal_value(data)

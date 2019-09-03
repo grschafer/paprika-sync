@@ -124,6 +124,7 @@ class PaprikaAccount(BaseModel):
                 if make_news_items:
                     for recipe in to_delete:
                         NewsItem.objects.create(
+                            recipe=recipe,
                             paprika_account=self,
                             type=NewsItem.TYPE_RECIPE_DELETED,
                             payload={'recipe': recipe.id},
@@ -153,6 +154,8 @@ class PaprikaAccount(BaseModel):
                             if make_news_items:
                                 if rs.instance.in_trash and not db_recipe.in_trash:
                                     NewsItem.objects.create(
+                                        recipe=rs.instance,
+                                        previous_recipe=db_recipe,
                                         paprika_account=self,
                                         type=NewsItem.TYPE_RECIPE_DELETED,
                                         payload={'recipe': rs.instance.id, 'previous_recipe': db_recipe.id},
@@ -163,6 +166,8 @@ class PaprikaAccount(BaseModel):
                                     if fields_changed:
                                         if 'rating' in fields_changed:
                                             NewsItem.objects.create(
+                                                recipe=rs.instance,
+                                                previous_recipe=db_recipe,
                                                 paprika_account=self,
                                                 type=NewsItem.TYPE_RECIPE_RATED,
                                                 payload={'recipe': rs.instance.id, 'previous_recipe': db_recipe.id},
@@ -170,6 +175,8 @@ class PaprikaAccount(BaseModel):
                                             fields_changed.remove('rating')
                                         if fields_changed:
                                             NewsItem.objects.create(
+                                                recipe=rs.instance,
+                                                previous_recipe=db_recipe,
                                                 paprika_account=self,
                                                 type=NewsItem.TYPE_RECIPE_EDITED,
                                                 payload={'fields_changed': fields_changed, 'recipe': rs.instance.id, 'previous_recipe': db_recipe.id},
@@ -191,6 +198,7 @@ class PaprikaAccount(BaseModel):
 
                         if make_news_items and not rs.instance.in_trash:
                             NewsItem.objects.create(
+                                recipe=rs.instance,
                                 paprika_account=self,
                                 type=NewsItem.TYPE_RECIPE_ADDED,
                                 payload={'recipe': rs.instance.id},

@@ -1,6 +1,8 @@
 {% extends "base.html" %}
 {% load humanize %}
 
+{% block title %}Your Recipes{% endblock %}
+
 {% block content %}
 
 <form method="post" class="request-sync" action="{% url 'core:request-account-sync' %}">

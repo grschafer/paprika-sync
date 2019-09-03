@@ -1,6 +1,8 @@
 {% extends "base.html" %}
 {% load humanize static %}
 
+{% block title %}{{ recipe.name }}{% endblock %}
+
 {% block content %}
 
 <h1>{{ recipe.name }}</h1>

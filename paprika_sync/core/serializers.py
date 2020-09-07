@@ -60,10 +60,6 @@ class RecipeSerializer(serializers.ModelSerializer):
         # Rearrange url to use https version (s3.amazonaws.com/<bucket> instead of <bucket>.s3.amazonaws.com)
         return make_s3_url_https(strip_query_params(value))
 
-    def validate_in_trash(self, value):
-        # Translate null to False
-        return False if value is None else value
-
     def to_internal_value(self, data):
         'Convert null fields to empty string as recommended for django db models'
         for key, value in data.items():

@@ -1,7 +1,8 @@
 from django.utils import timezone
 
 import factory
-from factory import DjangoModelFactory, SubFactory, Faker
+from factory.django import DjangoModelFactory
+from factory import SubFactory, Faker
 
 from paprika_sync.core.models import PaprikaAccount, Recipe, Category
 from paprika_sync.users.tests.factories import UserFactory
@@ -53,7 +54,7 @@ class RecipeFactory(DjangoModelFactory):
     notes = Faker('paragraph')
     nutritional_info = Faker('paragraph')
     servings = Faker('word')
-    rating = Faker('pyint', min=0, max=5)
+    rating = Faker('pyint', min_value=0, max_value=5)
     on_favorites = Faker('pybool')
     in_trash = False
 

@@ -338,7 +338,7 @@ class Recipe(BaseModel):
     hash = models.CharField(max_length=200)
     import_stable_hash = models.CharField(max_length=200, blank=True, help_text='Hash of recipe data that is stable, even if a recipe is imported from another account')
     photo_hash = models.CharField(max_length=200, blank=True)  # Can be null if no image set
-    name = models.CharField(max_length=1000)
+    name = models.CharField(max_length=1000, blank=True)
     photo_url = models.URLField(max_length=1000, blank=True, help_text="Thumbnail for recipe")
     ingredients = models.TextField(blank=True)
     source = models.CharField(max_length=1000, blank=True)

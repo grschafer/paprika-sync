@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load humanize static %}
+{% load humanize static paprika %}
 
 {% block title %}{{ recipe.name }}{% endblock %}
 
@@ -90,6 +90,19 @@
             </tr>
         </tbody>
     </table>
+
+    {% with my_account=request.user.paprika_accounts.get %}
+        {% if my_account and my_account != recipe.paprika_account %}
+            <form action="{% url 'core:recipe-clone' pk=recipe.pk %}" method="post">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-primary">Clone recipe to your account</button>
+            </form>
+            {% has_similar_recipe my_account recipe as my_recipe %}
+            {% if my_account and my_recipe %}
+                <p class="after-button-notice">You have <a href="{% url 'core:recipe' pk=my_recipe.pk %}">{{ my_recipe.name }} in your account</a> already (<a href="{% url 'core:recipe-diff' pk=my_recipe.pk other_pk=recipe.pk %}">Compare recipes</a>)</p>
+            {% endif %}
+        {% endif %}
+    {% endwith %}
 </section>
 
 {% endblock %}

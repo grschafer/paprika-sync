@@ -35,7 +35,10 @@ https://medium.com/@mike_masey/how-to-use-the-picture-element-to-prevent-images-
 
             {% has_similar_recipe my_account newsitem.recipe as my_recipe %}
             {% if my_account and not my_recipe %}
-                <a href="" class="btn btn-primary disabled">Add recipe to your account</a>
+                <form action="{% url 'core:recipe-clone' pk=newsitem.recipe.pk %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-primary">Clone recipe to your account</button>
+                </form>
             {% endif %}
 
         {% elif newsitem.type == newsitem.TYPE_RECIPE_EDITED %}

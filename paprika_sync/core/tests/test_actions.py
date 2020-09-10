@@ -210,3 +210,9 @@ def test_sync_categories(mock_categories, user):
     assert Category.objects.all().count() == 1
     pa.sync_categories()
     assert Category.objects.all().count() == 1
+
+
+@mock.patch('paprika_sync.core.models.PaprikaAccount.clone_recipe', return_value=None)
+def test_clone_recipe():
+    # No real backend activity from this action, so not much to test
+    pass

@@ -4,10 +4,16 @@ import requests.exceptions
 
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.decorators import login_required
 from django.db import transaction
 from django.http import Http404
+from django.shortcuts import redirect
 from django.urls import reverse_lazy
+from django.views.decorators.http import require_http_methods
 from django.views.generic import CreateView, ListView, RedirectView, DetailView, TemplateView
+
+from rest_framework import exceptions
+from rest_framework.generics import CreateAPIView
 
 from .forms import PaprikaAccountForm
 from .models import PaprikaAccount, NewsItem, Recipe
@@ -96,6 +102,49 @@ class RecipeGridView(LoginRequiredMixin, ListView):
 class RecipeDetailView(LoginRequiredMixin, DetailView):
     # Don't require that the user owns the recipe (so you can view others' recipes)
     queryset = Recipe.objects.all()
+
+
+# This might be better as an @action on a broader Recipe DRF ViewSet
+@login_required
+@require_http_methods(['POST'])
+def recipe_clone_view(request, pk):
+    try:
+        pa = request.user.paprika_accounts.get()
+    except PaprikaAccount.DoesNotExist:
+        logger.exception('User %s tried to clone recipe %s to non-existent account', request.user, pk)
+        messages.error(request, 'Your PaprikaAccount was not found! This should not be possible.')
+    else:
+        try:
+            recipe = Recipe.objects.get(id=pk)
+        except (KeyError, Recipe.DoesNotExist):
+            raise exceptions.NotFound
+        pa.clone_recipe(recipe)
+        messages.success(request, '''Recipe cloned! Sync in your Paprika app to see the new recipe.<script>document.addEventListener("DOMContentLoaded", function() {{ alert("NOTE: The recipe's categories ({}) were not copied, please add categories to the recipe in your app.") }});</script>'''.format(', '.join(cat.name for cat in recipe.categories.all())))
+    return redirect(request.META['HTTP_REFERER'])
+
+
+# Ajax-ready version of above in case that's useful in the future
+'''
+def RecipeCloneView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request, format=None):
+        pa = request.user.paprika_accounts.get()
+        recipe = Recipe.objects.get(id=pk)
+        pa.clone_recipe(recipe)
+        return Response({'message': 'Recipe cloned! Sync in your Paprika app to see the new recipe.', 'alert_message': "NOTE: The recipe's categories ({}) were not copied, please add categories to the recipe in your app.".format(', '.join(cat.name for cat in recipe.categories.all()))})
+
+    def handle_exception(self, exc):
+        context = self.get_exception_handler_context()
+        if isinstance(exc, PaprikaAccount.DoesNotExist):
+            logger.exception('User %s tried to clone recipe %s to non-existent account', context['request'].user, context['kwargs']['pk'])
+            return Response({'error': "You don't have a Paprika Account"}, status=status.HTTP_404_NOT_FOUND)
+        elif isinstance(Recipe.DoesNotExist):
+            logger.exception('User %s tried to clone non-existent recipe %s to account', context['request'].user, context['kwargs']['pk'])
+            return Response({'error': "Recipe not found"}, status=status.HTTP_404_NOT_FOUND)
+        else:
+            return super().handle_exception(exc)
+'''
 
 
 class RecipeDiffView(LoginRequiredMixin, DetailView):

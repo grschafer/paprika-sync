@@ -11,6 +11,7 @@ urlpatterns = [
     path("recipes", view=views.RecipeListView.as_view(), name="recipes"),
     path("grid", view=views.RecipeGridView.as_view(), name="recipe-grid"),
     path("recipe/<int:pk>", view=views.RecipeDetailView.as_view(), name="recipe"),
+    path("recipe/<int:pk>/clone", view=views.recipe_clone_view, name="recipe-clone"),
     path("recipe/<int:pk>/diff/<int:other_pk>", view=views.RecipeDiffView.as_view(), name="recipe-diff"),
     path("recipes/diff/<str:other_alias>", view=views.RecipeListDiffView.as_view(), name="recipes-diff"),
     path("accounts", view=views.AccountListView.as_view(), name="accounts"),

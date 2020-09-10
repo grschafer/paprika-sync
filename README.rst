@@ -1,8 +1,6 @@
 Paprika Sync
 ============
 
-Webapp for comparing and syncing multiple Paprika Recipe Manager accounts
-
 .. image:: https://img.shields.io/badge/built%20with-Cookiecutter%20Django-ff69b4.svg
      :target: https://github.com/pydanny/cookiecutter-django/
      :alt: Built with Cookiecutter Django
@@ -10,6 +8,8 @@ Webapp for comparing and syncing multiple Paprika Recipe Manager accounts
 
 :License: MIT
 
+
+Webapp for comparing and syncing multiple Paprika Recipe Manager accounts
 
 This webapp is unofficial and unaffiliated with Paprika Recipe Manager.
 

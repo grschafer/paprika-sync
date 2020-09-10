@@ -30,6 +30,7 @@ class RecipeSerializer(serializers.ModelSerializer):
         'difficulty',
         'directions',
         'image_url',
+        'ingredients',
         'in_trash',
         'is_pinned',
         'notes',
@@ -42,17 +43,24 @@ class RecipeSerializer(serializers.ModelSerializer):
         'prep_time',
         'scale',
         'servings',
+        'source',
         'source_url',
         'total_time',
     }
 
     class Meta:
         model = Recipe
-        fields = '__all__'
-        # TODO: add exclude for date_ended?
+        exclude = ['id', 'import_stable_hash', 'created_date', 'modified_date', 'date_ended']
         extra_kwargs = {
-            'in_trash': {'allow_null': True},
+            'in_trash': {'allow_null': True, 'default': False},
+            'paprika_account': {'write_only': True},
         }
+
+    def validate_in_trash(self, value):
+        # None is allowed in serializer, but not in database, so convert it to the field's default
+        if value is None:
+            return Recipe._meta.get_field('in_trash').default
+        return value
 
     def validate_photo_url(self, value):
         # Strip off query params so image access doesn't expire

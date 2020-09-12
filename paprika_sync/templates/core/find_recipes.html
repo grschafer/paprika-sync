@@ -6,7 +6,18 @@
 {% block content %}
 
 <section class="table-responsive search">
-    <input type="text" name="recipe-search" placeholder="Search by recipe name, ingredients, or source">
+    <div class="input-group">
+        <input type="text" class="recipe-search form-control" name="recipe-search" placeholder="Search by recipe name/ingredients">
+        <div class="input-group-append">
+            <span class="oi oi-magnifying-glass input-group-text" title="magnifying glass"></span>
+            <button class="btn btn-outline-secondary oi oi-x" title="clear search" type="button" hidden></button>
+        </div>
+    </div>
+
+    <div class="table-responsive search-results">
+        <div class="results" hidden></div>
+        {% include "core/loading_spinner.html" %}
+    </div>
 </section>
 
 <section class="table-responsive account-list">

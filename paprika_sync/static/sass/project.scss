@@ -1,3 +1,4 @@
+@import 'loading_spinner';
 ////////////////////////////////
 		//Variables//
 ////////////////////////////////
@@ -99,6 +100,7 @@ img.cloud-sync-signup {
     width: 100%;
     margin-bottom: 1rem;
 }
+/* look at https://getbootstrap.com/docs/4.1/layout/media-object/ */
 .newsitem.card {
     margin: 10px 0px;
     flex-direction: row;
@@ -120,5 +122,47 @@ img.cloud-sync-signup {
     margin-bottom: 2rem;
 }
 .after-button-notice {
-    margin-top: 1em;
+    margin-top: 1rem;
+}
+section.search {
+    input[name=recipe-search] {
+        background-repeat: no-repeat;
+        background-position: 95% center;
+        background-size: 18px;
+        border: 1px solid #dee2e6;
+        border-radius: 5rem;
+        padding: .375rem .75rem;
+        max-width: 500px;
+    }
+    .input-group {
+        margin: 4px 4px 2rem 4px;
+        width: auto;
+    }
+    .input-group-append {
+        .oi {
+            display: block;
+            border: 1px solid #dee2e6;
+            border-radius: 0 5rem 5rem 0 !important;
+            top: 0px;
+            padding: .375rem .75rem .375rem .5rem;
+            margin: 0px;
+            line-height: inherit;
+
+            &.oi-magnifying-glass {
+                background-color: transparent;
+            }
+        }
+    }
+
+    .search-results {
+        position: relative;
+        .loading-spinner {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #ffffffaa;
+        }
+    }
 }

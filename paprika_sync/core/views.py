@@ -12,8 +12,8 @@ from django.urls import reverse_lazy
 from django.views.decorators.http import require_http_methods
 from django.views.generic import CreateView, ListView, RedirectView, DetailView, TemplateView
 
-from rest_framework import exceptions
-from rest_framework.generics import CreateAPIView
+from rest_framework import exceptions, permissions, status, renderers, views
+from rest_framework.response import Response
 
 from .forms import PaprikaAccountForm
 from .models import PaprikaAccount, NewsItem, Recipe
@@ -159,12 +159,21 @@ class RecipeDiffView(LoginRequiredMixin, DetailView):
 
 
 class AccountRecipeListView(LoginRequiredMixin, ListView):
+    # TODO: change this to use recipe_list.html template (same as "Your Recipes" page)
     template_name = 'core/recipes_diff.html'
     context_object_name = 'recipe_list'
     # paginate_by = 25
 
     def get_queryset(self):
         return PaprikaAccount.objects.get(alias=self.kwargs['other_alias']).recipes.all()
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        try:
+            context['other_account'] = PaprikaAccount.objects.get(alias=self.kwargs['other_alias'])
+        except PaprikaAccount.DoesNotExist:
+            raise Http404
+        return context
 
 
 class FindRecipesView(LoginRequiredMixin, TemplateView):
@@ -173,3 +182,29 @@ class FindRecipesView(LoginRequiredMixin, TemplateView):
     def get_context_data(self, **kwargs):
         kwargs['paprika_accounts'] = PaprikaAccount.objects.all()
         return super().get_context_data(**kwargs)
+
+
+class SearchRecipesView(views.APIView):
+    permission_classes = [permissions.IsAuthenticated]
+    renderer_classes = [renderers.TemplateHTMLRenderer]
+    template_name = 'core/search_results.html'
+
+    def get(self, request, format=None):
+        # TODO: Possible optimization is to register requests in redis and
+        # cancel during querying if a subsequent search request from the same
+        # user appears. We'd need to eagerly evaluate querysets, otherwise all
+        # the work happens in response-rendering, where we can't really cancel
+        # the request.
+        query = request.GET['q']
+        # TODO: Possible optimization is to make a managed=False model mapping
+        # onto recipe table, but containing only
+        # name/paprika_account__alias/created/rating because those are the only
+        # fields displayed in the search results table
+        # https://docs.djangoproject.com/en/3.1/ref/models/querysets/#defer
+        recipes = Recipe.objects.filter(date_ended__isnull=True, in_trash=False).order_by('name', 'paprika_account__alias')
+        recipes_name = recipes.filter(name__icontains=query)
+        # When searching ingredients, match only at the beginning of a word
+        # https://www.postgresql.org/docs/current/functions-matching.html#POSIX-CONSTRAINT-ESCAPES-TABLE
+        recipes_ingredients = recipes.filter(ingredients__iregex=r'\m{}'.format(query))
+        recipes_source = recipes.filter(source__icontains=query)
+        return Response({'recipes_name': recipes_name, 'recipes_ingredients': recipes_ingredients, 'recipes_source': recipes_source})

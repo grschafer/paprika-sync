@@ -159,6 +159,70 @@ left off
 - add recipe thumbnails to homepage
 - prevent logging out -- make identity cookies last forever? currently, 2 weeks means you might have to login every time you visit
 - set page titles
+
+coming back after a year away from the project!
+- figure out how to deploy, how to ssh to machine
+  - TODO: update deploy script to use ssh instead of docker-machine
+- debug sentry issue with trying to import recipe with blank name?
+  - https://sentry.io/organizations/greg-schafer/issues/1122017842/?project=1396826&query=is%3Aunresolved
+    - TODO: mark as resolved on deploy
+  - 4 affected recipes: CA0CE04F-F11A-40BB-9039-FF15282BED2E, FE1A2CAA-DCF8-41CE-B66C-70BF26986BE4, 41C81BF9-B0BB-4415-9966-343CABE3DC2D, 22CD907D-E2BF-4A28-9666-446110BFE021
+    - they're all on my account and with in_trash=true
+- tests not working due to: TypeError: attrib() got an unexpected keyword argument 'convert'
+  - upgrade pytest as suggested: https://stackoverflow.com/a/58189684
+    - also have to update pytest_django and pytest_sugar
+  - fix failing test_sync_recipes_from_api test
+- pull prod db dump and restore locally
+  - updated instructions at bottom of this document
+- error when trying to login locally: ValueError: Couldn't load 'Argon2PasswordHasher' algorithm library: No module named 'argon2._ffi'
+  - https://stackoverflow.com/questions/46416985/django-issue-with-argon2-hasher-in-live-production
+  - rebuilding docker images... no luck
+  - update argon2-cffi from 19.1 to 20.1 and that fixed it
+- add clone recipe (i.e. copy a recipe you don't have at all)
+  - error when trying to create a recipe... but api doesn't give any details
+    - try different uid
+      - try using same if something else proves to be causing the error
+    - remove fields I have locally that the server won't (id, import_stable_hash, created_date, modified_date, date_ended, paprika_account)
+    - response is successful if I post the results of get_recipe call back to the API (including with changes)
+      - if I make changes, it doesn't update in the app though... maybe doesn't think the recipe changed? hash is calc'd server-side though and it did change
+        - changing uid created a new recipe
+        - photo didn't get copied too
+      - photo and photo_url and photo_hash and image_url keys are required, maybe is_pinned also
+      - created datetime might be rendering in wrong format
+    - look at recipe upload request from ipad
+      - run mitmproxy and change ipad wifi settings to manual proxy to local ip addr, port 8080
+      - perform actions on ipad, save flow in mitmproxy to a local file
+      - find start of data chunk in request, do `xxd` on the flow and look for gzip header (1f8b)
+      - extract that part of the request: `xxd -s 0x00004e7c -l 600 <flow-filename> > hex` and narrow "600" to stop before the next mime multipart separator (preceded by \r\n aka bytes 0d0a)... for me it was 473 bytes
+      - convert the hex file back to binary (making sure not to fill with zeroes up to 0x4e7c): `xxd -r -s -0x00004e7c hex > hexbin`
+      - open file: `gzcat hexbin`
+    - photo_url might be in wrong s3 url format
+  - initially, don't try to clone categories, just notify that it's imported as uncategorized
+  - change clone-recipe button to be ajax instead of page submit (use DRF APIView)
+    - added example of this, no reason to over-complicate now though... leave it as page submit
+  - copy clone-recipe functionality to news feed
+  - future
+    - eventually, prompt user if they want to copy any categories they don't have? what about categories spelled similarly... do a fuzzy string match?
+    - OR allow user to select their categories to copy the recipe into?
+- add search across all recipe names/ingredients/sources instead of the giant compare-recipes list
+  - when begin searching:
+    - change magnifying glass icon to an X
+    - hide "browse" section of page and show "search results" section instead
+    - after 3+ characters have been typed, fetch results whenever there's a 150ms pause in typing
+    - add css "loading" animation
+  - match only from start of word? do people type "wheat" and expect to see "buckwheat" results?
+- TODO: update changelog
+- TODO: deploy
+- TODO: search, filter, sort on recipe list views
+  - TODO: add site-wide recipe search
+- TODO: update "about" page text... move marketing-y speak to the readme
+- TODO: make cards full-width in mobile view, try to include image
+- TODO: fix horizontal scroll on recipe detail pages on mobile
+- TODO: favicon
+- TODO: share, w/ gifs of new behavior (cloning and searching)
+
+- TODO: update to paprika v2 api (to use token instead of basic http-auth... doesn't seem like endpoints have changed behavior at all)
+- TODO: change ratings to 1-5 star icons?
 - TODO: aside: switch to f-strings
 - TODO: weekly digest email
   - TODO: add opt-out option in settings
@@ -169,19 +233,15 @@ left off
 - TODO: add "new" icon to navbar for new changelog items (get latest changelog date on server init, save it to localStorage when visited)
   - TODO: or do it via db, so it translates across devices
 - TODO: figure out how to update recipes (do they get a new uid? or just an updated hash?)
-- TODO: add clone recipe (i.e. copy a recipe you don't have at all)
-  - TODO: initially, don't try to clone categories, just notify that it's imported as uncategorized
-  - TODO: eventually, prompt user if they want to copy any categories they don't have? what about categories spelled similarly... do a fuzzy string match?
 - TODO: add update recipe (i.e. update your recipe with changes they've made)
 - TODO: show finer-grained diffs (hard to see diff in changed ingredients, directions, notes)
-- TODO: search, filter, sort on recipe list views
-  - TODO: add site-wide recipe search
 - TODO: limit categories queryset to currently logged-in user (in admin)
 - TODO: set up deadmansnitch or uptime robot for website
 - TODO: every-minute cronjobs are expensive, maybe change those to API endpoints hit with ajax? but then there might be request timeout that kills the serverside process
   - could offload making all the paprika API requests to AWS lambda then just give full json file back for importing into db
   - TODO: could use SQS to enqueue and a separate, always-running process to work on the jobs (jobs being: import new account and sync existing account)
   - TODO: or just use redis locally with pubsub to an always-running process
+  - TODO: or could switch to django 3 w/ async workers, but can those do background work?
 - TODO: devops extras
   - TODO: try out digitalocean CDN
     - does whitenoise fingerprint asset files? looks like yes
@@ -199,9 +259,9 @@ to start local server: docker-compose -f local.yml up
 
 to continuously re-compile sass: sass --watch paprika_sync/static/sass/project.scss paprika_sync/static/css/project.css
 
-to run tests: docker-compose -f local.yml run django pytest paprika_sync/core
+to run tests: docker-compose -f local.yml run --rm django pytest paprika_sync/core
 
-to run a shell: docker-compose -f local.yml run django shell_plus
+to run a shell: docker-compose -f local.yml run --rm django shell_plus
 
 to force rebuild the container...
     force rebuild: docker-compose build django
@@ -210,3 +270,10 @@ to force rebuild the container...
 connect to production:
     docker-machine env paprika-sync
     eval $(docker-machine env paprika-sync)
+
+to take, copy, and restore a prod backup to local:
+    on remote: docker-compose -f production.yml exec postgres backup
+    scp <remote>:/app/backups/* backups/
+    docker cp backups/* paprikasync_postgres_1:/backups/
+    docker-compose -f local.yml exec postgres psql -U gKzgEyHJkqcXFestYkKXbPDcNyKjzXrC -P pager=off paprika_sync -c "SELECT pg_terminate_backend(pg_stat_activity.pid) FROM pg_stat_activity WHERE pg_stat_activity.datname = 'paprika_sync' AND pid <> pg_backend_pid();"
+    docker-compose -f local.yml exec postgres restore <backup file name>

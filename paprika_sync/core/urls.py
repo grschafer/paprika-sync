@@ -14,5 +14,6 @@ urlpatterns = [
     path("recipe/<int:pk>/clone", view=views.recipe_clone_view, name="recipe-clone"),
     path("recipe/<int:pk>/diff/<int:other_pk>", view=views.RecipeDiffView.as_view(), name="recipe-diff"),
     path("find", view=views.FindRecipesView.as_view(), name="find-recipes"),
+    path("find/search", view=views.SearchRecipesView.as_view(), name="search-recipes"),
     path("account/<str:other_alias>/recipes", view=views.AccountRecipeListView.as_view(), name="account-recipes"),
 ]

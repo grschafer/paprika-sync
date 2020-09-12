@@ -158,27 +158,18 @@ class RecipeDiffView(LoginRequiredMixin, DetailView):
         return context
 
 
-class RecipeListDiffView(LoginRequiredMixin, ListView):
+class AccountRecipeListView(LoginRequiredMixin, ListView):
     template_name = 'core/recipes_diff.html'
-    context_object_name = 'diff_list'
+    context_object_name = 'recipe_list'
     # paginate_by = 25
 
     def get_queryset(self):
-        try:
-            other_account = PaprikaAccount.objects.get(alias=self.kwargs['other_alias'])
-            return self.request.user.paprika_accounts.get().compare_accounts(other_account)
-        except PaprikaAccount.DoesNotExist:
-            raise Http404
+        return PaprikaAccount.objects.get(alias=self.kwargs['other_alias']).recipes.all()
+
+
+class FindRecipesView(LoginRequiredMixin, TemplateView):
+    template_name = 'core/find_recipes.html'
 
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        try:
-            context['my_account'] = self.request.user.paprika_accounts.get()
-            context['other_account'] = PaprikaAccount.objects.get(alias=self.kwargs['other_alias'])
-        except PaprikaAccount.DoesNotExist:
-            raise Http404
-        return context
-
-
-class AccountListView(LoginRequiredMixin, ListView):
-    queryset = PaprikaAccount.objects.all()
+        kwargs['paprika_accounts'] = PaprikaAccount.objects.all()
+        return super().get_context_data(**kwargs)

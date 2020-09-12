@@ -38,7 +38,7 @@
         {% url 'core:home' as home_url %}
         {% url 'core:add-paprika-account' as add_account_url %}
         {% url 'core:recipes' as recipes_url %}
-        {% url 'core:accounts' as accounts_url %}
+        {% url 'core:find-recipes' as find_url %}
         {% url 'account_signup' as signup_url %}
         {% url 'account_login' as login_url %}
         {% url 'account_logout' as logout_url %}
@@ -64,8 +64,8 @@
               <li class="nav-item {% if request.path == recipes_url %}active{% endif %}">
                 <a class="nav-link" href="{{ recipes_url }}">Your Recipes</a>
               </li>
-              <li class="nav-item {% if request.path == accounts_url %}active{% endif %}">
-                <a class="nav-link" href="{{ accounts_url }}">Compare Recipes</a>
+              <li class="nav-item {% if request.path == find_url %}active{% endif %}">
+                <a class="nav-link" href="{{ find_url }}">Find Recipes</a>
               </li>
               {% else %}
                 <li class="nav-item {% if request.path == add_account_url %}active{% endif %}">

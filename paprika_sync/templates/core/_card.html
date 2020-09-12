@@ -23,7 +23,7 @@ https://medium.com/@mike_masey/how-to-use-the-picture-element-to-prevent-images-
 
             {% if my_account %}
                 {% if my_account != newsitem.paprika_account %}
-                    <a href="{% url 'core:recipes-diff' other_alias=newsitem.paprika_account.alias %}" class="btn btn-primary">Compare recipes</a>
+                    <a href="{% url 'core:account-recipes' other_alias=newsitem.paprika_account.alias %}" class="btn btn-primary">Browse their recipes</a>
                 {% else %}
                     <a href="{% url 'core:recipes' %}" class="btn btn-primary">View your recipes</a>
                 {% endif %}

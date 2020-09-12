@@ -1,22 +1,25 @@
 {% extends "base.html" %}
 {% load humanize %}
 
-{% block title %}Compare Recipes{% endblock %}
+{% block title %}Find Recipes{% endblock %}
 
 {% block content %}
 
+<section class="table-responsive search">
+    <input type="text" name="recipe-search" placeholder="Search by recipe name, ingredients, or source">
+</section>
 
 <section class="table-responsive account-list">
     <h1>Paprika Accounts</h1>
     <table class="table table-sm">
         <tbody>
-            {% for account in paprikaaccount_list %}
+            {% for account in paprika_accounts %}
             <tr>
                 <th scope="row">{{ account.alias }}</th>
                 {% if account in request.user.paprika_accounts.all %}
                     <td><a href="{% url 'core:recipes' %}">View your recipes</a></td>
                 {% else %}
-                    <td><a href="{% url 'core:recipes-diff' other_alias=account.alias %}">Compare recipes</a></td>
+                    <td><a href="{% url 'core:account-recipes' other_alias=account.alias %}">Browse recipes</a></td>
                 {% endif %}
             </tr>
             {% endfor %}

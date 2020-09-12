@@ -1,52 +1,33 @@
 {% extends "base.html" %}
 {% load humanize %}
 
-{% block title %}{{ other_account.alias }}'s Recipe Comparison{% endblock %}
+{% block title %}{{ other_account.alias }}'s Recipes{% endblock %}
 
 {% block content %}
 
 <section class="table-responsive recipe-diff-list stick-header">
-    <h1>Comparing recipes between you and {{ other_account.alias }}</h1>
-
-    <p>The table below shows all recipes in both accounts and who has the recipe. If both accounts have a recipe but they don't match, the Diffs column will have a "Show" link.</p>
-    <p>Coming soon: Tick checkboxes of recipes you want to import to your account and click the button at the bottom.</p>
+    <h1>{{ other_account.alias }}'s Recipes</h1>
 
     <form action="post">
         <table class="table table-sm">
             <thead>
                 <tr>
                     <th scope="col">Name</th>
-                    <th scope="col">{{ my_account.alias }}</th>
-                    <th scope="col">{{ other_account.alias }}</th>
-                    <th scope="col">Diffs</th>
+                    <th scope="col">Created</th>
+                    <th scope="col">Rating</th>
                 </tr>
             </thead>
             <tbody>
-                {% for name, my_id, your_id, content_mismatch in diff_list %}
+                {% for recipe in recipe_list %}
                 <tr>
-                    {% if my_id %}
-                        <th scope="row"><a href="{% url 'core:recipe' my_id %}">{{ name }}</a></th>
-                    {% else %}
-                        <th scope="row"><a href="{% url 'core:recipe' your_id %}">{{ name }}</a></th>
-                    {% endif %}
-                    <td>
-                        {{ my_id|yesno:"X," }}
-                        {% if your_id and not my_id %}
-                            <input type="checkbox">
-                        {% endif %}
-                    </td>
-                    <td>{{ your_id|yesno:"X," }}</td>
-                    <td>
-                        {% if content_mismatch %}
-                            <a href="{% url 'core:recipe-diff' pk=my_id other_pk=your_id %}">Show</a>
-                        {% endif %}
-                    </td>
+                    <th scope="row"><a href="{% url 'core:recipe' recipe.pk %}">{{ recipe.name }}</a></th>
+                    <td>{{ recipe.created|date }}</td>
+                    <td>{{ recipe.rating }}</td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
 
-        <button type="submit" class="btn btn-primary" disabled>Clone selected recipes to your account (not implemented yet)</button>
     </form>
 </section>
 

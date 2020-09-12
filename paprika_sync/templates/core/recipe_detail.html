@@ -9,7 +9,7 @@
 {% if recipe.paprika_account.user == request.user %}
 <p><small>Recipe belongs to: <a href="{% url 'core:recipes' %}">{{ recipe.paprika_account.alias }}</a></small></p>
 {% else %}
-<p><small>Recipe belongs to: <a href="{% url 'core:recipes-diff' other_alias=recipe.paprika_account.alias %}">{{ recipe.paprika_account.alias }}</a></small></p>
+<p><small>Recipe belongs to: <a href="{% url 'core:account-recipes' other_alias=recipe.paprika_account.alias %}">{{ recipe.paprika_account.alias }}</a></small></p>
 {% endif %}
 
 {% if recipe.photo_url %}

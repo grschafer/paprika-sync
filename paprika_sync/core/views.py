@@ -165,7 +165,7 @@ class AccountRecipeListView(LoginRequiredMixin, ListView):
     # paginate_by = 25
 
     def get_queryset(self):
-        return PaprikaAccount.objects.get(alias=self.kwargs['other_alias']).recipes.all()
+        return PaprikaAccount.objects.get(alias=self.kwargs['other_alias']).recipes.all().order_by('name')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

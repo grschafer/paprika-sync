@@ -14,14 +14,16 @@ const waitAfterStopTypingToFetch = 500;  // milliseconds
 searchBox.addEventListener('input', function() {
     const userInput = this.value;
     lastInputTime = Date.now()
-    if (userInput.length > 0 && lastSearchInput.length === 0) {
+    if (userInput.length > 0) {
         clearSearchIcon.removeAttribute('hidden');
         searchIcon.setAttribute('hidden', '');
     }
-    if (userInput.length < 3 && lastSearchInput.length >= 0) {
-        searchResults.setAttribute('hidden', '');
+    if (userInput.length === 0) {
         clearSearchIcon.setAttribute('hidden', '');
         searchIcon.removeAttribute('hidden');
+    }
+    if (userInput.length < 3) {
+        searchResults.setAttribute('hidden', '');
     }
 
     // Only query backend if user has typed at least 3 letters (shortest recipe name in db currently is 4 letters)

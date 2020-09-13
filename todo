@@ -162,10 +162,10 @@ left off
 
 coming back after a year away from the project!
 - figure out how to deploy, how to ssh to machine
-  - TODO: update deploy script to use ssh instead of docker-machine
+  - update deploy script to use ssh instead of docker-machine
 - debug sentry issue with trying to import recipe with blank name?
   - https://sentry.io/organizations/greg-schafer/issues/1122017842/?project=1396826&query=is%3Aunresolved
-    - TODO: mark as resolved on deploy
+    - mark as resolved on deploy
   - 4 affected recipes: CA0CE04F-F11A-40BB-9039-FF15282BED2E, FE1A2CAA-DCF8-41CE-B66C-70BF26986BE4, 41C81BF9-B0BB-4415-9966-343CABE3DC2D, 22CD907D-E2BF-4A28-9666-446110BFE021
     - they're all on my account and with in_trash=true
 - tests not working due to: TypeError: attrib() got an unexpected keyword argument 'convert'
@@ -213,13 +213,16 @@ coming back after a year away from the project!
   - match only from start of word? do people type "wheat" and expect to see "buckwheat" results?
 - TODO: update changelog
 - TODO: deploy
+- TODO: share, w/ gifs of new behavior (cloning and searching)
+
+- TODO: keep search results when navigating back to the search page
+  - TODO: put html in localStorage on navigate event?
+- TODO: change search results to add "+1" or similar after "Account", instead of duplicating rows
 - TODO: search, filter, sort on recipe list views
-  - TODO: add site-wide recipe search
 - TODO: update "about" page text... move marketing-y speak to the readme
 - TODO: make cards full-width in mobile view, try to include image
 - TODO: fix horizontal scroll on recipe detail pages on mobile
 - TODO: favicon
-- TODO: share, w/ gifs of new behavior (cloning and searching)
 
 - TODO: update to paprika v2 api (to use token instead of basic http-auth... doesn't seem like endpoints have changed behavior at all)
 - TODO: change ratings to 1-5 star icons?

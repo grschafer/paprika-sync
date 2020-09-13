@@ -220,6 +220,7 @@ coming back after a year away from the project!
 - TODO: change search results to add "+1" or similar after "Account", instead of duplicating rows
 - TODO: search, filter, sort on recipe list views
 - TODO: update "about" page text... move marketing-y speak to the readme
+  - TODO: about page shows publicly, so maybe split into internal/external "about" pages?
 - TODO: make cards full-width in mobile view, try to include image
 - TODO: fix horizontal scroll on recipe detail pages on mobile
 - TODO: favicon

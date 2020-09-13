@@ -15,7 +15,9 @@
     </div>
 
     <div class="table-responsive search-results">
-        <div class="results" hidden></div>
+        <div class="results" hidden>
+            {% include "core/search_results.html" %}
+        </div>
         {% include "core/loading_spinner.html" %}
     </div>
 </section>

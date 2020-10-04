@@ -384,9 +384,12 @@ class PaprikaAccount(BaseModel):
         recipe_data['categories'] = []
 
         files = {'data': gzip.compress(json.dumps(recipe_data).encode())}
-        if recipe.photo_url:
-            photo_content = recipe.get_photo_content()
-            files['photo_upload'] = (recipe_data['photo'], photo_content)
+        # TODO: Can't upload photo until images are hosted locally, because
+        # paprika image urls require a signature now.
+        # https://sentry.io/organizations/greg-schafer/issues/1934926264/?project=1396826
+        # if recipe.photo_url:
+        #     photo_content = recipe.get_photo_content()
+        #     files['photo_upload'] = (recipe_data['photo'], photo_content)
 
         resp = requests.post(url, auth=(self.username, self.password), files=files)
         resp.raise_for_status()

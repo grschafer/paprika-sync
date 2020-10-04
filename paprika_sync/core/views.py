@@ -119,7 +119,7 @@ def recipe_clone_view(request, pk):
         except (KeyError, Recipe.DoesNotExist):
             raise exceptions.NotFound
         pa.clone_recipe(recipe)
-        messages.success(request, '''Recipe cloned! Sync in your Paprika app to see the new recipe.<script>document.addEventListener("DOMContentLoaded", function() {{ alert("NOTE: The recipe's categories ({}) were not copied, please add categories to the recipe in your app.") }});</script>'''.format(', '.join(cat.name for cat in recipe.categories.all())))
+        messages.success(request, '''Recipe cloned! Sync in your Paprika app to see the new recipe.<script>document.addEventListener("DOMContentLoaded", function() {{ alert("NOTE: The recipe's image and categories ({}) were not copied, please add categories to the recipe in your app.") }});</script>'''.format(', '.join(cat.name for cat in recipe.categories.all())))
     return redirect(request.META['HTTP_REFERER'])
 
 

@@ -201,7 +201,7 @@ class SearchRecipesView(views.APIView):
         # name/paprika_account__alias/created/rating because those are the only
         # fields displayed in the search results table
         # https://docs.djangoproject.com/en/3.1/ref/models/querysets/#defer
-        recipes = Recipe.objects.filter(date_ended__isnull=True, in_trash=False).order_by('name', 'paprika_account__alias')
+        recipes = Recipe.objects.filter(date_ended__isnull=True).order_by('name', 'paprika_account__alias')
         recipes_name = recipes.filter(name__icontains=query)
         # When searching ingredients, match only at the beginning of a word
         # https://www.postgresql.org/docs/current/functions-matching.html#POSIX-CONSTRAINT-ESCAPES-TABLE

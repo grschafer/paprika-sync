@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 
 
 class Command(BaseCommand):
-    help = "For all PaprikaAccounts in successful sync/import state that haven't been updated in 24 hours (or sync has been requested), sync all recipes, adding/updating/expiring as needed. Intended to run on cron regularly."
+    help = "For all PaprikaAccounts in successful sync/import state that haven't been updated in 2 days (or sync has been requested), sync all recipes, adding/updating/expiring as needed. Intended to run on cron regularly."
 
     def add_arguments(self, parser):
         parser.add_argument(

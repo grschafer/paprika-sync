@@ -215,17 +215,22 @@ coming back after a year away from the project!
 - deploy
 - share, w/ gifs of new behavior (cloning and searching)
 
+- TODO: deleted recipes are duplicating somehow
+  - sync_recipes_from_api cronjob seems to be the culprit... re-creating all in_trash recipes every 2 days
+    - because account.recipes excludes in_trash, so it thinks it's new
+  - TODO: stop duplication
+  - TODO: delete or hide duplicates
 - TODO: bugfix for bad permissions on image
   - https://s3.amazonaws.com/uploads.paprikaapp.com/511238/E8081C98-B324-41A7-A5E8-62455FECFE61.jpg
   - https://sentry.io/organizations/greg-schafer/issues/1934926264/?project=1396826&referrer=alert_email
   - paprika turned off public-read for all their images... actually need the signature now
   - allow cloning without the photo? yes
-  - TODO: save all images locally, or to my s3 bucket
-- TODO: show deleted reciped in search
-  - TODO: hide bogus recipes? just delete them from django instead of marking as in_trash
+  - TODO: save all images locally, or to my s3 bucket (w/ cloudfront CDN)
+- TODO: change search results to add "+1" or similar after "Account", instead of duplicating rows
+- TODO: make the search button clickable to force the ajax request
+
 - TODO: keep search results when navigating back to the search page
   - TODO: put html in localStorage on navigate event?
-- TODO: change search results to add "+1" or similar after "Account", instead of duplicating rows
 - TODO: search, filter, sort on recipe list views
 - TODO: update "about" page text... move marketing-y speak to the readme
   - TODO: about page shows publicly, so maybe split into internal/external "about" pages?
@@ -273,7 +278,7 @@ to continuously re-compile sass: sass --watch paprika_sync/static/sass/project.s
 
 to run tests: docker-compose -f local.yml run --rm django pytest paprika_sync/core
 
-to run a shell: docker-compose -f local.yml run --rm django shell_plus
+to run a shell: docker-compose -f local.yml run --rm django python3 manage.py shell_plus
 
 to force rebuild the container...
     force rebuild: docker-compose build django
@@ -285,6 +290,7 @@ connect to production:
 
 to take, copy, and restore a prod backup to local:
     on remote: docker-compose -f production.yml exec postgres backup
+    on remote: docker cp app_postgres_1:/backups backups
     scp <remote>:/app/backups/* backups/
     docker cp backups/* paprikasync_postgres_1:/backups/
     docker-compose -f local.yml exec postgres psql -U gKzgEyHJkqcXFestYkKXbPDcNyKjzXrC -P pager=off paprika_sync -c "SELECT pg_terminate_backend(pg_stat_activity.pid) FROM pg_stat_activity WHERE pg_stat_activity.datname = 'paprika_sync' AND pid <> pg_backend_pid();"

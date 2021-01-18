@@ -137,7 +137,7 @@ class PaprikaAccount(BaseModel):
             for recipe in recipes:
                 print('.', end='')
                 uid = recipe['uid']
-                db_recipe = self.recipes.filter(uid=uid).last()
+                db_recipe = self.all_recipes.filter(date_ended__isnull=True, uid=uid).last()
                 if db_recipe:
                     if db_recipe.hash != recipe['hash']:
                         # TODO: lots of duplication of recipe creation...

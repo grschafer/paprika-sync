@@ -218,7 +218,7 @@ coming back after a year away from the project!
 - TODO: deleted recipes are duplicating somehow
   - sync_recipes_from_api cronjob seems to be the culprit... re-creating all in_trash recipes every 2 days
     - because account.recipes excludes in_trash, so it thinks it's new
-  - TODO: stop duplication
+  - stop duplication
   - TODO: delete or hide duplicates
 - TODO: bugfix for bad permissions on image
   - https://s3.amazonaws.com/uploads.paprikaapp.com/511238/E8081C98-B324-41A7-A5E8-62455FECFE61.jpg

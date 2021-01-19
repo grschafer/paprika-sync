@@ -379,7 +379,7 @@ class PaprikaAccount(BaseModel):
         recipe_data = RecipeSerializer(instance=recipe).data
         # TODO: hacky data fixes so the request will succeed
         recipe_data['image_url'] = None
-        recipe_data['photo'] = recipe_data['photo_url'].split('/')[-1]
+        recipe_data['photo'] = urlparse(recipe_data['photo_url']).path.split('/')[-1]
         recipe_data['created'] = recipe_data['created'].replace('T', ' ').replace('Z', ' ')
         del recipe_data['photo_url']
         # Clear categories because they won't match across accounts anyway

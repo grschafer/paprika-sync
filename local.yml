@@ -3,6 +3,7 @@ version: '3'
 volumes:
   local_postgres_data: {}
   local_postgres_data_backups: {}
+  local_media: {}
 
 services:
   django:
@@ -15,6 +16,7 @@ services:
       - mailhog
     volumes:
       - .:/app
+      - local_media:/appmedia
     env_file:
       - ./.envs/.local/.django
       - ./.envs/.local/.postgres
@@ -34,6 +36,21 @@ services:
       - local_postgres_data_backups:/backups
     env_file:
       - ./.envs/.local/.postgres
+
+  traefik:
+    build:
+      context: .
+      dockerfile: ./compose/local/traefik/Dockerfile
+    image: paprika_sync_local_traefik
+    depends_on:
+      - django
+    ports:
+      - "0.0.0.0:8080:80"
+
+  nginx:
+    image: nginx:alpine
+    volumes:
+      - local_media:/usr/share/nginx/html/media:ro
 
   mailhog:
     image: mailhog/mailhog:v1.0.0

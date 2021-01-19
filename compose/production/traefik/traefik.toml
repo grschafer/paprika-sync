@@ -30,8 +30,15 @@ OnHostRule = true
   [backends.django]
     [backends.django.servers.server1]
       url = "http://django:5000"
+  [backends.nginx]
+    [backends.nginx.servers.server1]
+      url = "http://nginx:80"
 
 [frontends]
+  [frontends.nginx]
+    backend = "nginx"
+    [frontends.nginx.routes.dr1]
+      rule = "Host:paprika-sync.com;PathPrefix:/media/"
   [frontends.django]
     backend = "django"
     passHostHeader = true

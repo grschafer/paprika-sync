@@ -1,0 +1,29 @@
+logLevel = "INFO"
+defaultEntryPoints = ["http"]
+
+# Entrypoints, http
+[entryPoints]
+  [entryPoints.http]
+  address = ":80"
+
+[file]
+[backends]
+  [backends.django]
+    [backends.django.servers.server1]
+      url = "http://django:8000"
+  [backends.nginx]
+    [backends.nginx.servers.server1]
+      url = "http://nginx:80"
+
+[frontends]
+  [frontends.django]
+    backend = "django"
+    passHostHeader = true
+    [frontends.django.headers]
+      HostsProxyHeaders = ['X-CSRFToken']
+    [frontends.django.routes.dr1]
+      rule = "PathPrefix:/"
+  [frontends.nginx]
+    backend = "nginx"
+    [frontends.nginx.routes.dr1]
+      rule = "PathPrefix:/media/"

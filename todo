@@ -229,6 +229,7 @@ coming back after a year away from the project!
   - allow cloning without the photo? yes
   - save all images locally, or to my s3 bucket (w/ cloudfront CDN)
   - update templates to load image from MEDIA
+  - had to assign uid/gid `chown -R 100:101 /var/lib/docker/volumes/app_production_media` permissions to docker volume so it could save media images there
   - TODO: test cloning recipe w/ photo
 - TODO: change search results to add "+1" or similar after "Account", instead of duplicating rows
 - TODO: make the search button clickable to force the ajax request

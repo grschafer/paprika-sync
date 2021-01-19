@@ -70,7 +70,8 @@ class RecipeSerializer(serializers.ModelSerializer):
         return super().to_internal_value(data)
 
     def save(self, **kwargs):
-        super().save(**kwargs)
+        instance = super().save(**kwargs)
 
         # Download photo from signed url to disk
         instance.download_photo(use_db_url=True)
+        return instance

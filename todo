@@ -225,7 +225,8 @@ coming back after a year away from the project!
   - https://sentry.io/organizations/greg-schafer/issues/1934926264/?project=1396826&referrer=alert_email
   - paprika turned off public-read for all their images... actually need the signature now
   - allow cloning without the photo? yes
-  - TODO: save all images locally, or to my s3 bucket (w/ cloudfront CDN)
+  - save all images locally, or to my s3 bucket (w/ cloudfront CDN)
+  - TODO: update templates to load image from MEDIA
 - TODO: change search results to add "+1" or similar after "Account", instead of duplicating rows
 - TODO: make the search button clickable to force the ajax request
 

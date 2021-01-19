@@ -2,6 +2,9 @@ import gzip
 import hashlib
 import json
 import logging
+import os.path
+import shutil
+from urllib.parse import urlparse
 
 import requests
 
@@ -146,7 +149,7 @@ class PaprikaAccount(BaseModel):
                         recipe_detail['paprika_account'] = self.id
                         rs = RecipeSerializer(data=recipe_detail)
                         if rs.is_valid():
-                            rs.save()
+                            rs.save()  # Also downloads recipe photo
 
                             # Expire the old recipe
                             db_recipe.date_ended = timezone.now()
@@ -195,7 +198,7 @@ class PaprikaAccount(BaseModel):
                     recipe_detail['paprika_account'] = self.id
                     rs = RecipeSerializer(data=recipe_detail)
                     if rs.is_valid():
-                        rs.save()
+                        rs.save()  # Also downloads recipe photo
 
                         if make_news_items and not rs.instance.in_trash:
                             NewsItem.objects.create(
@@ -384,12 +387,9 @@ class PaprikaAccount(BaseModel):
         recipe_data['categories'] = []
 
         files = {'data': gzip.compress(json.dumps(recipe_data).encode())}
-        # TODO: Can't upload photo until images are hosted locally, because
-        # paprika image urls require a signature now.
-        # https://sentry.io/organizations/greg-schafer/issues/1934926264/?project=1396826
-        # if recipe.photo_url:
-        #     photo_content = recipe.get_photo_content()
-        #     files['photo_upload'] = (recipe_data['photo'], photo_content)
+        if recipe.photo_url:
+            photo_content = recipe.get_photo_content()
+            files['photo_upload'] = (recipe_data['photo'], photo_content)
 
         resp = requests.post(url, auth=(self.username, self.password), files=files)
         resp.raise_for_status()
@@ -463,9 +463,36 @@ class Recipe(BaseModel):
         return hash.hexdigest()
 
     def get_photo_content(self):
-        resp = requests.get(self.photo_url)
-        resp.raise_for_status()
-        return resp.content
+        with open(self.get_photo_filepath(), 'rb') as f:
+            return f.read()
+
+    def get_photo_filename(self):
+        return urlparse(self.photo_url).path.split('/')[-1]
+
+    def get_photo_filepath(self):
+        return os.path.join(settings.MEDIA_ROOT, self.get_photo_filename())
+
+    def get_photo_url(self):
+        return os.path.join(settings.MEDIA_URL, self.get_photo_filename())
+
+    def download_photo(self, use_db_url=False):
+        if use_db_url:
+            # If we recently sync'd this recipe, the signature in the database
+            # url should still be valid
+            url = self.photo_url
+        else:
+            # Otherwise, get newly-signed photo url from API
+            api_recipe_detail = self.paprika_account.get_recipe(self.uid)
+            url = api_recipe_detail['photo_url']
+
+        # Download it to MEDIA folder
+        filename = urlparse(url).path.split('/')[-1]
+        dest_path = os.path.join(settings.MEDIA_ROOT, filename)
+        with requests.get(url, stream=True) as r:
+            with open(dest_path, 'wb') as f:
+                shutil.copyfileobj(r.raw, f)
+        return dest_path
+
 
     def diff(self, other):
         'Diffs 2 Recipes, returning {field_name: True, ...} containing all fields changed'

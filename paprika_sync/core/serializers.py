@@ -73,5 +73,6 @@ class RecipeSerializer(serializers.ModelSerializer):
         instance = super().save(**kwargs)
 
         # Download photo from signed url to disk
-        instance.download_photo(use_db_url=True)
+        if instance and instance.photo_url:
+            instance.download_photo(use_db_url=True)
         return instance

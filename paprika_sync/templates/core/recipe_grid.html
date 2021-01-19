@@ -8,7 +8,7 @@
     <h1>Your Recipes</h1>
     {% for recipe in recipe_list %}
         {% if recipe.photo_url %}
-            <img src="{{ recipe.photo_url }}" alt="{{ recipe.name }}">
+            <img src="{{ recipe.get_photo_url }}" alt="{{ recipe.name }}">
         {% else %}
             <img src="{% static 'images/missing-thumb.svg' %}" alt="{{ recipe.name }}">
         {% endif %}

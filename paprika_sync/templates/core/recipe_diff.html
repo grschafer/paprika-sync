@@ -27,14 +27,14 @@
                 <th scope="row">Thumbnail</th>
                 <td>
                 {% if recipe.photo_url %}
-                    <img src="{{ recipe.photo_url }}">
+                    <img src="{{ recipe.get_photo_url }}">
                 {% else %}
                     <img src="{% static 'images/missing-thumb.svg' %}">
                 {% endif %}
                 </td>
                 <td class="{% diff recipe other 'photo_hash' %}">
                 {% if other.photo_url %}
-                    <img src="{{ other.photo_url }}">
+                    <img src="{{ other.get_photo_url }}">
                 {% else %}
                     <img src="{% static 'images/missing-thumb.svg' %}">
                 {% endif %}

@@ -9,9 +9,9 @@ https://medium.com/@mike_masey/how-to-use-the-picture-element-to-prevent-images-
     {% if newsitem.recipe and newsitem.recipe.photo_url %}
         <picture>
             <source media="(max-width: 767px)" sizes="1px" srcset="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7 1w"/>
-            <source media="(min-width: 768px)" sizes="120px" srcset="{{ newsitem.recipe.photo_url }}"/>
+            <source media="(min-width: 768px)" sizes="120px" srcset="{{ newsitem.recipe.get_photo_url }}"/>
 
-            <img src="{{ newsitem.recipe.photo_url }}" class="card-img" alt="{{ newsitem.recipe.name }}">
+            <img src="{{ newsitem.recipe.get_photo_url }}" class="card-img" alt="{{ newsitem.recipe.name }}">
         </picture>
     {% endif %}
     <div class="card-body">

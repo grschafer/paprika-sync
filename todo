@@ -219,14 +219,16 @@ coming back after a year away from the project!
   - sync_recipes_from_api cronjob seems to be the culprit... re-creating all in_trash recipes every 2 days
     - because account.recipes excludes in_trash, so it thinks it's new
   - stop duplication
-  - TODO: delete or hide duplicates
-- TODO: bugfix for bad permissions on image
+  - delete or hide duplicates
+    - can just do this with django shell `Recipe.objects.filter(in_trash=True).delete()` (deletes 18532 recipes!)
+    - then run `python3 manage.py sync_recipes_from_api --exclude-synced-within=0` to re-import trashed recipes
+- bugfix for bad permissions on image
   - https://s3.amazonaws.com/uploads.paprikaapp.com/511238/E8081C98-B324-41A7-A5E8-62455FECFE61.jpg
   - https://sentry.io/organizations/greg-schafer/issues/1934926264/?project=1396826&referrer=alert_email
   - paprika turned off public-read for all their images... actually need the signature now
   - allow cloning without the photo? yes
   - save all images locally, or to my s3 bucket (w/ cloudfront CDN)
-  - TODO: update templates to load image from MEDIA
+  - update templates to load image from MEDIA
 - TODO: change search results to add "+1" or similar after "Account", instead of duplicating rows
 - TODO: make the search button clickable to force the ajax request
 

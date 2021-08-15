@@ -1,5 +1,5 @@
 .sk-circle {
-  margin: 100px auto;
+  margin: 60px auto;
   width: 40px;
   height: 40px;
   position: relative;
@@ -312,7 +312,6 @@ section.search-results {
 }
 section.search-results .loading-spinner {
   position: absolute;
-  margin-top: -40px;
   top: 0;
   left: 0;
   width: 100%;

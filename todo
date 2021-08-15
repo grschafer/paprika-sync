@@ -230,7 +230,7 @@ coming back after a year away from the project!
   - save all images locally, or to my s3 bucket (w/ cloudfront CDN)
   - update templates to load image from MEDIA
   - had to assign uid/gid `chown -R 100:101 /var/lib/docker/volumes/app_production_media` permissions to docker volume so it could save media images there
-  - TODO: test cloning recipe w/ photo
+  - test cloning recipe w/ photo
 - TODO: change search results to add "+1" or similar after "Account", instead of duplicating rows
 - TODO: make the search button clickable to force the ajax request
 
@@ -284,6 +284,8 @@ to continuously re-compile sass: sass --watch paprika_sync/static/sass/project.s
 to run tests: docker-compose -f local.yml run --rm django pytest paprika_sync/core
 
 to run a shell: docker-compose -f local.yml run --rm django python3 manage.py shell_plus
+
+to open a psql shell: docker-compose -f local.yml exec postgres psql -U gKzgEyHJkqcXFestYkKXbPDcNyKjzXrC paprika_sync
 
 to force rebuild the container...
     force rebuild: docker-compose build django

@@ -265,18 +265,29 @@ img.cloud-sync-signup {
   margin-top: 1rem;
 }
 
-section.search input[name=recipe-search] {
+section.search .tagify .tagify__tag + .tagify__input::before {
+  display: none;
+}
+section.search input.recipe-search {
   background-repeat: no-repeat;
   background-position: 95% center;
   background-size: 18px;
   border: 1px solid #dee2e6;
-  border-radius: 5rem;
   padding: 0.375rem 0.75rem;
   max-width: 500px;
 }
+section.search input.recipe-search::placeholder {
+  color: rgba(0, 0, 0, 0.4);
+}
+section.search tags {
+  max-width: 500px;
+}
 section.search .input-group {
-  margin: 4px 4px 2rem 4px;
+  margin: 4px 0;
   width: auto;
+}
+section.search .input-group .form-control {
+  height: auto;
 }
 section.search .input-group-append .oi {
   display: block;
@@ -290,11 +301,18 @@ section.search .input-group-append .oi {
 section.search .input-group-append .oi.oi-magnifying-glass {
   background-color: transparent;
 }
-section.search .search-results {
-  position: relative;
+section.search label {
+  align-self: center;
+  margin-bottom: 0;
 }
-section.search .search-results .loading-spinner {
+
+section.search-results {
+  position: relative;
+  min-height: 200px;
+}
+section.search-results .loading-spinner {
   position: absolute;
+  margin-top: -40px;
   top: 0;
   left: 0;
   width: 100%;

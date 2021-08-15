@@ -1,0 +1,20 @@
+<table class="table table-sm">
+    <thead>
+        <tr>
+            <th scope="col">Name</th>
+            <th scope="col">Account</th>
+            <th scope="col">Added</th>
+            <th scope="col">Rating</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for recipe in recipe_list %}
+        <tr>
+            <th scope="row"><a href="{% url 'core:recipe' recipe.pk %}">{{ recipe.name }}</a></th>
+            <td>{{ recipe.paprika_account.alias }}</td>
+            <td>{{ recipe.created|date }}</td>
+            <td>{{ recipe.rating }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>

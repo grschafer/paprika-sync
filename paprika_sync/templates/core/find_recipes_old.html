@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% load humanize %}
+
+{% block title %}Find Recipes{% endblock %}
+
+{% block content %}
+
+<p class="small my-1">Back to the <a href="{% url 'core:find-recipes' %}">new search page</a></p>
+
+<section class="table-responsive search">
+    <div class="input-group">
+        <input type="text" class="recipe-search form-control" name="recipe-search" placeholder="Search by recipe name/ingredients">
+        <div class="input-group-append">
+            <span class="oi oi-magnifying-glass input-group-text" title="magnifying glass"></span>
+            <button class="btn btn-outline-secondary oi oi-x" title="clear search" type="button" hidden></button>
+        </div>
+    </div>
+
+    <div class="table-responsive search-results">
+        <div class="results" hidden>
+            {% include "core/search_results_old.html" %}
+        </div>
+        {% include "core/loading_spinner.html" %}
+    </div>
+</section>
+
+<section class="table-responsive account-list">
+    <h1>Paprika Accounts</h1>
+    <table class="table table-sm">
+        <tbody>
+            {% for account in paprika_accounts %}
+            <tr>
+                <th scope="row">{{ account.alias }}</th>
+                {% if account in request.user.paprika_accounts.all %}
+                    <td><a href="{% url 'core:recipes' %}">View your recipes</a></td>
+                {% else %}
+                    <td><a href="{% url 'core:account-recipes' other_alias=account.alias %}">Browse recipes</a></td>
+                {% endif %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</section>
+
+
+{% include 'core/_pagination.html' %}
+
+{% endblock %}

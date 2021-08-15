@@ -3,44 +3,81 @@
 
 {% block title %}Find Recipes{% endblock %}
 
+{% block css %}
+{{ block.super }}
+<link href="https://unpkg.com/@yaireo/tagify/dist/tagify.css" rel="stylesheet" type="text/css" />
+{% endblock css %}
+
 {% block content %}
 
-<section class="table-responsive search">
-    <div class="input-group">
-        <input type="text" class="recipe-search form-control" name="recipe-search" placeholder="Search by recipe name/ingredients">
-        <div class="input-group-append">
-            <span class="oi oi-magnifying-glass input-group-text" title="magnifying glass"></span>
-            <button class="btn btn-outline-secondary oi oi-x" title="clear search" type="button" hidden></button>
-        </div>
-    </div>
+<p class="small my-1">Prefer the <a href="{% url 'core:find-recipes-old' %}">old search page?</a></p>
 
-    <div class="table-responsive search-results">
-        <div class="results" hidden>
-            {% include "core/search_results.html" %}
+<section class="search">
+    <form id="search" onsubmit="event.preventDefault()">
+        <h1>Search recipes by</h1>
+        <div class="row">
+            <label for="title-search" class="col-2 col-lg-1">Title</label>
+            <div class="input-group col-10 col-lg-11">
+                <input type="text" class="recipe-search form-control" id="title-search" name="title" placeholder="salad, sandwich, stew">
+                <div class="input-group-append">
+                    <span class="oi oi-magnifying-glass input-group-text" title="magnifying glass"></span>
+                    <button class="btn btn-outline-secondary oi oi-x" title="clear search" type="button" hidden></button>
+                </div>
+            </div>
+
         </div>
-        {% include "core/loading_spinner.html" %}
-    </div>
+        <div class="row">
+            <label for="ingredient-search" class="col-2 col-lg-1">Ingreds</label>
+            <div class="input-group col-10 col-lg-11">
+                <input type="text" class="recipe-search form-control" id="ingredient-search" name="ingredient" placeholder="apple, barley, cilantro">
+                <div class="input-group-append">
+                    <span class="oi oi-magnifying-glass input-group-text" title="magnifying glass"></span>
+                    <button class="btn btn-outline-secondary oi oi-x" title="clear search" type="button" hidden></button>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <label for="source-search" class="col-2 col-lg-1">Source</label>
+            <div class="input-group col-10 col-lg-11">
+                <input type="text" class="recipe-search tagify form-control" id="source-search" name="source" placeholder="ottolenghi, nytimes, chefsteps">
+                <div class="input-group-append">
+                    <span class="oi oi-magnifying-glass input-group-text" title="magnifying glass"></span>
+                    <button class="btn btn-outline-secondary oi oi-x" title="clear search" type="button" hidden></button>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <label for="account-search" class="col-2 col-lg-1">Account</label>
+            <div class="input-group col-10 col-lg-11">
+                <input type="text" class="recipe-search tagify form-control" id="account-search" name="account" placeholder="Talithx, Oma, Scott">
+                <div class="input-group-append">
+                    <span class="oi oi-magnifying-glass input-group-text" title="magnifying glass"></span>
+                    <button class="btn btn-outline-secondary oi oi-x" title="clear search" type="button" hidden></button>
+                </div>
+            </div>
+        </div>
+    </form>
 </section>
 
-<section class="table-responsive account-list">
-    <h1>Paprika Accounts</h1>
-    <table class="table table-sm">
-        <tbody>
-            {% for account in paprika_accounts %}
-            <tr>
-                <th scope="row">{{ account.alias }}</th>
-                {% if account in request.user.paprika_accounts.all %}
-                    <td><a href="{% url 'core:recipes' %}">View your recipes</a></td>
-                {% else %}
-                    <td><a href="{% url 'core:account-recipes' other_alias=account.alias %}">Browse recipes</a></td>
-                {% endif %}
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+<section class="search-results">
+    <div class="table-responsive results" hidden>
+        {% include "core/search_results.html" %}
+    </div>
+    {% include "core/loading_spinner.html" %}
 </section>
 
 
 {% include 'core/_pagination.html' %}
 
+{{ sources|json_script:"sources-list" }}
+{{ account_aliases|json_script:"accounts-list" }}
+
 {% endblock %}
+
+{% block javascript %}
+<script src="https://unpkg.com/@yaireo/tagify"></script>
+<script src="https://unpkg.com/@yaireo/tagify/dist/tagify.polyfills.min.js"></script>
+{{ block.super }}
+{% endblock javascript %}

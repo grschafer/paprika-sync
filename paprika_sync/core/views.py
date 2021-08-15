@@ -1,11 +1,16 @@
 import logging
 
+from functools import reduce
+import json
+import operator
 import requests.exceptions
 
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
 from django.db import transaction
+from django.db.models import Q, Count
+from django.db.models.functions import Lower
 from django.http import Http404
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
@@ -181,6 +186,15 @@ class FindRecipesView(LoginRequiredMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         kwargs['paprika_accounts'] = PaprikaAccount.objects.all()
+        kwargs['account_aliases'] = list(
+            PaprikaAccount.objects.values_list('alias', flat=True).order_by('?')
+        )
+        # Get list of unique sources, most popular first
+        kwargs['sources'] = list(Recipe.objects.annotate(
+            source_lower=Lower('source')
+        ).values('source_lower').annotate(
+            count=Count('source_lower')
+        ).order_by('-count').values_list('source_lower', flat=True))
         return super().get_context_data(**kwargs)
 
 
@@ -188,6 +202,54 @@ class SearchRecipesView(views.APIView):
     permission_classes = [permissions.IsAuthenticated]
     renderer_classes = [renderers.TemplateHTMLRenderer]
     template_name = 'core/search_results.html'
+
+    def get(self, request, format=None):
+        # Recipe title must contain all tokens in title field, not necessarily adjacent
+        title = request.GET['title']
+        # Recipe ingredients must contain all tokens in ingredient field, not necessarily adjacent
+        ingredient = request.GET['ingredient']
+        # Show recipes from any provided source
+        source = request.GET['source']
+        # Show recipes from any provided account
+        account_alias = request.GET['account']
+
+        recipes = Recipe.objects.filter(date_ended__isnull=True).order_by('name', 'paprika_account__alias')
+
+        title_tokens = title.split()
+        for token in title_tokens:
+            recipes = recipes.filter(name__icontains=token)
+
+        ingredient_tokens = ingredient.split()
+        for token in ingredient_tokens:
+            recipes = recipes.filter(ingredients__icontains=token)
+
+        # TODO: how to parse tagify output for source/account?
+        if source:
+            source_tokens = json.loads(source)
+            source_q = reduce(operator.or_, (Q(source__icontains=t['value']) for t in source_tokens))
+            recipes = recipes.filter(source_q)
+
+        if account_alias:
+            alias_tokens = json.loads(account_alias)
+            alias_q = reduce(operator.or_, (Q(paprika_account__alias__icontains=t['value']) for t in alias_tokens))
+            recipes = recipes.filter(alias_q)
+        logger.info('recipe count=%s after filtering w/ %s', recipes.count(), dict(request.GET))
+
+        return Response({'recipes': recipes})
+
+
+class FindRecipesOldView(LoginRequiredMixin, TemplateView):
+    template_name = 'core/find_recipes_old.html'
+
+    def get_context_data(self, **kwargs):
+        kwargs['paprika_accounts'] = PaprikaAccount.objects.all()
+        return super().get_context_data(**kwargs)
+
+
+class SearchRecipesOldView(views.APIView):
+    permission_classes = [permissions.IsAuthenticated]
+    renderer_classes = [renderers.TemplateHTMLRenderer]
+    template_name = 'core/search_results_old.html'
 
     def get(self, request, format=None):
         # TODO: Possible optimization is to register requests in redis and

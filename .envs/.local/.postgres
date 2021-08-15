@@ -5,3 +5,7 @@ POSTGRES_PORT=5432
 POSTGRES_DB=paprika_sync
 POSTGRES_USER=gKzgEyHJkqcXFestYkKXbPDcNyKjzXrC
 POSTGRES_PASSWORD=olNJlARqlMMp01iaiSJQuCRmmY8JyLV4HA4XbQIgh2ABGmDEyDe6pL3kHTg0fAuO
+
+# Greg adding this 2021-08-14 just to get mypy to work
+# It's normally only set in the entrypoint, I guess
+DATABASE_URL="postgres://gKzgEyHJkqcXFestYkKXbPDcNyKjzXrC:olNJlARqlMMp01iaiSJQuCRmmY8JyLV4HA4XbQIgh2ABGmDEyDe6pL3kHTg0fAuO@postgres:5432/paprika_sync"

@@ -273,6 +273,53 @@ coming back after a year away from the project!
 - TODO: db backups
 - TODO: zero-downtime deploys
 
+2023-12-10
+==========
+
+- getting 500 (and 401?) errors when trying to clone a recipe, what changed?
+- start local dev env and try cloning a recipe in django shell, inspect response body
+- got local repo by signing up as grschafer@gmail.com
+  - ran `docker compose -f local.yml run --rm django python3 manage.py import_new_account_recipes`
+  - ran `docker compose -f local.yml run --rm django python3 manage.py shell_plus`
+    - ran `pa = PaprikaAccount.objects.get()`
+    - ran `r = Recipe.objects.first()`
+    - ran `pa.clone_recipe(r)`
+    - resp.content is: b'{"error":{"code":0,"message":"There was an error with your request."}}'
+- need to sniff app request that creates a recipe with mitmproxy?
+- try wireguard proxy: https://docs.mitmproxy.org/stable/concepts-modes/#wireguard-transparent-proxy
+  - Client TLS handshake failed. The client disconnected during the handshake. If this happens consistently for www.paprikaapp.com, this may indicate that the client does not trust the proxy's certificate.
+  - how to solve above?
+    - just had to go to mitm.it and install the cert!
+  - app uses v2 API endpoint
+    - request to https://www.paprikaapp.com/api/v2/sync/recipe/5BBF1735-3323-4CAD-A6DC-48249F2A0CD5/ has multipart body
+    - saved body from mitmweb to api-v2-sync-recipe.data file in paprika-sync repo
+    - parse it with
+      ```
+      from requests_toolbelt.multipart import decoder
+      fin = open('api-v2-sync-recipe.data', 'rb')
+      data = fin.read()
+      class A():
+        content = data
+        headers = {"content-type": 'multipart/form-data; boundary="ccba0de8-a2f7-4146-8198-8c1aad6bc918"'}
+      mp_data = decoder.MultipartDecoder.from_response(b)
+      import gzip
+      gzip.decompress(mp_data.parts[0].content)
+      ```
+    - result is: b'{"uid":"5BBF1735-3323-4CAD-A6DC-48249F2A0CD5","deleted":false,"created":"2023-12-10 18:11:51","hash":"B36F4CE185135695418FF23EB07724105FFEA69F010669E8004D8C231779458C","name":"gregtest","description":"","ingredients":"","directions":"","notes":"testing paprika api","nutritional_info":"","prep_time":"","cook_time":"","total_time":"","difficulty":"","servings":"","rating":0,"scale":null,"source":"","source_url":"","on_favorites":false,"is_pinned":false,"in_trash":false,"photo":"1BEA352F-163D-4E56-B98C-C68B6E4B98DD.jpg","photo_large":"1C000B69-3BF3-4C8B-8985-C489B2624678.jpg","photo_hash":"86E2DACEC137B24626A677F178E5F0A9D9D15D5DBD276AF5DB48B875B27C507F","image_url":null,"categories":["9F1FC8AC-D07B-4482-A655-446FA7D2AC11"]}'
+  - switch to using jwt instead of http basic: https://gist.github.com/mattdsteele/7386ec363badfdeaad05a418b9a1f30a?permalink_comment_id=3300172#gistcomment-3300172
+    - updated to v2 api endpoint and attach jwt to all requests... cloning recipe still fails
+    - fetching recipes and categories still works though
+    - review body of recipe creation request
+      - the request works with photo/photo_large/photo_hash set to empty-string
+      - test what is broken with photos
+      - FIXED! photos are fine, the issue was an extra space at the end of the "created" datetime field
+      - test if I can stay on api v1 with that fix
+        - looks like yes
+      - test if I need to add any of the extra empty fields (deleted, photo_hash, is_pinned, photo_large, scale) to still have a valid request
+        - looks like no
+  - TODO: good reference? https://github.com/ThiefMaster/paprikasync
+- TODO: may need to run app in emulator: https://docs.mitmproxy.org/stable/howto-install-system-trusted-ca-android/
+
 
 general
 =======

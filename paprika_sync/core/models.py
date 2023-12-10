@@ -25,6 +25,7 @@ logger = logging.getLogger(__name__)
 RECIPES_URL = 'https://www.paprikaapp.com/api/v1/sync/recipes/'
 RECIPE_URL = 'https://www.paprikaapp.com/api/v1/sync/recipe/{uid}/'
 CATEGORIES_URL = 'https://www.paprikaapp.com/api/v1/sync/categories/'
+LOGIN_URL = 'https://www.paprikaapp.com/api/v2/account/login/'
 
 
 class BaseModel(models.Model):
@@ -303,18 +304,35 @@ class PaprikaAccount(BaseModel):
     ##########################################################################
     # Paprika API helpers
     ##########################################################################
+    def get_jwt(self):
+        # This method is for using v2 api
+        data = {'email': self.username, 'password': self.password}
+        resp = requests.post(LOGIN_URL, data=data)
+        resp.raise_for_status()
+        return resp.json()['result']['token']
+
+    def get_auth_header(self):
+        # This method is for using v2 api
+        return {"Authorization": f"Bearer {self.get_jwt()}"}
+
     def get_recipes(self):
+        # For v2 api
+        # resp = requests.get(RECIPES_URL, headers=self.get_auth_header())
         resp = requests.get(RECIPES_URL, auth=(self.username, self.password))
         resp.raise_for_status()
         return resp.json()['result']
 
     def get_recipe(self, uid):
         url = RECIPE_URL.format(uid=uid)
+        # For v2 api
+        # resp = requests.get(url, headers=self.get_auth_header())
         resp = requests.get(url, auth=(self.username, self.password))
         resp.raise_for_status()
         return resp.json()['result']
 
     def get_categories(self):
+        # For v2 api
+        # resp = requests.get(CATEGORIES_URL, headers=self.get_auth_header())
         resp = requests.get(CATEGORIES_URL, auth=(self.username, self.password))
         resp.raise_for_status()
         return resp.json()['result']
@@ -391,6 +409,8 @@ class PaprikaAccount(BaseModel):
             photo_content = recipe.get_photo_content()
             files['photo_upload'] = (recipe_data['photo'], photo_content)
 
+        # For v2 api
+        # resp = requests.post(url, headers=self.get_auth_header(), files=files)
         resp = requests.post(url, auth=(self.username, self.password), files=files)
         resp.raise_for_status()
         if not resp.json().get('result', False):

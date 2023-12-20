@@ -47,6 +47,7 @@ class Command(BaseCommand):
             try:
                 self.sync_account(pa)
             except Exception as e:
+                logger.error('Error syncing account %s: %s %s', pa, e.__class__.__name__, e)
                 pa.sync_failure_count += 1
                 pa.save()
 

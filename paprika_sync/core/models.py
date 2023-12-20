@@ -22,9 +22,9 @@ logger = logging.getLogger(__name__)
 
 
 # Paprika API docs: https://gist.github.com/mattdsteele/7386ec363badfdeaad05a418b9a1f30a
-RECIPES_URL = 'https://www.paprikaapp.com/api/v1/sync/recipes/'
-RECIPE_URL = 'https://www.paprikaapp.com/api/v1/sync/recipe/{uid}/'
-CATEGORIES_URL = 'https://www.paprikaapp.com/api/v1/sync/categories/'
+RECIPES_URL = 'https://www.paprikaapp.com/api/v2/sync/recipes/'
+RECIPE_URL = 'https://www.paprikaapp.com/api/v2/sync/recipe/{uid}/'
+CATEGORIES_URL = 'https://www.paprikaapp.com/api/v2/sync/categories/'
 LOGIN_URL = 'https://www.paprikaapp.com/api/v2/account/login/'
 
 
@@ -60,6 +60,7 @@ class PaprikaAccount(BaseModel):
     import_sync_status = FSMField(choices=IMPORT_SYNC_STATUS_CHOICES, default=NEW_ACCOUNT, protected=True, help_text='Status of importing/syncing recipes')
     last_synced = models.DateTimeField(null=True, help_text='When this account was last synced with the API')
     sync_failure_count = models.PositiveSmallIntegerField(default=0, help_text='Incremented for failures, to stop retrying if we are failing repeatedly')
+    jwt = models.CharField(max_length=150, blank=True, help_text='JWT token for v2 api')
 
     ##########################################################################
     # Transitions
@@ -304,6 +305,23 @@ class PaprikaAccount(BaseModel):
     ##########################################################################
     # Paprika API helpers
     ##########################################################################
+    def make_authed_request(self, fn, url, data=None, files=None):
+        # If jwt not stored in database or expired, fetch and save a new one, then use it to make
+        # the specified API request
+        if not self.jwt:
+            logger.info('Account %s missing jwt, fetching...', self)
+            self.jwt = self.get_jwt()
+            self.save()
+
+        resp = fn(url, headers=self.get_auth_header(), data=data, files=files)
+        if resp.status_code == 401:
+            # Try again with new jwt
+            logger.info('Account %s jwt expired, fetching new jwt...', self)
+            self.jwt = self.get_jwt()
+            self.save()
+            resp = fn(url, headers=self.get_auth_header(), data=data, files=files)
+        return resp
+
     def get_jwt(self):
         # This method is for using v2 api
         data = {'email': self.username, 'password': self.password}
@@ -313,27 +331,21 @@ class PaprikaAccount(BaseModel):
 
     def get_auth_header(self):
         # This method is for using v2 api
-        return {"Authorization": f"Bearer {self.get_jwt()}"}
+        return {"Authorization": f"Bearer {self.jwt}"}
 
     def get_recipes(self):
-        # For v2 api
-        # resp = requests.get(RECIPES_URL, headers=self.get_auth_header())
-        resp = requests.get(RECIPES_URL, auth=(self.username, self.password))
+        resp = self.make_authed_request(requests.get, RECIPES_URL)
         resp.raise_for_status()
         return resp.json()['result']
 
     def get_recipe(self, uid):
         url = RECIPE_URL.format(uid=uid)
-        # For v2 api
-        # resp = requests.get(url, headers=self.get_auth_header())
-        resp = requests.get(url, auth=(self.username, self.password))
+        resp = self.make_authed_request(requests.get, url)
         resp.raise_for_status()
         return resp.json()['result']
 
     def get_categories(self):
-        # For v2 api
-        # resp = requests.get(CATEGORIES_URL, headers=self.get_auth_header())
-        resp = requests.get(CATEGORIES_URL, auth=(self.username, self.password))
+        resp = self.make_authed_request(requests.get, CATEGORIES_URL)
         resp.raise_for_status()
         return resp.json()['result']
 
@@ -409,9 +421,7 @@ class PaprikaAccount(BaseModel):
             photo_content = recipe.get_photo_content()
             files['photo_upload'] = (recipe_data['photo'], photo_content)
 
-        # For v2 api
-        # resp = requests.post(url, headers=self.get_auth_header(), files=files)
-        resp = requests.post(url, auth=(self.username, self.password), files=files)
+        resp = self.make_authed_request(requests.post, url, files=files)
         resp.raise_for_status()
         if not resp.json().get('result', False):
             raise Exception('Cloning recipe failed! Error: '.format(resp.json().get('error', {}).get('message')))

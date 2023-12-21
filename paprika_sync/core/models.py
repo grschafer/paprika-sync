@@ -60,7 +60,7 @@ class PaprikaAccount(BaseModel):
     import_sync_status = FSMField(choices=IMPORT_SYNC_STATUS_CHOICES, default=NEW_ACCOUNT, protected=True, help_text='Status of importing/syncing recipes')
     last_synced = models.DateTimeField(null=True, help_text='When this account was last synced with the API')
     sync_failure_count = models.PositiveSmallIntegerField(default=0, help_text='Incremented for failures, to stop retrying if we are failing repeatedly')
-    jwt = models.CharField(max_length=150, blank=True, help_text='JWT token for v2 api')
+    jwt = models.CharField(max_length=1000, blank=True, help_text='JWT token for v2 api')
 
     ##########################################################################
     # Transitions

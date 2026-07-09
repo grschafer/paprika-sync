@@ -100,6 +100,15 @@
     </div>
 
     <div class="container">
+      {% if not request.user.is_authenticated %}
+          <div class="alert alert-error">
+            This website is NOT affiliated with the Paprika Recipe Manager App (<a target="_blank"
+            href="https://paprikaapp.com/">https://paprikaapp.com/</a>) and you CANNOT sign in here
+            with your Paprika app login. For more info about this site, see the <a href="{{
+            about_url }}">{% trans "About" %}</a> page.
+          </div>
+      {% endif %}
+
 
       {% if messages %}
           {% for message in messages %}
